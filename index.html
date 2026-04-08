@@ -901,6 +901,7 @@ body.dark-mode .chart-card h3{color:#bbb}
       </div>
       <select id="wa-template" onchange="fillWaTemplate()">
         <option value="">— בחר תבנית —</option>
+        <option value="closing">🎉 הודעת סגירה — כתב שירות</option>
         <option value="confirm">✅ אישור קבלת כתב שירות</option>
         <option value="meeting">📅 אישור פגישה</option>
         <option value="docs">📎 בקשת מסמכים</option>
@@ -1302,6 +1303,8 @@ function addCustomer(){
   sv('a-status','closed');sv('a-pipeline','');
   renderCustTable();renderDashboard();renderGoals();
   showToast('✅ לקוח נוסף');
+  const _newC=getCusts()[getCusts().length-1];
+  if(_newC?.status==='closed'&&_newC?.phone) setTimeout(()=>autoWaOnClose(_newC.id),300);
 }
 
 function addMyCustomer(){
@@ -1318,6 +1321,8 @@ function addMyCustomer(){
   sv('m-status','closed');sv('m-pipeline','');
   renderMyTable();renderAgentStats();
   showToast('✅ לקוח נוסף');
+  const _newCm=getCusts()[getCusts().length-1];
+  if(_newCm?.status==='closed'&&_newCm?.phone) setTimeout(()=>autoWaOnClose(_newCm.id),300);
 }
 
 let editingId=null;
@@ -1366,10 +1371,12 @@ function saveEdit(){
   if(canViewAll()) c.agentId=+v('e-agent-sel')||null;
   if(!c._history) c._history=[];
   addAuditEntry(c,'edited',changes.length?changes.join(' | '):'פרטים עודכנו');
+  const justClosed = c.status==='closed' && changes.some(ch=>ch.includes('סגר'));
   saveCusts(custs);
   closeModal('edit-modal');
   if(canViewAll()){renderCustTable();renderDashboard();}
   else{renderMyTable();renderAgentStats();}
+  if(justClosed && c.phone) setTimeout(()=>autoWaOnClose(c.id),300);
 }
 
 function delCustomer(id){
@@ -2292,6 +2299,24 @@ function renderPresencePanel(){
 // ══════════════════════════════════════════════
 let waCustId=null;
 const WA_TEMPLATES={
+  closing:c=>`שלום ${c.name}, ${SESSION?.name||''} מנהל תיקי לקוחות
+בהמשך לשיחתנו כמה נקודות חשובות שתוכל למצוא את הזכויות שלך בשעת הצורך
+
+מול הביטוח שלך, ומול המוסד לביטוח לאומי.
+שפלטינום תוכל לעזור:
+
+* ליווי מול המוסד לביטוח לאומי
+* ייעוץ והכוונה בקבלת מטפל עובד זר
+* טיפול בבירוקרטיה
+* החזרים על CT-MRI
+* מימוש זכויות רפואיות
+* החזרים על התייעצויות עם רופאים מומחים
+* פינוי באמבולנס
+* מרפאות כאב
+
+לכל שאלה אפשר לחייג אלינו למספר:
+
+שמחתי לעזור! 💙`,
   confirm:c=>`שלום ${c.name}, אנו מאשרים שקיבלנו את כתב השירות שלך ומעבדים אותו בימים הקרובים. נחזור אליך בהקדם. תודה! 🙏`,
   meeting:c=>`שלום ${c.name}, שמחים לאשר את הפגישה הקרובה שלנו. אנא אשר/י קבלת ההודעה. מחכים לראותך! 📅`,
   docs:c=>`שלום ${c.name}, על מנת להשלים את הטיפול נשמח אם תשלח/י: צילום תעודת זהות + אישור בנקאי / צ'ק ביטול. תודה! 📎`,
@@ -2299,6 +2324,16 @@ const WA_TEMPLATES={
   followup:c=>`שלום ${c.name}, אני ${SESSION?.name||''} מצוות שירות הלקוחות. רק רציתי לוודא שהכל בסדר ושאת/ה מרוצה מהשירות. שיהיה לך יום נעים! 😊`,
   custom:()=>''
 };
+function autoWaOnClose(custId){
+  waCustId=custId;
+  const c=getCusts().find(x=>x.id===custId);
+  if(!c?.phone) return;
+  document.getElementById('wa-cust-name').textContent=c.name||'—';
+  document.getElementById('wa-cust-phone').textContent='📱 '+(c.phone||'');
+  sv('wa-template','closing');
+  sv('wa-msg',WA_TEMPLATES.closing(c));
+  openModal('wa-modal');
+}
 function openWaModal(custId){
   waCustId=custId;
   const c=getCusts().find(x=>x.id===custId);
