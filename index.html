@@ -830,8 +830,15 @@ body.dark-mode .att-row-today{background:#0a2a1a}
       <div class="form-row">
         <div class="fg"><label>תאריך</label><input type="date" id="rf-date"/></div>
         <div class="fg"><label>שעה</label><input type="time" id="rf-time"/></div>
-        <div class="fg"><label>שיחת חיזוק בוצעה?</label>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>📞 שיחת חיזוק בוצעה?</label>
           <select id="rf-done" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.93rem;background:#fafafa;font-family:inherit">
+            <option value="לא בוצע">לא בוצע</option><option value="בוצע">בוצע</option>
+          </select>
+        </div>
+        <div class="fg"><label>📝 שיחת סיכום בוצעה?</label>
+          <select id="rf-summary-done" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:.93rem;background:#fafafa;font-family:inherit">
             <option value="לא בוצע">לא בוצע</option><option value="בוצע">בוצע</option>
           </select>
         </div>
@@ -848,7 +855,7 @@ body.dark-mode .att-row-today{background:#0a2a1a}
           <thead><tr>
             <th class="ns">תאריך</th><th class="ns">שעת פנייה</th><th class="ns">שם לקוח</th>
             <th class="ns">ת.ז</th><th class="ns">טלפון</th><th class="ns">נציג</th>
-            <th class="ns">שיחת חיזוק</th><th class="ns">סיכום</th>
+            <th class="ns">📞 שיחת חיזוק</th><th class="ns">📝 שיחת סיכום</th><th class="ns">סיכום שיחה</th>
             <th class="ns">חתימה</th><th class="ns">הערות מאור</th><th class="ns">הערות נציג</th>
             <th class="ns">פעולות</th>
           </tr></thead>
@@ -3599,6 +3606,7 @@ function addReinforcement(){
     agent:SESSION?.name||'',
     agentId:SESSION?.id||null,
     done:document.getElementById('rf-done').value,
+    summaryDone:document.getElementById('rf-summary-done').value,
     summary:document.getElementById('rf-summary').value.trim(),
     signature:SESSION?.name||'',
     notesMaor:'',
@@ -3612,6 +3620,7 @@ function addReinforcement(){
     const el=document.getElementById(id);if(el)el.value='';
   });
   document.getElementById('rf-done').value='לא בוצע';
+  document.getElementById('rf-summary-done').value='לא בוצע';
   document.getElementById('rf-date').value='';
   document.getElementById('rf-time').value='';
   renderReinforcements();
@@ -3624,16 +3633,29 @@ function renderReinforcements(){
   const list=getReinforcements();
   const admin=isAdmin();
   const myId=SESSION?.id;
-  if(!list.length){tbody.innerHTML='<tr><td colspan="12" class="empty-row" style="text-align:center;color:#aaa;padding:24px">אין שיחות חיזוק עדיין</td></tr>';return;}
+  if(!list.length){tbody.innerHTML='<tr><td colspan="13" class="empty-row" style="text-align:center;color:#aaa;padding:24px">אין שיחות חיזוק עדיין</td></tr>';return;}
   tbody.innerHTML=list.map(e=>{
     const canEdit=admin||(e.agentId===myId);
     const doneBadge=e.done==='בוצע'?'b-inq-done':'b-inq-open';
+    const sumDoneBadge=(e.summaryDone||'לא בוצע')==='בוצע'?'b-inq-done':'b-inq-open';
     const maorCell=admin
       ?`<textarea class="inq-notes-input" rows="2" onblur="updateReinfField(${e.id},'notesMaor',this.value)">${escH(e.notesMaor||'')}</textarea>`
       :`<span style="font-size:.82rem;color:#555">${escH(e.notesMaor||'—')}</span>`;
     const agentNotesCell=canEdit
       ?`<textarea class="inq-notes-input" rows="2" onblur="updateReinfField(${e.id},'notesAgent',this.value)">${escH(e.notesAgent||'')}</textarea>`
       :`<span style="font-size:.82rem;color:#555">${escH(e.notesAgent||'—')}</span>`;
+    const reinfToggle=canEdit
+      ?`<select class="inq-status-sel" onchange="updateReinfField(${e.id},'done',this.value)" style="font-size:.8rem;padding:3px 7px;border-radius:6px;border:1.5px solid #ddd;background:#fafafa">
+          <option${e.done==='לא בוצע'?' selected':''}>לא בוצע</option>
+          <option${e.done==='בוצע'?' selected':''}>בוצע</option>
+        </select>`
+      :`<span class="badge ${doneBadge}">${escH(e.done||'לא בוצע')}</span>`;
+    const summaryToggle=canEdit
+      ?`<select class="inq-status-sel" onchange="updateReinfField(${e.id},'summaryDone',this.value)" style="font-size:.8rem;padding:3px 7px;border-radius:6px;border:1.5px solid #ddd;background:#fafafa">
+          <option${(e.summaryDone||'לא בוצע')==='לא בוצע'?' selected':''}>לא בוצע</option>
+          <option${e.summaryDone==='בוצע'?' selected':''}>בוצע</option>
+        </select>`
+      :`<span class="badge ${sumDoneBadge}">${escH(e.summaryDone||'לא בוצע')}</span>`;
     const delBtn=canEdit?`<button class="ab del" onclick="delReinforcement(${e.id})" title="מחק">🗑️</button>`:'';
     return `<tr>
       <td style="font-size:.82rem;white-space:nowrap">${escH(e.date)}</td>
@@ -3642,8 +3664,9 @@ function renderReinforcements(){
       <td style="font-size:.8rem;color:#666">${escH(e.custId||'—')}</td>
       <td style="font-size:.82rem">${e.custPhone?`<div class="phone-cell">${escH(e.custPhone)}</div>`:'—'}</td>
       <td style="font-size:.82rem">${escH(e.agent||'—')}</td>
-      <td><span class="badge ${doneBadge}">${escH(e.done||'לא בוצע')}</span></td>
-      <td style="font-size:.82rem;max-width:200px">${escH(e.summary||'—')}</td>
+      <td>${reinfToggle}</td>
+      <td>${summaryToggle}</td>
+      <td style="font-size:.82rem;max-width:180px">${escH(e.summary||'—')}</td>
       <td style="font-size:.82rem">${escH(e.signature||e.agent||'—')}</td>
       <td class="inq-notes-cell">${maorCell}</td>
       <td class="inq-notes-cell">${agentNotesCell}</td>
