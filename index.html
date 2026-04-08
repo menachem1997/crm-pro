@@ -1482,8 +1482,8 @@ function addCustomer(){
   const name=document.getElementById('a-name').value.trim();
   const idNum=document.getElementById('a-id').value.trim();
   const service=document.getElementById('a-service').value.trim();
-  if(!name){alert('נא להזין שם');return;}
-  if(!/^\d{9}$/.test(idNum)){alert('ת.ז חייבת להכיל 9 ספרות');return;}
+  if(!name){showToast('⚠️ נא להזין שם לקוח');const el=document.getElementById('a-name');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
+  if(!/^\d{9}$/.test(idNum)){showToast('⚠️ ת.ז חייבת להכיל 9 ספרות');const el=document.getElementById('a-id');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
   if(!service){showToast('⚠️ נא להזין כתב שירות');const el=document.getElementById('a-service');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
   const custs=getCusts();
   custs.push(buildNewCust('a',+v('a-agent-sel')||null));
@@ -1502,8 +1502,8 @@ function addMyCustomer(){
   const name=document.getElementById('m-name').value.trim();
   const idNum=document.getElementById('m-id').value.trim();
   const service=document.getElementById('m-service').value.trim();
-  if(!name){alert('נא להזין שם');return;}
-  if(!/^\d{9}$/.test(idNum)){alert('ת.ז חייבת להכיל 9 ספרות');return;}
+  if(!name){showToast('⚠️ נא להזין שם לקוח');const el=document.getElementById('m-name');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
+  if(!/^\d{9}$/.test(idNum)){showToast('⚠️ ת.ז חייבת להכיל 9 ספרות');const el=document.getElementById('m-id');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
   if(!service){showToast('⚠️ נא להזין כתב שירות');const el=document.getElementById('m-service');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
   const custs=getCusts();
   custs.push(buildNewCust('m',SESSION.id));
@@ -2724,7 +2724,7 @@ function saveTicket(){
   // Auto-create inquiry entry
   addInquiry(ticketCustomerId, (TICKET_TYPES[type]||type)+(note?' — '+note:''));
   closeModal('ticket-modal');
-  if(SESSION.role==='admin') renderCustTable(); else renderMyTable();
+  if(canViewAll()) renderCustTable(); else renderMyTable();
 }
 function handleTicket(ticketId){
   const tickets=getTickets();
@@ -2732,7 +2732,7 @@ function handleTicket(ticketId){
   saveTickets(tickets);
   const modal=document.getElementById('history-modal');
   if(modal.classList.contains('open')) showHistory(parseInt(modal.dataset.custId));
-  if(SESSION.role==='admin') renderCustTable(); else {renderMyTable();renderMyTickets();}
+  if(canViewAll()) renderCustTable(); else {renderMyTable();renderMyTickets();}
 }
 
 function showHistory(custId){
