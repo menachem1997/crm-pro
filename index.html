@@ -896,8 +896,8 @@ body.dark-mode .att-row-today{background:#0a2a1a}
         <select id="att-flt-agent" onchange="renderAttendance()" style="padding:6px 11px;border:1.5px solid #ddd;border-radius:7px;font-size:.84rem;background:#fafafa">
           <option value="">כל הנציגים</option>
         </select>
-        <input type="date" id="att-flt-from" onchange="renderAttendance()" style="padding:6px 11px;border:1.5px solid #ddd;border-radius:7px;font-size:.84rem;background:#fafafa" title="מתאריך"/>
-        <input type="date" id="att-flt-to" onchange="renderAttendance()" style="padding:6px 11px;border:1.5px solid #ddd;border-radius:7px;font-size:.84rem;background:#fafafa" title="עד תאריך"/>
+        <input type="date" id="att-flt-from" onchange="renderAttendance();renderAttendanceSummary()" style="padding:6px 11px;border:1.5px solid #ddd;border-radius:7px;font-size:.84rem;background:#fafafa" title="מתאריך"/>
+        <input type="date" id="att-flt-to" onchange="renderAttendance();renderAttendanceSummary()" style="padding:6px 11px;border:1.5px solid #ddd;border-radius:7px;font-size:.84rem;background:#fafafa" title="עד תאריך"/>
         <button class="btn-pri" onclick="exportAttendanceExcel()">⬇ ייצוא לאקסל</button>
       </div>
     </div>
@@ -912,11 +912,13 @@ body.dark-mode .att-row-today{background:#0a2a1a}
             <th class="ns">שעות עבודה</th>
             <th class="ns">הפסקות</th>
             <th class="ns">סה"כ נטו</th>
+            <th class="ns" id="att-th-actions" style="display:none">פעולות</th>
           </tr></thead>
           <tbody id="att-body"></tbody>
         </table>
       </div>
     </div>
+    <div id="att-summary" style="display:none"></div>
   </div>
 
 </div><!-- /pg-app -->
@@ -3796,7 +3798,7 @@ showTab=function(id,btn){
     }
     renderReinforcements();
   }
-  if(id==='t-attendance') renderAttendance();
+  if(id==='t-attendance'){renderAttendance();renderAttendanceSummary();}
 };
 
 // ══════════════════════════════════════════════
@@ -3916,6 +3918,8 @@ function renderAttendance(){
   const adminCtrl=document.getElementById('att-admin-controls');
   if(thAgent) thAgent.style.display=isAdmin_?'':'none';
   if(adminCtrl) adminCtrl.style.display=isAdmin_?'':'none';
+  const thActions=document.getElementById('att-th-actions');
+  if(thActions) thActions.style.display=isAdmin_?'':'none';
   // Populate agent filter
   if(isAdmin_){
     const sel=document.getElementById('att-flt-agent');
@@ -3950,7 +3954,7 @@ function renderAttendance(){
   // Sort newest first
   list=[...list].sort((a,b)=>b.clockIn-a.clockIn);
   if(!list.length){
-    tbody.innerHTML='<tr><td colspan="7" class="empty-row" style="text-align:center;color:#aaa;padding:28px">אין רשומות נוכחות עדיין</td></tr>';
+    tbody.innerHTML='<tr><td colspan="8" class="empty-row" style="text-align:center;color:#aaa;padding:28px">אין רשומות נוכחות עדיין</td></tr>';
     return;
   }
   const today=new Date().toLocaleDateString('he-IL');
@@ -3965,6 +3969,10 @@ function renderAttendance(){
     const hoursNet=isOpen?'<span style="color:#f59e0b;font-size:.8rem">בתהליך...</span>':fmtMs(netMs);
     const breaksCell=fmtMs(breakMs);
     const agentCell=isAdmin_?`<td>${escH(e.agentName||'—')}</td>`:'';
+    const actionsCell=isAdmin_?`<td style="white-space:nowrap">
+      <button class="ab" onclick="openEditAttendance(${e.id})" title="עריכה" style="background:#ede9fe;color:#6c63ff;border:none;padding:4px 9px;border-radius:6px;font-size:.8rem;cursor:pointer;font-weight:700">✏️</button>
+      <button class="ab del" onclick="deleteAttendance(${e.id})" title="מחק" style="margin-right:4px">🗑️</button>
+    </td>`:'';
     return `<tr class="${isToday?'att-row-today':''}">
       <td style="font-size:.84rem;white-space:nowrap">${escH(e.date)}</td>
       ${agentCell}
@@ -3973,6 +3981,7 @@ function renderAttendance(){
       <td style="font-size:.84rem">${hoursGross}</td>
       <td style="font-size:.84rem;color:#f59e0b">${breaksCell}</td>
       <td style="font-size:.84rem;font-weight:800;color:#16a34a">${hoursNet}</td>
+      ${actionsCell}
     </tr>`;
   }).join('');
 }
@@ -4000,6 +4009,150 @@ function exportAttendanceExcel(){
   XLSX.writeFile(wb,'attendance_crm.xlsx');
   showToast('✅ קובץ הורד');
 }
+
+// ══════════════════════════════════════════════
+// ATTENDANCE ADMIN EDIT / DELETE
+// ══════════════════════════════════════════════
+let _editAttId=null;
+function openEditAttendance(id){
+  if(!canViewAll()) return;
+  const list=getAttendance();
+  const e=list.find(x=>x.id===id);
+  if(!e){showToast('⚠️ רשומה לא נמצאה');return;}
+  _editAttId=id;
+  // Convert date from Hebrew (DD/MM/YYYY) to ISO (YYYY-MM-DD)
+  const iso=heToIso(e.date)||'';
+  document.getElementById('att-edit-date').value=iso;
+  document.getElementById('att-edit-agent').textContent=e.agentName||'—';
+  // Convert timestamps to HH:MM
+  document.getElementById('att-edit-in').value=e.clockIn?tsToTimeInput(e.clockIn):'';
+  document.getElementById('att-edit-out').value=e.clockOut?tsToTimeInput(e.clockOut):'';
+  document.getElementById('att-edit-break').value=e.totalBreakMs?Math.round(e.totalBreakMs/60000):0;
+  openModal('att-edit-modal');
+}
+function tsToTimeInput(ts){
+  const d=new Date(ts);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function saveAttendanceEdit(){
+  if(!canViewAll()||!_editAttId) return;
+  const list=getAttendance();
+  const e=list.find(x=>x.id===_editAttId);
+  if(!e){showToast('⚠️ רשומה לא נמצאה');return;}
+  const dateISO=document.getElementById('att-edit-date').value;
+  const inTime=document.getElementById('att-edit-in').value;
+  const outTime=document.getElementById('att-edit-out').value;
+  const breakMin=parseInt(document.getElementById('att-edit-break').value)||0;
+  if(!dateISO||!inTime){showToast('⚠️ תאריך ושעת כניסה הם חובה');return;}
+  // Build timestamps from date + time
+  const [y,mo,d]=dateISO.split('-').map(Number);
+  const [ih,im]=inTime.split(':').map(Number);
+  const newIn=new Date(y,mo-1,d,ih,im,0).getTime();
+  let newOut=null;
+  if(outTime){
+    const [oh,om]=outTime.split(':').map(Number);
+    newOut=new Date(y,mo-1,d,oh,om,0).getTime();
+    if(newOut<=newIn){showToast('⚠️ שעת יציאה חייבת להיות אחרי שעת כניסה');return;}
+  }
+  e.date=new Date(y,mo-1,d).toLocaleDateString('he-IL');
+  e.clockIn=newIn;
+  e.clockOut=newOut;
+  e.totalBreakMs=breakMin*60000;
+  if(newOut) e.totalMs=newOut-newIn;
+  saveAttendance(list);
+  closeModal('att-edit-modal');
+  renderAttendance();
+  renderAttendanceSummary();
+  showToast('✅ רשומת נוכחות עודכנה');
+}
+function deleteAttendance(id){
+  if(!canViewAll()) return;
+  if(!confirm('למחוק רשומת נוכחות זו?')) return;
+  saveAttendance(getAttendance().filter(x=>x.id!==id));
+  renderAttendance();
+  renderAttendanceSummary();
+  showToast('🗑️ נמחק');
+}
+
+// ══════════════════════════════════════════════
+// ATTENDANCE SUMMARY (שעות + עמלות)
+// ══════════════════════════════════════════════
+function renderAttendanceSummary(){
+  const el=document.getElementById('att-summary');
+  if(!el||!canViewAll()) return;
+  const fltFrom=document.getElementById('att-flt-from')?.value||'';
+  const fltTo=document.getElementById('att-flt-to')?.value||'';
+  let attList=getAttendance().filter(e=>e.clockOut); // only completed shifts
+  if(fltFrom||fltTo){
+    attList=attList.filter(e=>{
+      const iso=heToIso(e.date);
+      if(!iso) return true;
+      if(fltFrom&&iso<fltFrom) return false;
+      if(fltTo&&iso>fltTo) return false;
+      return true;
+    });
+  }
+  const users=getUsers().filter(u=>u.role==='agent'||u.role==='shift_manager'||u.role==='admin');
+  const allCusts=getCusts();
+  let totalNetMs=0;
+  const rows=users.map(u=>{
+    const myAtt=attList.filter(e=>e.agentId===u.id);
+    if(!myAtt.length) return null;
+    const netMs=myAtt.reduce((s,e)=>{
+      const{netMs:n}=calcWorkTime(e);return s+n;
+    },0);
+    totalNetMs+=netMs;
+    const myCusts=allCusts.filter(c=>c.agentId===u.id&&c.status!=='cancelled');
+    const comm=agentCommission(u.id,myCusts);
+    return{name:u.name,netMs,comm};
+  }).filter(Boolean);
+  if(!rows.length){el.style.display='none';return;}
+  el.style.display='block';
+  const totalComm=rows.reduce((s,r)=>s+r.comm.amount,0);
+  el.innerHTML=`<div class="card" style="margin-top:16px">
+    <div style="font-size:.97rem;font-weight:800;color:#333;margin-bottom:14px">📊 סיכום תקופה</div>
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr style="background:#f8fafc;font-size:.82rem;color:#555">
+        <th style="padding:8px 12px;text-align:right;border-bottom:1.5px solid #e5e7eb">נציג</th>
+        <th style="padding:8px 12px;text-align:right;border-bottom:1.5px solid #e5e7eb">סה"כ שעות נטו</th>
+        <th style="padding:8px 12px;text-align:right;border-bottom:1.5px solid #e5e7eb">עמלה (${rows[0]?.comm.rate||10}%)</th>
+      </tr></thead>
+      <tbody>
+        ${rows.map(r=>`<tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:8px 12px;font-size:.85rem;font-weight:700">${escH(r.name)}</td>
+          <td style="padding:8px 12px;font-size:.85rem">${fmtMs(r.netMs)}</td>
+          <td style="padding:8px 12px;font-size:.85rem;font-weight:800;color:#16a34a">₪${r.comm.amount.toLocaleString('he-IL')}</td>
+        </tr>`).join('')}
+      </tbody>
+      <tfoot><tr style="background:#f0fdf4;font-weight:800">
+        <td style="padding:10px 12px;font-size:.87rem">סה"כ</td>
+        <td style="padding:10px 12px;font-size:.87rem">${fmtMs(totalNetMs)}</td>
+        <td style="padding:10px 12px;font-size:.95rem;color:#16a34a">₪${totalComm.toLocaleString('he-IL')}</td>
+      </tfoot>
+    </table>
+  </div>`;
+}
 </script>
+
+<!-- ══ EDIT ATTENDANCE MODAL ══ -->
+<div class="modal-bg" id="att-edit-modal">
+  <div class="modal" style="max-width:400px">
+    <button class="modal-x" onclick="closeModal('att-edit-modal')">✕</button>
+    <h2>✏️ עריכת נוכחות</h2>
+    <div style="background:#f8fafc;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.88rem;color:#555">
+      נציג: <strong id="att-edit-agent"></strong>
+    </div>
+    <div class="fg"><label>תאריך</label><input type="date" id="att-edit-date"/></div>
+    <div class="form-row">
+      <div class="fg"><label>שעת כניסה</label><input type="time" id="att-edit-in"/></div>
+      <div class="fg"><label>שעת יציאה</label><input type="time" id="att-edit-out" placeholder="ריק = עדיין בעבודה"/></div>
+    </div>
+    <div class="fg"><label>הפסקות (דקות)</label><input type="number" id="att-edit-break" min="0" placeholder="0"/></div>
+    <div class="modal-acts">
+      <button class="btn-mcancel" onclick="closeModal('att-edit-modal')">ביטול</button>
+      <button class="btn-msave" onclick="saveAttendanceEdit()">💾 שמור</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
