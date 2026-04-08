@@ -1790,8 +1790,10 @@ async function addAgent(){
 
 let editingAgentId=null;
 function openEditAgent(id){
-  const u=getUsers().find(x=>x.id===id);
-  editingAgentId=id;
+  const users=getUsers();
+  const u=users.find(x=>x.id===id||x.id===+id||String(x.id)===String(id));
+  if(!u){showToast('⚠️ נציג לא נמצא');return;}
+  editingAgentId=u.id;
   sv('ea-name',u.name);sv('ea-user',u.username);sv('ea-pass','');
   sv('ea-commission',u.commissionRate??10);
   document.getElementById('ea-blocked').checked=!!u.blocked;
@@ -1802,10 +1804,11 @@ async function saveAgentEdit(){
   const username=document.getElementById('ea-user').value.trim();
   const pass=document.getElementById('ea-pass').value;
   const blocked=document.getElementById('ea-blocked').checked;
-  if(!name||!username){alert('שם ומשתמש הם שדות חובה');return;}
+  if(!name||!username){showToast('⚠️ שם ומשתמש הם שדות חובה');return;}
   const users=getUsers();
   const u=users.find(x=>x.id===editingAgentId);
-  if(users.find(x=>x.username===username&&x.id!==editingAgentId)){alert('שם משתמש כבר בשימוש');return;}
+  if(!u){showToast('⚠️ נציג לא נמצא');return;}
+  if(users.find(x=>x.username===username&&x.id!==editingAgentId)){showToast('⚠️ שם משתמש כבר בשימוש');return;}
   u.name=name;u.username=username;u.blocked=blocked;
   u.commissionRate=Math.max(0,Math.min(100,+document.getElementById('ea-commission').value||10));
   if(pass){ u.passwordHash=await hashPass(pass); delete u.password; }
