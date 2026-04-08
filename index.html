@@ -1301,7 +1301,7 @@ function addCustomer(){
   const service=document.getElementById('a-service').value.trim();
   if(!name){alert('נא להזין שם');return;}
   if(!/^\d{9}$/.test(idNum)){alert('ת.ז חייבת להכיל 9 ספרות');return;}
-  if(!service){alert('נא להזין כתב שירות');document.getElementById('a-service').focus();return;}
+  if(!service){showToast('⚠️ נא להזין כתב שירות');const el=document.getElementById('a-service');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
   const custs=getCusts();
   custs.push(buildNewCust('a',+v('a-agent-sel')||null));
   saveCusts(custs);
@@ -1321,7 +1321,7 @@ function addMyCustomer(){
   const service=document.getElementById('m-service').value.trim();
   if(!name){alert('נא להזין שם');return;}
   if(!/^\d{9}$/.test(idNum)){alert('ת.ז חייבת להכיל 9 ספרות');return;}
-  if(!service){alert('נא להזין כתב שירות');document.getElementById('m-service').focus();return;}
+  if(!service){showToast('⚠️ נא להזין כתב שירות');const el=document.getElementById('m-service');el.classList.add('inv');el.focus();setTimeout(()=>el.classList.remove('inv'),2000);return;}
   const custs=getCusts();
   custs.push(buildNewCust('m',SESSION.id));
   saveCusts(custs);
