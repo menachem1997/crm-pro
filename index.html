@@ -3749,8 +3749,14 @@ function clockOut(){
     extraBreakMs=now-me.breakStart;
   }
   const totalBreakMs=(me?.totalBreakToday||0)+extraBreakMs;
+  const totalMs=now-entry.clockIn;
+  // If session was less than 5 minutes — discard, don't record
+  if(totalMs < 5*60*1000){
+    saveAttendance(list.filter(x=>x.id!==entry.id));
+    return;
+  }
   entry.clockOut=now;
-  entry.totalMs=now-entry.clockIn;
+  entry.totalMs=totalMs;
   entry.totalBreakMs=totalBreakMs;
   saveAttendance(list);
 }
