@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>מערכת CRM Pro</title>
+<title>הראשונים בבריאות וסיעוד</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -424,7 +424,7 @@ body.dark-mode .chart-card h3{color:#bbb}
 <div id="pg-login">
   <div class="login-card">
     <div class="login-logo">🏢</div>
-    <h1>מערכת CRM Pro</h1>
+    <h1>הראשונים בבריאות וסיעוד</h1>
     <p class="sub">ניהול לקוחות ונציגים</p>
     <div class="fg">
       <label>שם משתמש</label>
@@ -444,7 +444,7 @@ body.dark-mode .chart-card h3{color:#bbb}
 <!-- ══ APP ══ -->
 <div id="pg-app" hidden>
   <div id="app-hdr">
-    <div class="hdr-brand">🏢 CRM Pro</div>
+    <div class="hdr-brand">🏥 הראשונים בבריאות וסיעוד</div>
     <div class="hdr-mid">
       <div class="hdr-user" id="hdr-user"></div>
       <div class="hdr-clock" id="hdr-clock"></div>
@@ -2664,7 +2664,7 @@ function checkFollowUpNotifs(){
   const overdue=custs.filter(c=>c.followUpDate<today);
   const todayItems=custs.filter(c=>c.followUpDate===today);
   if(overdue.length>0){
-    const n=new Notification('CRM Pro — פולו-אפים באיחור!',{
+    const n=new Notification('הראשונים בבריאות וסיעוד — פולו-אפים באיחור!',{
       body:`יש ${overdue.length} פולו-אפים שלא בוצעו!`,
       icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><text y="26" font-size="26">🏢</text></svg>',
       tag:'overdue-followups'
@@ -2672,7 +2672,7 @@ function checkFollowUpNotifs(){
     n.onclick=()=>{ window.focus(); showTab('t-calendar',document.querySelector('.tab-btn[onclick*="t-calendar"]'));};
   }
   if(todayItems.length>0){
-    new Notification('CRM Pro — פולו-אפים להיום',{
+    new Notification('הראשונים בבריאות וסיעוד — פולו-אפים להיום',{
       body:`${todayItems.length} לקוחות לפולו-אפ היום: `+todayItems.slice(0,3).map(c=>c.name).join(', '),
       tag:'today-followups'
     });
