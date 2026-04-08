@@ -1663,7 +1663,7 @@ function custRow(c, users, mode){
   const noteCount=getNotes()[c.id]?.length||0;
   const actions=`
     ${isCan?`<button class="ab res" onclick="restoreCust(${c.id})" title="שחזר">↩</button>`:''}
-    <button class="ab" style="color:#3b82f6" onclick="openNewTicket(${c.id})" title="פנייה חדשה">📋</button>
+    ${canViewAll()?`<button class="ab" style="color:#3b82f6" onclick="openNewTicket(${c.id})" title="פנייה חדשה">📋</button>`:''}
     <button class="ab" onclick="showHistory(${c.id})" title="היסטוריה/הערות" style="${ticketCount||noteCount?'color:#6c63ff':''}">📂${ticketCount?`<sup style="font-size:.65rem">${ticketCount}</sup>`:''}</button>
     <button class="ab sp" onclick="openSpouseModal(${c.id})" title="הוסף מבוטח נוסף">👫 +</button>
     <button class="ab" onclick="openEdit(${c.id})" title="עריכה">✏️</button>
@@ -2635,6 +2635,7 @@ const CANCEL_REASONS={price:'💰 מחיר גבוה',service:'😤 בעיה בש
 
 let ticketCustomerId=null;
 function openNewTicket(custId){
+  if(!canViewAll()){showToast('⛔ רק מנהל או אחראי משמרת יכולים לפתוח פנייה');return;}
   ticketCustomerId=custId;
   const c=getCusts().find(x=>x.id===custId);
   document.getElementById('ticket-modal-title').textContent=`פנייה חדשה — ${escH(c.name)}`;
