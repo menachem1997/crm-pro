@@ -107,6 +107,33 @@
     .footer{background:#1e293b;color:#94a3b8;text-align:center;padding:18px 20px;font-size:.8rem;line-height:1.6}
     .footer-sep{margin:0 8px;opacity:.4}
 
+    /* ACCESSIBILITY WIDGET */
+    .acc-btn{position:fixed;left:16px;bottom:24px;z-index:2000;width:52px;height:52px;border-radius:50%;background:#1d4ed8;color:#fff;border:none;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;transition:background .2s}
+    .acc-btn:hover{background:#1e40af}
+    .acc-btn:focus{outline:3px solid #fff;outline-offset:2px}
+    .acc-panel{position:fixed;left:16px;bottom:86px;z-index:2000;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:18px 16px;width:220px;display:none;direction:rtl}
+    .acc-panel.open{display:block}
+    .acc-panel h4{font-size:.9rem;font-weight:800;color:#0f2d5a;margin-bottom:12px;text-align:center;border-bottom:1px solid #f1f5f9;padding-bottom:8px}
+    .acc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .acc-row label{font-size:.83rem;color:#334155;font-weight:600}
+    .acc-ctrl{display:flex;gap:6px}
+    .acc-ctrl button{width:30px;height:30px;border:1.5px solid #e2e8f0;border-radius:7px;background:#fafbfc;cursor:pointer;font-size:.85rem;font-weight:700;color:#334155;transition:all .15s}
+    .acc-ctrl button:hover{border-color:#1d4ed8;color:#1d4ed8;background:#eff6ff}
+    .acc-toggle{width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;background:#e2e8f0;position:relative;transition:background .2s}
+    .acc-toggle.on{background:#1d4ed8}
+    .acc-toggle::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:right .2s}
+    .acc-toggle.on::after{right:23px}
+    .acc-reset{width:100%;margin-top:6px;padding:7px;border:1.5px solid #e2e8f0;border-radius:8px;background:none;color:#64748b;font-size:.8rem;cursor:pointer;font-weight:600}
+    .acc-reset:hover{border-color:#f43f5e;color:#f43f5e}
+    body.acc-big *{font-size:110%!important}
+    body.acc-bigger *{font-size:125%!important}
+    body.acc-contrast{background:#000!important;color:#fff!important}
+    body.acc-contrast .hero,body.acc-contrast .benefits,body.acc-contrast .footer{background:#000!important;color:#fff!important}
+    body.acc-contrast .form-card,body.acc-contrast .pain-section,body.acc-contrast .modal-box{background:#111!important;color:#fff!important}
+    body.acc-contrast .opt-btn,body.acc-contrast .form-group input{background:#111!important;color:#fff!important;border-color:#fff!important}
+    body.acc-contrast .next-btn{background:#fff!important;color:#000!important}
+    body.acc-links a{text-decoration:underline!important;font-weight:700!important}
+
     /* High contrast focus for all focusable */
     a:focus,button:focus,input:focus,select:focus,textarea:focus{outline:2px solid #1d4ed8;outline-offset:2px}
 
@@ -126,6 +153,33 @@
 
 <!-- SKIP LINK — קפיצה לתוכן -->
 <a href="#main-form" class="skip-link">דלג לשאלון</a>
+
+<!-- ACCESSIBILITY WIDGET -->
+<button class="acc-btn" id="acc-btn" onclick="toggleAccPanel()" aria-label="פתח תפריט נגישות" aria-expanded="false" aria-controls="acc-panel">♿</button>
+<div class="acc-panel" id="acc-panel" role="dialog" aria-label="תפריט נגישות" aria-hidden="true">
+  <h4>♿ נגישות</h4>
+  <div class="acc-row">
+    <label>גודל טקסט</label>
+    <div class="acc-ctrl">
+      <button onclick="setFontSize(-1)" aria-label="הקטן טקסט">A-</button>
+      <button onclick="setFontSize(0)" aria-label="טקסט רגיל">A</button>
+      <button onclick="setFontSize(1)" aria-label="הגדל טקסט">A+</button>
+    </div>
+  </div>
+  <div class="acc-row">
+    <label>ניגודיות גבוהה</label>
+    <button class="acc-toggle" id="toggle-contrast" onclick="toggleContrast()" aria-label="ניגודיות גבוהה" aria-pressed="false"></button>
+  </div>
+  <div class="acc-row">
+    <label>הדגשת קישורים</label>
+    <button class="acc-toggle" id="toggle-links" onclick="toggleLinks()" aria-label="הדגשת קישורים" aria-pressed="false"></button>
+  </div>
+  <div class="acc-row">
+    <label>ביטול אנימציות</label>
+    <button class="acc-toggle" id="toggle-motion" onclick="toggleMotion()" aria-label="ביטול אנימציות" aria-pressed="false"></button>
+  </div>
+  <button class="acc-reset" onclick="resetAcc()">↺ איפוס הגדרות</button>
+</div>
 
 <!-- HEADER -->
 <header role="banner" class="header">
@@ -537,6 +591,76 @@
       btn.removeAttribute('aria-busy');
       btn.textContent = '📩 שלח/י פרטים וקבל/י הצעה';
     }
+  };
+
+  // ── ACCESSIBILITY WIDGET ──
+  let _fontSize = 0; // -1=small, 0=normal, 1=big, 2=bigger
+
+  window.toggleAccPanel = function() {
+    const panel = document.getElementById('acc-panel');
+    const btn   = document.getElementById('acc-btn');
+    const open  = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+    panel.setAttribute('aria-hidden', !open);
+    if (open) panel.querySelector('button').focus();
+  };
+
+  // סגירה בלחיצה מחוץ לפאנל
+  document.addEventListener('click', function(e) {
+    const panel = document.getElementById('acc-panel');
+    const btn   = document.getElementById('acc-btn');
+    if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn) {
+      panel.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+  });
+
+  window.setFontSize = function(dir) {
+    document.body.classList.remove('acc-big','acc-bigger');
+    if (dir === 0) { _fontSize = 0; return; }
+    _fontSize = Math.max(-1, Math.min(2, _fontSize + dir));
+    if (_fontSize >= 2) document.body.classList.add('acc-bigger');
+    else if (_fontSize >= 1) document.body.classList.add('acc-big');
+  };
+
+  window.toggleContrast = function() {
+    const on = document.body.classList.toggle('acc-contrast');
+    const t  = document.getElementById('toggle-contrast');
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-pressed', on);
+  };
+
+  window.toggleLinks = function() {
+    const on = document.body.classList.toggle('acc-links');
+    const t  = document.getElementById('toggle-links');
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-pressed', on);
+  };
+
+  window.toggleMotion = function() {
+    const on = document.body.classList.toggle('acc-no-motion');
+    const t  = document.getElementById('toggle-motion');
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-pressed', on);
+    const style = document.getElementById('acc-motion-style') || (() => {
+      const s = document.createElement('style');
+      s.id = 'acc-motion-style';
+      document.head.appendChild(s);
+      return s;
+    })();
+    style.textContent = on ? '*{animation:none!important;transition:none!important}' : '';
+  };
+
+  window.resetAcc = function() {
+    _fontSize = 0;
+    document.body.classList.remove('acc-big','acc-bigger','acc-contrast','acc-links','acc-no-motion');
+    ['toggle-contrast','toggle-links','toggle-motion'].forEach(id => {
+      const t = document.getElementById(id);
+      if (t) { t.classList.remove('on'); t.setAttribute('aria-pressed','false'); }
+    });
+    const s = document.getElementById('acc-motion-style');
+    if (s) s.textContent = '';
   };
 
   // Remove error states on input
