@@ -83,6 +83,26 @@
     .thankyou h2{font-size:1.5rem;color:#0f2d5a;margin-bottom:10px;font-weight:800}
     .thankyou p{color:#64748b;font-size:.97rem;line-height:1.6;max-width:340px;margin:0 auto}
 
+    /* CONSENT */
+    .consent-wrap{margin:14px 0 6px;display:flex;align-items:flex-start;gap:10px}
+    .consent-wrap input[type="checkbox"]{width:20px;height:20px;cursor:pointer;flex-shrink:0;margin-top:2px;accent-color:#1d4ed8}
+    .consent-wrap label{font-size:.82rem;color:#475569;line-height:1.5;cursor:pointer}
+    .consent-wrap a{color:#1d4ed8;text-decoration:underline}
+    .consent-error{color:#f43f5e;font-size:.82rem;font-weight:600;display:none;margin-top:4px}
+    .privacy-note{font-size:.76rem;color:#94a3b8;text-align:center;margin-top:10px}
+    .privacy-note a{color:#1d4ed8}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.show{display:flex}
+    .modal-box{background:#fff;border-radius:16px;padding:28px 24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;position:relative}
+    .modal-box h3{font-size:1.1rem;color:#0f2d5a;margin-bottom:14px;font-weight:800}
+    .modal-box p,.modal-box li{font-size:.86rem;color:#475569;line-height:1.7;margin-bottom:8px}
+    .modal-box ul{padding-right:20px;margin-bottom:10px}
+    .modal-close{position:absolute;top:12px;left:12px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#64748b;padding:4px 8px;border-radius:6px}
+    .modal-close:hover{background:#f1f5f9}
+    .modal-close:focus{outline:2px solid #1d4ed8;outline-offset:2px}
+
     /* FOOTER */
     .footer{background:#1e293b;color:#94a3b8;text-align:center;padding:18px 20px;font-size:.8rem;line-height:1.6}
     .footer-sep{margin:0 8px;opacity:.4}
@@ -174,7 +194,7 @@
 
     <!-- FORM -->
     <div id="form-wrap">
-      <h2>🛡️ מלאו שאלון קצר וגלו את הכיסוי שמגיע לכם</h2>
+      <h2>🛡️ מלאו שאלון התאמה קצר וגלו את הכיסוי שמגיע לכם</h2>
 
       <!-- Progress bar -->
       <div class="progress-wrap" role="group" aria-label="התקדמות בשאלון">
@@ -264,7 +284,18 @@
           </div>
           <span id="pri-error" class="error-msg" role="alert" style="display:none">יש לבחור תשובה</span>
         </div>
+        <!-- הסכמה שיווקית -->
+        <div class="consent-wrap">
+          <input type="checkbox" id="consent-marketing" aria-required="true" aria-describedby="consent-error">
+          <label for="consent-marketing">
+            אני מסכים/ה לקבל מידע שיווקי ועדכונים מ<strong>הראשונים בבריאות וסיעוד</strong> בנוגע לכתב שירות פלטינום.
+            <a href="#" onclick="openPrivacy(event)">מדיניות פרטיות</a>
+          </label>
+        </div>
+        <span id="consent-error" class="consent-error" role="alert">יש לאשר את ההסכמה להמשך</span>
+
         <button class="next-btn" id="submit-btn" onclick="submitLead()" aria-label="שליחת הפרטים וקבלת הצעה">📩 שלח/י פרטים וקבל/י הצעה</button>
+        <p class="privacy-note">הפרטים שלך מאובטחים ולא יועברו לצד שלישי. <a href="#" onclick="openPrivacy(event)">מדיניות פרטיות</a></p>
       </div>
     </div>
 
@@ -278,6 +309,31 @@
 
   </div>
 </main>
+
+<!-- PRIVACY POLICY MODAL -->
+<div class="modal-overlay" id="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closePrivacy()" aria-label="סגור מדיניות פרטיות">✕</button>
+    <h3 id="privacy-title">מדיניות פרטיות</h3>
+    <p><strong>הראשונים בבריאות וסיעוד</strong> — משווקים מורשים של כתב שירות פלטינום</p>
+    <p><strong>איזה מידע אנו אוספים?</strong></p>
+    <ul>
+      <li>שם מלא ומספר טלפון</li>
+      <li>מידע כללי על מצב ביטוחי ורפואי שמסרת בשאלון</li>
+    </ul>
+    <p><strong>למה אנו אוספים את המידע?</strong></p>
+    <p>על מנת לחזור אליך עם הצעת כתב שירות מותאמת אישית ולשלוח עדכונים שיווקיים רלוונטיים.</p>
+    <p><strong>מי רואה את המידע?</strong></p>
+    <p>המידע נשמר במערכת CRM פנימית ומשמש את נציגי החברה בלבד. לא נעביר את פרטיך לצד שלישי ללא הסכמתך המפורשת.</p>
+    <p><strong>זכות למחיקה</strong></p>
+    <p>בכל עת תוכל/י לבקש הסרה מהרשימה שלנו על ידי פנייה ישירה לנציג החברה.</p>
+    <p><strong>אבטחת מידע</strong></p>
+    <p>המידע מאוחסן בענן מאובטח (Google Firebase) ומוגן בהצפנה מלאה.</p>
+    <p><strong>ביטול הסכמה</strong></p>
+    <p>ניתן לבטל את ההסכמה לקבלת חומרים שיווקיים בכל עת בפנייה ישירה אלינו.</p>
+    <p style="font-size:.78rem;color:#94a3b8;margin-top:16px">עדכון אחרון: אפריל 2026</p>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer role="contentinfo" class="footer">
@@ -398,12 +454,46 @@
     return Math.min(10, s);
   }
 
+  window.openPrivacy = function(e) {
+    e.preventDefault();
+    const modal = document.getElementById('privacy-modal');
+    modal.classList.add('show');
+    modal.querySelector('.modal-close').focus();
+  };
+
+  window.closePrivacy = function() {
+    document.getElementById('privacy-modal').classList.remove('show');
+    const cb = document.getElementById('consent-marketing');
+    if (cb) cb.focus();
+  };
+
+  // סגירת מודל בלחיצה על הרקע
+  document.getElementById('privacy-modal').addEventListener('click', function(e) {
+    if (e.target === this) closePrivacy();
+  });
+
+  // סגירת מודל ב-Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePrivacy();
+  });
+
   window.submitLead = async function() {
     const priErr = document.getElementById('pri-error');
     if (!answers.priority) {
       priErr.style.display = 'block';
       return;
     }
+
+    // בדיקת הסכמה שיווקית
+    const consentCb  = document.getElementById('consent-marketing');
+    const consentErr = document.getElementById('consent-error');
+    if (!consentCb.checked) {
+      consentErr.style.display = 'block';
+      consentCb.focus();
+      return;
+    }
+    consentErr.style.display = 'none';
+
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.setAttribute('aria-busy', 'true');
@@ -429,6 +519,8 @@
         notes,
         status: 'new',
         source: 'landing_page',
+        marketingConsent: true,
+        consentDate: new Date().toISOString(),
         createdAt: serverTimestamp()
       });
 
