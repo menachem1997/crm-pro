@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סוכן CRM — הראשונים בבריאות וסיעוד</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#0f172a;color:#e2e8f0;direction:rtl;height:100vh;display:flex;flex-direction:column}
+
+    /* TOP BAR */
+    .topbar{background:#1e293b;border-bottom:1px solid #334155;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+    .topbar-logo{background:linear-gradient(135deg,#6366f1,#8b5cf6);width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .topbar-info h1{font-size:1rem;font-weight:700;color:#f1f5f9}
+    .topbar-info p{font-size:.78rem;color:#64748b}
+    .topbar-actions{margin-right:auto;display:flex;align-items:center;gap:10px}
+    .db-status{display:flex;align-items:center;gap:6px;font-size:.8rem;color:#64748b}
+    .db-dot{width:8px;height:8px;border-radius:50%;background:#334155}
+    .db-dot.loading{background:#fbbf24;animation:blink .8s infinite}
+    .db-dot.ok{background:#22c55e}
+    .db-dot.err{background:#f43f5e}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+    .key-wrap{display:flex;align-items:center;gap:8px}
+    .key-input{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:7px 12px;color:#e2e8f0;font-size:.82rem;width:240px;direction:ltr}
+    .key-input:focus{outline:none;border-color:#6366f1}
+    .key-input::placeholder{color:#475569}
+    .key-btn{background:#6366f1;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:.82rem;cursor:pointer}
+    .key-btn:hover{background:#4f46e5}
+    .key-status{font-size:.78rem;padding:4px 9px;border-radius:6px}
+    .key-status.ok{background:#064e3b;color:#6ee7b7}
+    .key-status.err{background:#4c0519;color:#fda4af}
+
+    /* LAYOUT */
+    .layout{display:flex;flex:1;overflow:hidden}
+
+    /* SIDEBAR */
+    .sidebar{width:240px;background:#1e293b;border-left:1px solid #334155;padding:14px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:14px}
+    .sidebar h2{font-size:.82rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px}
+
+    /* Stats cards */
+    .stat-mini{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:10px 12px;margin-bottom:7px}
+    .stat-mini-label{font-size:.75rem;color:#64748b;margin-bottom:3px}
+    .stat-mini-val{font-size:1.3rem;font-weight:800;color:#e2e8f0}
+    .stat-mini-sub{font-size:.72rem;color:#64748b;margin-top:2px}
+
+    .quick-btn{display:block;width:100%;background:#0f172a;border:1px solid #334155;border-radius:9px;padding:9px 11px;color:#cbd5e1;font-size:.82rem;cursor:pointer;text-align:right;transition:all .18s;margin-bottom:5px;line-height:1.4}
+    .quick-btn:hover{border-color:#6366f1;color:#a5b4fc;background:#1e1b4b}
+
+    /* CHAT */
+    .chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+    .messages::-webkit-scrollbar{width:5px}
+    .messages::-webkit-scrollbar-track{background:#0f172a}
+    .messages::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
+
+    .msg{max-width:84%;display:flex;flex-direction:column;gap:4px}
+    .msg.user{align-self:flex-start}
+    .msg.assistant{align-self:flex-end}
+    .msg-bubble{padding:12px 16px;border-radius:14px;font-size:.92rem;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+    .msg.user .msg-bubble{background:#1e3a5f;color:#e2e8f0;border-bottom-right-radius:4px}
+    .msg.assistant .msg-bubble{background:#1e293b;color:#e2e8f0;border-bottom-left-radius:4px;border:1px solid #334155}
+    .msg-time{font-size:.72rem;color:#475569;padding:0 4px}
+
+    /* Typing */
+    .typing{display:none;align-self:flex-end}
+    .typing.show{display:flex}
+    .typing-dots{display:flex;gap:4px;padding:12px 16px;background:#1e293b;border:1px solid #334155;border-radius:14px;border-bottom-left-radius:4px}
+    .dot{width:7px;height:7px;background:#6366f1;border-radius:50%;animation:pulse 1.4s infinite}
+    .dot:nth-child(2){animation-delay:.2s}
+    .dot:nth-child(3){animation-delay:.4s}
+    @keyframes pulse{0%,80%,100%{opacity:.3;transform:scale(.9)}40%{opacity:1;transform:scale(1)}}
+
+    /* Welcome */
+    .welcome{text-align:center;padding:40px 20px;color:#475569}
+    .welcome-icon{font-size:3rem;margin-bottom:14px}
+    .welcome h2{font-size:1.25rem;color:#cbd5e1;margin-bottom:8px;font-weight:700}
+    .welcome p{font-size:.9rem;line-height:1.6;max-width:380px;margin:0 auto}
+
+    /* Input */
+    .input-area{border-top:1px solid #334155;padding:14px 20px;background:#1e293b;display:flex;gap:10px;align-items:flex-end}
+    .chat-input{flex:1;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:11px 14px;color:#e2e8f0;font-size:.93rem;resize:none;min-height:46px;max-height:160px;line-height:1.5;direction:rtl;transition:border .2s}
+    .chat-input:focus{outline:none;border-color:#6366f1}
+    .chat-input::placeholder{color:#475569}
+    .send-btn{background:#6366f1;color:#fff;border:none;border-radius:11px;width:46px;height:46px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+    .send-btn:hover{background:#4f46e5}
+    .send-btn:disabled{background:#334155;cursor:not-allowed}
+
+    /* Table in chat */
+    .chat-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:6px 0}
+    .chat-table th{background:#0f172a;color:#94a3b8;padding:6px 10px;text-align:right;font-weight:600;border-bottom:1px solid #334155}
+    .chat-table td{padding:6px 10px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+    .chat-table tr:last-child td{border-bottom:none}
+
+    @media(max-width:700px){
+      .sidebar{display:none}
+      .key-input{width:150px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">🤖</div>
+  <div class="topbar-info">
+    <h1>סוכן CRM — הראשונים בבריאות וסיעוד</h1>
+    <p>שאל שאלות על הנתונים, קבל דוחות וסיכומים</p>
+  </div>
+  <div class="topbar-actions">
+    <div class="db-status">
+      <div class="db-dot loading" id="db-dot"></div>
+      <span id="db-label">טוען נתונים...</span>
+    </div>
+    <div class="key-wrap">
+      <input type="password" class="key-input" id="api-key" placeholder="מפתח Anthropic API">
+      <button class="key-btn" onclick="setKey()">אמת</button>
+      <span class="key-status" id="key-status" style="display:none"></span>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <h2>📊 סטטיסטיקה</h2>
+      <div id="stats-wrap">
+        <div class="stat-mini"><div class="stat-mini-label">לקוחות סה"כ</div><div class="stat-mini-val" id="s-total">—</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">סגרים ✅</div><div class="stat-mini-val" id="s-closed">—</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">פתוחים ⏳</div><div class="stat-mini-val" id="s-open">—</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">בוטלו ❌</div><div class="stat-mini-val" id="s-cancelled">—</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">בעיות גבייה ⚠️</div><div class="stat-mini-val" id="s-collection">—</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">לידים חדשים 🎯</div><div class="stat-mini-val" id="s-leads">—</div></div>
+      </div>
+    </div>
+
+    <div>
+      <h2>💬 שאלות מהירות</h2>
+      <button class="quick-btn" onclick="quickAsk('כמה לקוחות סגרנו החודש? מי הנציג הטוב ביותר?')">📈 סגרים החודש</button>
+      <button class="quick-btn" onclick="quickAsk('הצג לי סיכום של כל הנציגים — כמה סגרו, כמה בוטלו, אחוז הצלחה')">👥 ביצועי נציגים</button>
+      <button class="quick-btn" onclick="quickAsk('מי הלקוחות עם בעיות גבייה? כמה יש?')">⚠️ בעיות גבייה</button>
+      <button class="quick-btn" onclick="quickAsk('כמה לידים חדשים נכנסו מדף הנחיתה?')">🎯 לידים מדף נחיתה</button>
+      <button class="quick-btn" onclick="quickAsk('מה אחוז הסגירה הכולל של המערכת?')">📊 אחוז סגירה</button>
+      <button class="quick-btn" onclick="quickAsk('אילו לקוחות נכנסו השבוע?')">🗓️ לקוחות שנכנסו השבוע</button>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-area">
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <div class="welcome-icon">📊</div>
+        <h2>סוכן ניתוח CRM</h2>
+        <p>שאל אותי כל שאלה על הנתונים — סגרים, נציגים, לידים, בעיות גבייה, דוחות ועוד.</p>
+      </div>
+    </div>
+
+    <div class="typing" id="typing">
+      <div class="typing-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <textarea class="chat-input" id="chat-input" placeholder="שאל שאלה על הנתונים..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()" title="שלח">↑</button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const FB_CFG = {
+    apiKey: "AIzaSyBqDua2LUZqhOlixdb0wCXC5K-dP_tt1j8",
+    authDomain: "crm-pro-2a719.firebaseapp.com",
+    projectId: "crm-pro-2a719",
+    storageBucket: "crm-pro-2a719.firebasestorage.app",
+    messagingSenderId: "67912740670",
+    appId: "1:67912740670:web:e162974a6a5e9714efc66f"
+  };
+
+  const app = initializeApp(FB_CFG);
+  const db  = getFirestore(app);
+
+  window._dbData = { customers: [], leads: [], loaded: false };
+
+  const STATUS_HE = {
+    closed: 'סגר ✅',
+    open: 'פתוח ⏳',
+    cancelled: 'בוטל ❌',
+    collection_issue: 'בעיית גבייה ⚠️',
+    new: 'חדש 🆕'
+  };
+
+  async function loadData() {
+    try {
+      const [custSnap, leadsSnap] = await Promise.all([
+        getDocs(collection(db, 'customers')),
+        getDocs(collection(db, 'leads')).catch(() => ({ docs: [] }))
+      ]);
+
+      const customers = custSnap.docs.map(d => {
+        const r = d.data();
+        return {
+          id: d.id,
+          name: r.name || '',
+          phone: r.phone || '',
+          status: r.status || 'open',
+          agentId: r.agentId || '',
+          agentName: r.agentName || 'לא ידוע',
+          notes: r.notes || '',
+          leadScore: r.leadScore || null,
+          createdAt: r.createdAt?.toDate?.()?.toLocaleDateString('he-IL') || 'לא ידוע'
+        };
+      });
+
+      const leads = leadsSnap.docs.map(d => {
+        const r = d.data();
+        return {
+          id: d.id,
+          name: r.name || '',
+          phone: r.phone || '',
+          age: r.age || '',
+          insurance: r.insurance || '',
+          score: r.score || 0,
+          createdAt: r.createdAt?.toDate?.()?.toLocaleDateString('he-IL') || 'לא ידוע'
+        };
+      });
+
+      window._dbData = { customers, leads, loaded: true };
+
+      // Update sidebar stats
+      const byStatus = s => customers.filter(c => c.status === s).length;
+      document.getElementById('s-total').textContent     = customers.length;
+      document.getElementById('s-closed').textContent    = byStatus('closed');
+      document.getElementById('s-open').textContent      = byStatus('open');
+      document.getElementById('s-cancelled').textContent = byStatus('cancelled');
+      document.getElementById('s-collection').textContent= byStatus('collection_issue');
+      document.getElementById('s-leads').textContent     = leads.length;
+
+      document.getElementById('db-dot').className   = 'db-dot ok';
+      document.getElementById('db-label').textContent = `${customers.length} לקוחות נטענו`;
+    } catch(e) {
+      document.getElementById('db-dot').className    = 'db-dot err';
+      document.getElementById('db-label').textContent = 'שגיאה בטעינה';
+      console.error(e);
+    }
+  }
+
+  loadData();
+
+  // Expose reload
+  window.reloadData = loadData;
+
+  function buildDataContext() {
+    const { customers, leads } = window._dbData;
+    if (!customers.length) return 'אין נתונים זמינים כרגע.';
+
+    const byStatus = s => customers.filter(c => c.status === s);
+    const closed    = byStatus('closed');
+    const open      = byStatus('open');
+    const cancelled = byStatus('cancelled');
+    const collection= byStatus('collection_issue');
+
+    // Agents summary
+    const agentMap = {};
+    customers.forEach(c => {
+      const a = c.agentName || 'לא ידוע';
+      if (!agentMap[a]) agentMap[a] = { closed:0, open:0, cancelled:0, collection:0, total:0 };
+      agentMap[a].total++;
+      if (c.status === 'closed')            agentMap[a].closed++;
+      else if (c.status === 'open')         agentMap[a].open++;
+      else if (c.status === 'cancelled')    agentMap[a].cancelled++;
+      else if (c.status === 'collection_issue') agentMap[a].collection++;
+    });
+
+    const agentLines = Object.entries(agentMap)
+      .sort((a,b) => b[1].closed - a[1].closed)
+      .map(([name, d]) => `  ${name}: סגר=${d.closed}, פתוח=${d.open}, בוטל=${d.cancelled}, גבייה=${d.collection}, סה"כ=${d.total}`)
+      .join('\n');
+
+    // Recent customers (last 10)
+    const recent = [...customers].slice(-10).reverse()
+      .map(c => `  ${c.name} | ${STATUS_HE[c.status] || c.status} | נציג: ${c.agentName} | ${c.createdAt}`)
+      .join('\n');
+
+    // Leads
+    const leadLines = leads.slice(-5).map(l =>
+      `  ${l.name} | ניקוד: ${l.score}/10 | גיל: ${l.age} | ביטוח: ${l.insurance} | ${l.createdAt}`
+    ).join('\n');
+
+    return `=== נתוני CRM — הראשונים בבריאות וסיעוד ===
+תאריך: ${new Date().toLocaleDateString('he-IL')}
+
+סטטיסטיקה כללית:
+  סה"כ לקוחות: ${customers.length}
+  סגרים: ${closed.length} (${Math.round(closed.length/customers.length*100)}%)
+  פתוחים: ${open.length}
+  בוטלו: ${cancelled.length}
+  בעיות גבייה: ${collection.length}
+  לידים מדף נחיתה: ${leads.length}
+
+ביצועי נציגים:
+${agentLines || '  אין נתוני נציגים'}
+
+לקוחות אחרונים (10 האחרונים):
+${recent || '  אין לקוחות'}
+
+לידים אחרונים מדף נחיתה:
+${leadLines || '  אין לידים'}
+
+לקוחות עם בעיות גבייה:
+${collection.map(c => `  ${c.name} | נציג: ${c.agentName}`).join('\n') || '  אין בעיות גבייה'}
+`;
+  }
+
+  window._buildDataContext = buildDataContext;
+}
+</script>
+
+<script>
+let apiKey = '';
+let messages = [];
+let streaming = false;
+
+const SYSTEM_BASE = `אתה סוכן ניתוח נתוני CRM של "הראשונים בבריאות וסיעוד" — חברה שמשווקת כתב שירות פלטינום.
+תפקידך: לענות על שאלות לגבי הנתונים, לייצר דוחות, ולעזור בקבלת החלטות עסקיות.
+
+כללים:
+• ענה תמיד בעברית
+• היה ספציפי ומדויק — ציין מספרים ואחוזים
+• אם מבקשים טבלה — כתוב אותה בפורמט מסודר עם | מפריד
+• אם אין מספיק נתונים — אמור זאת בפירוש
+• אל תמציא נתונים — בסס את תשובותיך על הנתונים שניתנו בלבד
+• אם שואלים על נציג ספציפי — חפש בנתונים לפי שם`;
+
+function setKey() {
+  const k = document.getElementById('api-key').value.trim();
+  if (!k.startsWith('sk-ant-')) {
+    showKeyStatus('מפתח לא תקין', false);
+    return;
+  }
+  apiKey = k;
+  showKeyStatus('✓ מפתח הוגדר', true);
+}
+
+function showKeyStatus(msg, ok) {
+  const el = document.getElementById('key-status');
+  el.style.display = 'inline';
+  el.className = 'key-status ' + (ok ? 'ok' : 'err');
+  el.textContent = msg;
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+function quickAsk(text) {
+  document.getElementById('chat-input').value = text;
+  sendMsg();
+}
+
+function nowStr() {
+  return new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+}
+
+function appendMsg(role, content) {
+  const wrap = document.getElementById('messages');
+  const welcome = wrap.querySelector('.welcome');
+  if (welcome) welcome.remove();
+
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="msg-bubble"></div><span class="msg-time">${nowStr()}</span>`;
+  wrap.appendChild(div);
+  const bubble = div.querySelector('.msg-bubble');
+  bubble.innerHTML = role === 'user' ? escHtml(content) : content;
+  wrap.scrollTop = wrap.scrollHeight;
+  return bubble;
+}
+
+function setTyping(show) {
+  document.getElementById('typing').className = 'typing' + (show ? ' show' : '');
+  document.getElementById('messages').scrollTop = 999999;
+}
+
+async function sendMsg() {
+  if (streaming) return;
+  if (!apiKey) { alert('יש להכניס מפתח API תחילה'); return; }
+  const inp  = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+
+  inp.value = '';
+  inp.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  streaming = true;
+
+  appendMsg('user', text);
+
+  // Build system with current data
+  const dataCtx  = window._buildDataContext ? window._buildDataContext() : 'הנתונים עדיין נטענים...';
+  const systemPrompt = SYSTEM_BASE + '\n\n' + dataCtx;
+
+  messages.push({ role: 'user', content: text });
+  setTyping(true);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-6',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages: messages,
+        stream: true
+      })
+    });
+
+    setTyping(false);
+
+    if (!res.ok) {
+      const err = await res.json();
+      appendMsg('assistant', `⚠️ שגיאה: ${err.error?.message || 'בעיה בשרת'}`);
+      streaming = false;
+      document.getElementById('send-btn').disabled = false;
+      return;
+    }
+
+    const bubble = appendMsg('assistant', '');
+    let fullText = '';
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = dec.decode(value);
+      for (const line of chunk.split('\n')) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') continue;
+          try {
+            const j = JSON.parse(data);
+            if (j.type === 'content_block_delta' && j.delta?.text) {
+              fullText += j.delta.text;
+              bubble.innerHTML = formatResponse(escHtml(fullText));
+              document.getElementById('messages').scrollTop = 999999;
+            }
+          } catch {}
+        }
+      }
+    }
+
+    messages.push({ role: 'assistant', content: fullText });
+  } catch(e) {
+    setTyping(false);
+    appendMsg('assistant', `⚠️ שגיאת רשת: ${e.message}`);
+  }
+
+  streaming = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function escHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatResponse(text) {
+  // Bold
+  text = text.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  // Headers
+  text = text.replace(/^###\s(.+)$/gm, '<strong style="color:#a78bfa;font-size:1rem">$1</strong>');
+  text = text.replace(/^##\s(.+)$/gm,  '<strong style="color:#818cf8;font-size:1.05rem">$1</strong>');
+  // Highlight numbers/percentages
+  text = text.replace(/(\d+\.?\d*%)/g, '<span style="color:#34d399;font-weight:700">$1</span>');
+  // Status colors
+  text = text.replace(/סגר ✅/g, '<span style="color:#22c55e">סגר ✅</span>');
+  text = text.replace(/בעיית גבייה ⚠️/g, '<span style="color:#fbbf24">בעיית גבייה ⚠️</span>');
+  text = text.replace(/בוטל ❌/g, '<span style="color:#f43f5e">בוטל ❌</span>');
+  // Newlines
+  text = text.replace(/\n/g, '<br>');
+  return text;
+}
+</script>
+</body>
+</html>

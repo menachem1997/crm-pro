@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>כתב שירות פלטינום — בדקו כמה אתם זכאים</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1e293b;direction:rtl}
+
+    /* HEADER */
+    .header{background:#fff;padding:18px 20px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+    .header img{height:52px;max-width:180px;object-fit:contain}
+
+    /* HERO */
+    .hero{background:linear-gradient(135deg,#0f2d5a 0%,#1d4ed8 60%,#0ea5e9 100%);color:#fff;padding:48px 20px 40px;text-align:center}
+    .hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:5px 14px;font-size:.8rem;font-weight:600;margin-bottom:16px;letter-spacing:.4px}
+    .hero h1{font-size:2rem;font-weight:800;line-height:1.35;margin-bottom:14px;text-shadow:0 2px 8px rgba(0,0,0,.18)}
+    .hero p{font-size:1.05rem;opacity:.9;max-width:480px;margin:0 auto 22px;line-height:1.6}
+    .hero-arrow{font-size:1.8rem;animation:bounce 1.4s infinite}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+    /* PAIN SECTION */
+    .pain-section{background:#fff;padding:36px 20px}
+    .pain-section h2{text-align:center;font-size:1.3rem;color:#0f2d5a;margin-bottom:22px;font-weight:800}
+    .pain-list{max-width:520px;margin:0 auto}
+    .pain-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid #f1f5f9}
+    .pain-item:last-child{border-bottom:none}
+    .pain-icon{font-size:1.5rem;flex-shrink:0;margin-top:2px}
+    .pain-text strong{display:block;font-size:.97rem;color:#1e293b;margin-bottom:3px}
+    .pain-text span{font-size:.86rem;color:#64748b}
+
+    /* BENEFITS BAR */
+    .benefits{background:#0f2d5a;color:#fff;padding:18px 20px;text-align:center}
+    .benefits-inner{max-width:600px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 24px}
+    .ben-item{font-size:.87rem;opacity:.9}
+    .ben-item::before{content:'✓ ';color:#38bdf8;font-weight:700}
+
+    /* FORM SECTION */
+    .form-section{padding:30px 16px 40px;background:#f0f4f8}
+    .form-card{background:#fff;border-radius:18px;padding:28px 24px;max-width:520px;margin:0 auto;box-shadow:0 6px 28px rgba(0,0,0,.1)}
+    .form-card h2{text-align:center;font-size:1.2rem;color:#0f2d5a;margin-bottom:18px;font-weight:800}
+
+    /* Progress */
+    .progress-wrap{margin-bottom:22px}
+    .progress-bar{height:7px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#1d4ed8,#0ea5e9);border-radius:4px;transition:width .4s ease}
+    .progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:#94a3b8;margin-top:5px}
+
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:.88rem;font-weight:700;color:#334155;margin-bottom:7px}
+    .form-group input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.97rem;background:#fafbfc;transition:border .2s,box-shadow .2s;direction:rtl}
+    .form-group input:focus{outline:none;border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.1);background:#fff}
+
+    .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .opts-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .opt-btn{padding:11px 8px;border:2px solid #e2e8f0;border-radius:10px;background:#fafbfc;cursor:pointer;font-size:.87rem;text-align:center;transition:all .18s;line-height:1.3;color:#334155}
+    .opt-btn:hover{border-color:#93c5fd;background:#eff6ff}
+    .opt-btn.selected{border-color:#1d4ed8;background:#eff6ff;color:#1d4ed8;font-weight:700;box-shadow:0 0 0 1px #1d4ed8}
+
+    .next-btn{width:100%;padding:14px;background:linear-gradient(90deg,#1d4ed8,#0ea5e9);color:#fff;border:none;border-radius:11px;font-size:1.02rem;font-weight:700;cursor:pointer;margin-top:6px;transition:opacity .2s;letter-spacing:.3px}
+    .next-btn:hover{opacity:.9}
+    .next-btn:disabled{opacity:.5;cursor:not-allowed}
+
+    .step{display:none}
+    .step.active{display:block}
+
+    /* Thank you */
+    .thankyou{display:none;text-align:center;padding:20px 0}
+    .thankyou.show{display:block}
+    .ty-icon{font-size:4.5rem;margin-bottom:14px}
+    .ty-score{display:inline-block;background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;padding:10px 24px;border-radius:20px;font-size:1.1rem;font-weight:800;margin:12px 0 18px}
+    .thankyou h2{font-size:1.5rem;color:#0f2d5a;margin-bottom:10px;font-weight:800}
+    .thankyou p{color:#64748b;font-size:.97rem;line-height:1.6;max-width:340px;margin:0 auto}
+
+    /* Error */
+    .field-error{border-color:#f43f5e !important;box-shadow:0 0 0 3px rgba(244,63,94,.1) !important}
+    .error-msg{color:#f43f5e;font-size:.8rem;margin-top:4px}
+
+    /* FOOTER */
+    .footer{background:#1e293b;color:#94a3b8;text-align:center;padding:18px 20px;font-size:.8rem;line-height:1.6}
+    .footer-sep{margin:0 8px;opacity:.4}
+
+    @media(max-width:420px){
+      .hero h1{font-size:1.6rem}
+      .opts-grid{grid-template-columns:1fr}
+      .opts-grid.cols-3{grid-template-columns:1fr 1fr}
+      .form-card{padding:22px 16px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <img src="https://platinum.org.il/wp-content/uploads/2022/07/logo.png" alt="פלטינום כתב שירות"
+       onerror="this.outerHTML='<div style=\'font-size:1.3rem;font-weight:800;color:#0f2d5a\'>פלטינום כתב שירות</div>'">
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">⚡ שאלון חינמי — 2 דקות בלבד</div>
+  <h1>האם הביטוח שלך<br>באמת מגן עליך?</h1>
+  <p>בדקו עכשיו אם אתם זכאים לכיסוי מלא — רופא בבית, החזר MRI עד ₪3,000, שיניים ועוד</p>
+  <div class="hero-arrow">↓</div>
+</div>
+
+<!-- BENEFITS BAR -->
+<div class="benefits">
+  <div class="benefits-inner">
+    <span class="ben-item">רופא ביקור בית</span>
+    <span class="ben-item">החזר MRI עד ₪3,000</span>
+    <span class="ben-item">תור מהיר למומחה</span>
+    <span class="ben-item">כיסוי שיניים</span>
+    <span class="ben-item">שירות 24/7</span>
+  </div>
+</div>
+
+<!-- PAIN SECTION -->
+<div class="pain-section">
+  <h2>💡 מה מטריד אנשים כמוך?</h2>
+  <div class="pain-list">
+    <div class="pain-item">
+      <span class="pain-icon">⏳</span>
+      <div class="pain-text">
+        <strong>תור לרופא מומחה — 3 עד 6 חודשים</strong>
+        <span>בזמן שאתה מחכה, הבעיה לא מחכה לך</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <span class="pain-icon">💸</span>
+      <div class="pain-text">
+        <strong>MRI פרטי עולה ₪1,500–₪3,000</strong>
+        <span>מי מחזיר לך את הכסף הזה?</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <span class="pain-icon">🏠</span>
+      <div class="pain-text">
+        <strong>חולה ולא יכול לצאת מהבית</strong>
+        <span>אין מי שיבוא אליך — אתה צריך לגרור את עצמך לקופה</span>
+      </div>
+    </div>
+    <div class="pain-item">
+      <span class="pain-icon">🦷</span>
+      <div class="pain-text">
+        <strong>טיפולי שיניים: ₪4,000–₪8,000 בשנה</strong>
+        <span>הוצאה שאף ביטוח בסיסי לא מכסה</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM SECTION -->
+<div class="form-section">
+  <div class="form-card">
+
+    <!-- FORM -->
+    <div id="form-wrap">
+      <h2>🛡️ מלאו שאלון קצר וגלו את הכיסוי שמגיע לכם</h2>
+
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:20%"></div></div>
+        <div class="progress-label">
+          <span id="prog-text">שלב 1 מתוך 5</span>
+          <span id="prog-pct">20%</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Contact -->
+      <div class="step active" id="step-1">
+        <div class="form-group">
+          <label>שמך המלא <span style="color:#f43f5e">*</span></label>
+          <input type="text" id="f-name" placeholder="ישראל ישראלי" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label>מספר טלפון <span style="color:#f43f5e">*</span></label>
+          <input type="tel" id="f-phone" placeholder="050-0000000" autocomplete="tel">
+        </div>
+        <button class="next-btn" onclick="goStep(1)">המשך ←</button>
+      </div>
+
+      <!-- Step 2: Age -->
+      <div class="step" id="step-2">
+        <div class="form-group">
+          <label>מה גילך?</label>
+          <div class="opts-grid">
+            <button class="opt-btn" onclick="pick(this,'age','18-30')">18 – 30</button>
+            <button class="opt-btn" onclick="pick(this,'age','31-45')">31 – 45</button>
+            <button class="opt-btn" onclick="pick(this,'age','46-60')">46 – 60</button>
+            <button class="opt-btn" onclick="pick(this,'age','60+')">60+</button>
+          </div>
+        </div>
+        <button class="next-btn" onclick="goStep(2)">המשך ←</button>
+      </div>
+
+      <!-- Step 3: Insurance -->
+      <div class="step" id="step-3">
+        <div class="form-group">
+          <label>האם יש לך כרגע כתב שירות / ביטוח בריאות פרטי?</label>
+          <div class="opts-grid">
+            <button class="opt-btn" onclick="pick(this,'insurance','yes')">✅ כן, מקיף</button>
+            <button class="opt-btn" onclick="pick(this,'insurance','partial')">⚠️ חלקי</button>
+            <button class="opt-btn" onclick="pick(this,'insurance','no')">❌ אין לי</button>
+            <button class="opt-btn" onclick="pick(this,'insurance','unsure')">🤔 לא בטוח</button>
+          </div>
+        </div>
+        <button class="next-btn" onclick="goStep(3)">המשך ←</button>
+      </div>
+
+      <!-- Step 4: Medical -->
+      <div class="step" id="step-4">
+        <div class="form-group">
+          <label>בשנה האחרונה, נדרשת לאחד מאלה?</label>
+          <div class="opts-grid">
+            <button class="opt-btn" onclick="pick(this,'medical','specialist')">👨‍⚕️ רופא מומחה</button>
+            <button class="opt-btn" onclick="pick(this,'medical','mri')">🔬 MRI / CT</button>
+            <button class="opt-btn" onclick="pick(this,'medical','dental')">🦷 טיפול שיניים</button>
+            <button class="opt-btn" onclick="pick(this,'medical','none')">לא נדרשתי</button>
+          </div>
+        </div>
+        <button class="next-btn" onclick="goStep(4)">המשך ←</button>
+      </div>
+
+      <!-- Step 5: Priority -->
+      <div class="step" id="step-5">
+        <div class="form-group">
+          <label>מה הכי חשוב לך בביטוח הבריאות?</label>
+          <div class="opts-grid">
+            <button class="opt-btn" onclick="pick(this,'priority','speed')">⚡ מהירות שירות</button>
+            <button class="opt-btn" onclick="pick(this,'priority','cost')">💰 חיסכון בעלויות</button>
+            <button class="opt-btn" onclick="pick(this,'priority','home')">🏠 שירות בבית</button>
+            <button class="opt-btn" onclick="pick(this,'priority','full')">🛡️ כיסוי מלא</button>
+          </div>
+        </div>
+        <button class="next-btn" id="submit-btn" onclick="submitLead()">📩 שלח/י פרטים וקבל/י הצעה</button>
+      </div>
+    </div>
+
+    <!-- THANK YOU -->
+    <div class="thankyou" id="thankyou">
+      <div class="ty-icon">🎉</div>
+      <h2>תודה! הפרטים התקבלו</h2>
+      <div class="ty-score" id="ty-score">ניקוד ההתאמה שלך: 8/10</div>
+      <p>נציג מקצועי יחזור אליך בהקדם עם הצעה מותאמת אישית לכיסוי הטוב ביותר עבורך.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  משווקים מורשים של כתב שירות פלטינום
+  <span class="footer-sep">|</span>
+  כל הזכויות שמורות &copy; 2025
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const FB_CFG = {
+    apiKey: "AIzaSyBqDua2LUZqhOlixdb0wCXC5K-dP_tt1j8",
+    authDomain: "crm-pro-2a719.firebaseapp.com",
+    projectId: "crm-pro-2a719",
+    storageBucket: "crm-pro-2a719.firebasestorage.app",
+    messagingSenderId: "67912740670",
+    appId: "1:67912740670:web:e162974a6a5e9714efc66f"
+  };
+
+  const app = initializeApp(FB_CFG);
+  const db  = getFirestore(app);
+
+  const STEP_FIELDS = [null, null, 'age', 'insurance', 'medical', 'priority'];
+  const answers = {};
+  let curStep = 1;
+
+  function setProgress(step) {
+    const pct = Math.round((step / 5) * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = `שלב ${step} מתוך 5`;
+    document.getElementById('prog-pct').textContent = pct + '%';
+  }
+
+  window.pick = function(el, field, val) {
+    el.closest('.opts-grid').querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[field] = val;
+  };
+
+  window.goStep = function(from) {
+    if (from === 1) {
+      const name  = document.getElementById('f-name').value.trim();
+      const phone = document.getElementById('f-phone').value.trim();
+      let ok = true;
+      if (!name)  { document.getElementById('f-name').classList.add('field-error');  ok = false; }
+      if (!phone) { document.getElementById('f-phone').classList.add('field-error'); ok = false; }
+      if (!ok) return;
+      answers.name  = name;
+      answers.phone = phone;
+    } else {
+      const field = STEP_FIELDS[from];
+      if (!answers[field]) {
+        const grid = document.querySelector(`#step-${from} .opts-grid`);
+        if (grid) { grid.style.animation = 'none'; grid.style.border = '2px solid #f43f5e'; grid.style.borderRadius = '10px'; setTimeout(() => grid.style.border = '', 1200); }
+        return;
+      }
+    }
+    document.getElementById(`step-${from}`).classList.remove('active');
+    curStep = from + 1;
+    document.getElementById(`step-${curStep}`).classList.add('active');
+    setProgress(curStep);
+    window.scrollTo({top: document.querySelector('.form-section').offsetTop - 20, behavior:'smooth'});
+  };
+
+  function calcScore() {
+    let s = 4;
+    if (answers.age === '46-60') s += 2;
+    else if (answers.age === '60+') s += 3;
+    else if (answers.age === '31-45') s += 1;
+    if (answers.insurance === 'no') s += 2;
+    else if (answers.insurance === 'partial' || answers.insurance === 'unsure') s += 1;
+    if (answers.medical === 'mri') s += 2;
+    else if (answers.medical === 'specialist' || answers.medical === 'dental') s += 1;
+    if (answers.priority === 'full' || answers.priority === 'cost') s += 1;
+    return Math.min(10, s);
+  }
+
+  window.submitLead = async function() {
+    const field = STEP_FIELDS[5];
+    if (!answers[field]) return;
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+
+    const score = calcScore();
+
+    const ageLabels    = {'18-30':'18-30','31-45':'31-45','46-60':'46-60','60+':'60+'};
+    const insLabels    = {yes:'כן מקיף', partial:'חלקי', no:'אין', unsure:'לא בטוח'};
+    const medLabels    = {specialist:'רופא מומחה', mri:'MRI/CT', dental:'שיניים', none:'לא נדרש'};
+    const priLabels    = {speed:'מהירות', cost:'חיסכון', home:'שירות בבית', full:'כיסוי מלא'};
+
+    const notes = `ליד מדף נחיתה | גיל: ${ageLabels[answers.age]} | ביטוח: ${insLabels[answers.insurance]} | רפואי: ${medLabels[answers.medical]} | עדיפות: ${priLabels[answers.priority]} | ניקוד: ${score}/10`;
+
+    try {
+      await addDoc(collection(db, 'leads'), {
+        name: answers.name, phone: answers.phone,
+        age: answers.age, insurance: answers.insurance,
+        medical: answers.medical, priority: answers.priority,
+        score, source: 'landing_page', status: 'new',
+        createdAt: serverTimestamp()
+      });
+
+      await addDoc(collection(db, 'customers'), {
+        name: answers.name, phone: answers.phone,
+        status: 'open', agentId: 'landing', agentName: 'דף נחיתה',
+        notes, leadScore: score, createdAt: serverTimestamp()
+      });
+
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('ty-score').textContent = `ניקוד ההתאמה שלך: ${score}/10`;
+      document.getElementById('thankyou').classList.add('show');
+      window.scrollTo({top: 0, behavior:'smooth'});
+    } catch(e) {
+      console.error(e);
+      alert('שגיאה בשמירה, נסה שוב');
+      btn.disabled = false;
+      btn.textContent = '📩 שלח/י פרטים וקבל/י הצעה';
+    }
+  };
+
+  // remove error highlight on input
+  document.getElementById('f-name').addEventListener('input',  function(){ this.classList.remove('field-error'); });
+  document.getElementById('f-phone').addEventListener('input', function(){ this.classList.remove('field-error'); });
+</script>
+
+</body>
+</html>

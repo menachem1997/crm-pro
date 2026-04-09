@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סוכן מודעות פלטינום</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#0f172a;color:#e2e8f0;direction:rtl;height:100vh;display:flex;flex-direction:column}
+
+    /* TOP BAR */
+    .topbar{background:#1e293b;border-bottom:1px solid #334155;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+    .topbar img{height:36px;object-fit:contain}
+    .topbar-info h1{font-size:1rem;font-weight:700;color:#f1f5f9}
+    .topbar-info p{font-size:.78rem;color:#64748b}
+    .key-wrap{margin-right:auto;display:flex;align-items:center;gap:8px}
+    .key-input{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:7px 12px;color:#e2e8f0;font-size:.82rem;width:260px;direction:ltr}
+    .key-input:focus{outline:none;border-color:#6366f1}
+    .key-input::placeholder{color:#475569}
+    .key-btn{background:#6366f1;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:.82rem;cursor:pointer;white-space:nowrap}
+    .key-btn:hover{background:#4f46e5}
+    .key-status{font-size:.78rem;padding:5px 10px;border-radius:6px}
+    .key-status.ok{background:#064e3b;color:#6ee7b7}
+    .key-status.err{background:#4c0519;color:#fda4af}
+
+    /* LAYOUT */
+    .layout{display:flex;flex:1;overflow:hidden}
+
+    /* SIDEBAR */
+    .sidebar{width:260px;background:#1e293b;border-left:1px solid #334155;padding:16px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:14px}
+    .sidebar h2{font-size:.88rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px}
+
+    .quick-btn{display:block;width:100%;background:#0f172a;border:1px solid #334155;border-radius:9px;padding:10px 12px;color:#cbd5e1;font-size:.83rem;cursor:pointer;text-align:right;transition:all .18s;margin-bottom:6px;line-height:1.4}
+    .quick-btn:hover{border-color:#6366f1;color:#a5b4fc;background:#1e1b4b}
+
+    .angles-legend{background:#0f172a;border-radius:10px;padding:12px}
+    .angle-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;font-size:.82rem}
+    .angle-item:last-child{margin-bottom:0}
+    .angle-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+    .angle-dot.pain{background:#f43f5e}
+    .angle-dot.identity{background:#8b5cf6}
+    .angle-dot.certainty{background:#22c55e}
+    .angle-label{font-weight:600;color:#e2e8f0}
+    .angle-desc{color:#64748b;font-size:.78rem;margin-top:2px}
+
+    /* CHAT */
+    .chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+    .messages::-webkit-scrollbar{width:5px}
+    .messages::-webkit-scrollbar-track{background:#0f172a}
+    .messages::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
+
+    /* Message bubbles */
+    .msg{max-width:82%;display:flex;flex-direction:column;gap:4px}
+    .msg.user{align-self:flex-start}
+    .msg.assistant{align-self:flex-end}
+    .msg-bubble{padding:12px 16px;border-radius:14px;font-size:.92rem;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+    .msg.user .msg-bubble{background:#1e3a5f;color:#e2e8f0;border-bottom-right-radius:4px}
+    .msg.assistant .msg-bubble{background:#1e293b;color:#e2e8f0;border-bottom-left-radius:4px;border:1px solid #334155}
+    .msg-time{font-size:.72rem;color:#475569;padding:0 4px}
+    .msg.user .msg-time{text-align:right}
+
+    /* Ad card styling */
+    .ad-card{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:14px;margin:8px 0}
+    .ad-card-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+    .ad-badge{padding:3px 10px;border-radius:12px;font-size:.75rem;font-weight:700}
+    .ad-badge.pain{background:#4c0519;color:#fda4af}
+    .ad-badge.identity{background:#2e1065;color:#c4b5fd}
+    .ad-badge.certainty{background:#052e16;color:#86efac}
+    .ad-section{margin-bottom:8px}
+    .ad-section-label{font-size:.72rem;font-weight:700;color:#94a3b8;margin-bottom:3px;text-transform:uppercase}
+    .ad-section-text{font-size:.88rem;color:#e2e8f0;line-height:1.5}
+    .copy-btn{background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:4px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;margin-top:6px;transition:all .15s}
+    .copy-btn:hover{border-color:#6366f1;color:#a5b4fc}
+
+    /* Input */
+    .input-area{border-top:1px solid #334155;padding:14px 20px;background:#1e293b;display:flex;gap:10px;align-items:flex-end}
+    .chat-input{flex:1;background:#0f172a;border:1px solid #334155;border-radius:12px;padding:11px 14px;color:#e2e8f0;font-size:.93rem;resize:none;min-height:46px;max-height:160px;line-height:1.5;direction:rtl;transition:border .2s}
+    .chat-input:focus{outline:none;border-color:#6366f1}
+    .chat-input::placeholder{color:#475569}
+    .send-btn{background:#6366f1;color:#fff;border:none;border-radius:11px;width:46px;height:46px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+    .send-btn:hover{background:#4f46e5}
+    .send-btn:disabled{background:#334155;cursor:not-allowed}
+
+    /* Typing indicator */
+    .typing{display:none;align-self:flex-end}
+    .typing.show{display:flex}
+    .typing-dots{display:flex;gap:4px;padding:12px 16px;background:#1e293b;border:1px solid #334155;border-radius:14px;border-bottom-left-radius:4px}
+    .dot{width:7px;height:7px;background:#6366f1;border-radius:50%;animation:pulse 1.4s infinite}
+    .dot:nth-child(2){animation-delay:.2s}
+    .dot:nth-child(3){animation-delay:.4s}
+    @keyframes pulse{0%,80%,100%{opacity:.3;transform:scale(.9)}40%{opacity:1;transform:scale(1)}}
+
+    /* Welcome */
+    .welcome{text-align:center;padding:40px 20px;color:#475569}
+    .welcome-icon{font-size:3rem;margin-bottom:14px}
+    .welcome h2{font-size:1.3rem;color:#cbd5e1;margin-bottom:8px;font-weight:700}
+    .welcome p{font-size:.9rem;line-height:1.6;max-width:400px;margin:0 auto}
+
+    @media(max-width:700px){
+      .sidebar{display:none}
+      .key-input{width:160px}
+      .topbar-info p{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <img src="https://platinum.org.il/wp-content/uploads/2022/07/logo.png" alt="פלטינום"
+       onerror="this.style.display='none'">
+  <div class="topbar-info">
+    <h1>סוכן מודעות פייסבוק</h1>
+    <p>יוצר מודעות לידים לכתב שירות פלטינום</p>
+  </div>
+  <div class="key-wrap">
+    <input type="password" class="key-input" id="api-key" placeholder="הכנס מפתח Anthropic API (sk-ant-...)">
+    <button class="key-btn" onclick="setKey()">אמת</button>
+    <span class="key-status" id="key-status" style="display:none"></span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <h2>שאלות מהירות</h2>
+      <button class="quick-btn" onclick="quickAsk('צור 3 מודעות לגברים ונשים בגילאי 45-65 עם ביטוח חלקי שחוו בעיות רפואיות בשנה האחרונה')">🎯 קהל: 45-65, ביטוח חלקי</button>
+      <button class="quick-btn" onclick="quickAsk('צור מודעות לאנשים שמשלמים הרבה על רפואה פרטית ומחפשים חלופה')">💸 משלמים הרבה על רפואה</button>
+      <button class="quick-btn" onclick="quickAsk('צור מודעות להורים שרוצים לדאוג לבריאות המשפחה')">👨‍👩‍👧 הורים ובריאות משפחה</button>
+      <button class="quick-btn" onclick="quickAsk('צור מודעות לגמלאים שמחפשים כיסוי רפואי מקיף ורופא בבית')">👴 גמלאים וכיסוי מלא</button>
+      <button class="quick-btn" onclick="quickAsk('צור מודעות לאנשים שחיכו חודשים לרופא מומחה')">⏳ ממתינים לתורים</button>
+    </div>
+
+    <div>
+      <h2>שלוש הזוויות</h2>
+      <div class="angles-legend">
+        <div class="angle-item">
+          <div class="angle-dot pain"></div>
+          <div>
+            <div class="angle-label">🔴 כאב</div>
+            <div class="angle-desc">מגביר את הכאב הנוכחי — מה קורה אם לא תפעל?</div>
+          </div>
+        </div>
+        <div class="angle-item">
+          <div class="angle-dot identity"></div>
+          <div>
+            <div class="angle-label">🟣 זהות</div>
+            <div class="angle-desc">מי הם אחרי — אדם שמוגן, דואג למשפחה</div>
+          </div>
+        </div>
+        <div class="angle-item">
+          <div class="angle-dot certainty"></div>
+          <div>
+            <div class="angle-label">🟢 ודאות</div>
+            <div class="angle-desc">מסיר ספקות — ערבות, הוכחה, שקט נפשי</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-area">
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <div class="welcome-icon">✍️</div>
+        <h2>סוכן מודעות פלטינום</h2>
+        <p>תאר לי את קהל היעד שלך ואני אייצר 3 מודעות פייסבוק בזוויות כאב / זהות / ודאות לפי מתודולוגיית רון מנשרוב.</p>
+      </div>
+    </div>
+
+    <div class="typing" id="typing">
+      <div class="typing-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <textarea class="chat-input" id="chat-input" placeholder="תאר את קהל היעד — גיל, כאב, מצב רפואי, או כל בקשה אחרת..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()" title="שלח">↑</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SYSTEM_PROMPT = `אתה סוכן מומחה ליצירת מודעות פייסבוק לכתב שירות פלטינום, המוצר של חברת פלטינום לביטוח בריאות.
+אתה עובד לפי מתודולוגיית רון מנשרוב — מוכרים שינוי זהות וודאות, לא מוצר.
+
+פרטי המוצר — כתב שירות פלטינום:
+• רופא ביקור בית — רופא מגיע אליך עד 2 שעות
+• החזר על MRI עד ₪3,000
+• תורים מהירים לרופאי מומחה
+• כיסוי שיניים
+• שירות 24/7 כל ימות השנה
+• ייעוץ רפואי טלפוני ללא הגבלה
+
+3 הזוויות שאתה יוצר לכל בקשה:
+1. 🔴 כאב (Pain) — מגביר את הכאב הנוכחי. מה קורה אם לא מטפלים? מה העלות של אי-הפעולה? מוביל לתחושת דחיפות.
+2. 🟣 זהות (Identity) — לא מוכרים מוצר, מוכרים מי הם אחרי. "האדם שדואג למשפחה", "אדם שאין לו צורך לחכות", "ההורה שמוגן".
+3. 🟢 ודאות (Certainty) — מסיר ספקות. ערבות, עדויות, עובדות. "עכשיו אתה יודע שיש מי שיבוא".
+
+פורמט לכל מודעה:
+[הוק] — משפט ראשון שעוצר את הגלילה
+[גוף] — 2-3 משפטים שמגבירים / מסבירים
+[CTA] — קריאה לפעולה ספציפית
+
+כלל חשוב: תמיד כתוב בעברית. היה ספציפי, ישיר, לא גנרי. השתמש בכאב אמיתי שהקהל מרגיש.`;
+
+let apiKey = '';
+let messages = [];
+let streaming = false;
+
+function setKey() {
+  const k = document.getElementById('api-key').value.trim();
+  if (!k.startsWith('sk-ant-')) {
+    showKeyStatus('מפתח לא תקין — חייב להתחיל ב sk-ant-', false);
+    return;
+  }
+  apiKey = k;
+  showKeyStatus('✓ מפתח הוגדר', true);
+}
+
+function showKeyStatus(msg, ok) {
+  const el = document.getElementById('key-status');
+  el.style.display = 'inline';
+  el.className = 'key-status ' + (ok ? 'ok' : 'err');
+  el.textContent = msg;
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+function quickAsk(text) {
+  document.getElementById('chat-input').value = text;
+  sendMsg();
+}
+
+function nowStr() {
+  return new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+}
+
+function appendMsg(role, content) {
+  const wrap = document.getElementById('messages');
+  // Remove welcome screen on first message
+  const welcome = wrap.querySelector('.welcome');
+  if (welcome) welcome.remove();
+
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="msg-bubble" id="mb-${Date.now()}">${content}</div><span class="msg-time">${nowStr()}</span>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+  return div.querySelector('.msg-bubble');
+}
+
+function setTyping(show) {
+  document.getElementById('typing').className = 'typing' + (show ? ' show' : '');
+  const wrap = document.getElementById('messages');
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+async function sendMsg() {
+  if (streaming) return;
+  if (!apiKey) { alert('יש להכניס מפתח API תחילה'); return; }
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+
+  inp.value = '';
+  inp.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  streaming = true;
+
+  appendMsg('user', escHtml(text));
+  messages.push({ role: 'user', content: text });
+
+  setTyping(true);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-6',
+        max_tokens: 2048,
+        system: SYSTEM_PROMPT,
+        messages: messages,
+        stream: true
+      })
+    });
+
+    setTyping(false);
+
+    if (!res.ok) {
+      const err = await res.json();
+      appendMsg('assistant', `⚠️ שגיאה: ${err.error?.message || 'בעיה בשרת'}`);
+      streaming = false;
+      document.getElementById('send-btn').disabled = false;
+      return;
+    }
+
+    const bubble = appendMsg('assistant', '');
+    let fullText = '';
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = dec.decode(value);
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') continue;
+          try {
+            const j = JSON.parse(data);
+            if (j.type === 'content_block_delta' && j.delta?.text) {
+              fullText += j.delta.text;
+              bubble.innerHTML = formatAds(escHtml(fullText));
+              document.getElementById('messages').scrollTop = 999999;
+            }
+          } catch {}
+        }
+      }
+    }
+
+    messages.push({ role: 'assistant', content: fullText });
+  } catch(e) {
+    setTyping(false);
+    appendMsg('assistant', `⚠️ שגיאת רשת: ${e.message}`);
+  }
+
+  streaming = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function escHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatAds(text) {
+  // Highlight ad angle headers
+  text = text.replace(/🔴\s*כאב[^\n]*/g, m => `<strong style="color:#f43f5e;font-size:1rem">${m}</strong>`);
+  text = text.replace(/🟣\s*זהות[^\n]*/g, m => `<strong style="color:#a78bfa;font-size:1rem">${m}</strong>`);
+  text = text.replace(/🟢\s*ודאות[^\n]*/g, m => `<strong style="color:#4ade80;font-size:1rem">${m}</strong>`);
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\[הוק\]/g, '<span style="color:#fbbf24;font-weight:700">[הוק]</span>');
+  text = text.replace(/\[גוף\]/g, '<span style="color:#60a5fa;font-weight:700">[גוף]</span>');
+  text = text.replace(/\[CTA\]/g, '<span style="color:#34d399;font-weight:700">[CTA]</span>');
+  text = text.replace(/\n/g, '<br>');
+  return text;
+}
+</script>
+</body>
+</html>
