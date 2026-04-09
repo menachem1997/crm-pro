@@ -228,10 +228,16 @@
 
   async function loadData() {
     try {
-      const [custSnap, leadsSnap] = await Promise.all([
-        getDocs(collection(db, 'customers')).catch(() => ({ docs: [] })),
-        getDocs(collection(db, 'landing_leads')).catch(() => ({ docs: [] }))
-      ]);
+      console.log('טוען נתונים מ-Firebase...');
+      let custSnap, leadsSnap;
+      try {
+        custSnap = await getDocs(collection(db, 'customers'));
+        console.log('customers:', custSnap.docs.length);
+      } catch(e) { console.warn('customers error:', e.message); custSnap = { docs: [] }; }
+      try {
+        leadsSnap = await getDocs(collection(db, 'landing_leads'));
+        console.log('landing_leads:', leadsSnap.docs.length);
+      } catch(e) { console.warn('landing_leads error:', e.message); leadsSnap = { docs: [] }; }
 
       const customers = custSnap.docs.map(d => {
         const r = d.data();
@@ -267,6 +273,7 @@
       // Update sidebar stats
       const byStatus = s => customers.filter(c => c.status === s).length;
       // הצגת לידים חדשים
+      console.log('סה"כ לידים:', leads.length, leads);
       const newLeads = leads.filter(l => l.status === 'new');
       document.getElementById('leads-badge').textContent = newLeads.length;
       const leadsListEl = document.getElementById('leads-list');
