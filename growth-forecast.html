@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>תחזית צמיחה — פלטינום שירות</title>
+<title>תוכנית שיווק — פלטינום כתב השירות | יצירת לידים חמים 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -64,6 +64,48 @@ tbody td{padding:11px 16px;font-size:.88rem;border-bottom:1px solid #e8ecf4}
 .footer{text-align:center;padding:24px;color:#9ca3af;font-size:.8rem}
 .footer strong{color:#d4af37}
 
+/* Channels Grid */
+.channels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:4px}
+.channel-card{border-radius:14px;padding:22px 18px;border:2px solid #e8ecf4}
+.channel-card.primary{border-color:#1a2744;background:#f4f6fb}
+.channel-card.secondary{border-color:#d4af37;background:#fffbeb}
+.channel-card.organic{border-color:#d1fae5;background:#f0fdf4}
+.channel-card h3{font-size:.95rem;font-weight:800;color:#1a2744;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #e8ecf4}
+.channel-card h3 span{font-size:.75rem;font-weight:600;background:#1a2744;color:#d4af37;padding:2px 8px;border-radius:10px;margin-right:6px}
+.channel-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:.82rem;border-bottom:1px dashed #e8ecf4}
+.channel-row:last-child{border-bottom:none}
+.channel-row .ch-key{color:#6b7a99;font-weight:600}
+.channel-row .ch-val{color:#1a2744;font-weight:800}
+
+/* Timeline */
+.timeline{display:flex;align-items:stretch;gap:0;margin-top:8px;overflow-x:auto;padding-bottom:8px}
+.tl-step{flex:1;min-width:110px;background:#f4f6fb;border-radius:12px;padding:16px 12px;text-align:center;position:relative;border:2px solid #e8ecf4}
+.tl-step.active{background:#1a2744;border-color:#1a2744;color:#fff}
+.tl-step.active .tl-title{color:#d4af37}
+.tl-step.active .tl-sub{color:rgba(255,255,255,.75)}
+.tl-arrow{display:flex;align-items:center;padding:0 4px;color:#d4af37;font-size:1.4rem;font-weight:900;flex-shrink:0}
+.tl-title{font-size:.82rem;font-weight:800;color:#1a2744;margin-bottom:4px}
+.tl-sub{font-size:.72rem;color:#6b7a99;font-weight:600}
+.tl-time{font-size:.68rem;color:#d4af37;font-weight:800;margin-top:6px;background:rgba(212,175,55,.15);border-radius:8px;padding:2px 6px;display:inline-block}
+
+/* Keys List */
+.keys-list{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.keys-list li{background:#f4f6fb;border-radius:12px;padding:14px 16px;padding-right:44px;position:relative;font-size:.86rem;font-weight:600;color:#1a2744;border-right:3px solid #d4af37}
+.keys-list li::before{content:attr(data-icon);position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.1rem}
+
+/* Quarterly Table highlight */
+tbody tr.total-row{background:#1a2744;color:#fff;font-weight:800}
+tbody tr.total-row td{color:#fff}
+tbody tr.total-row td strong{color:#d4af37}
+
+@media(max-width:640px){
+  .summary{grid-template-columns:1fr 1fr}
+  .channels-grid{grid-template-columns:1fr}
+  .keys-list{grid-template-columns:1fr}
+  .timeline{flex-direction:column}
+  .tl-arrow{transform:rotate(90deg);justify-content:center}
+}
+
 @media print{
   body{background:#fff}
   .page{padding:20px}
@@ -78,20 +120,21 @@ tbody td{padding:11px 16px;font-size:.88rem;border-bottom:1px solid #e8ecf4}
 
   <!-- Header -->
   <div class="header">
-    <h1>תחזית צמיחה <span>פלטינום שירות</span></h1>
-    <p>ניתוח תחזיתי — קמפיין פייסבוק | תקציב ₪1,000/חודש | 12 חודשים</p>
+    <h1>תוכנית שיווק <span>2026</span></h1>
+    <p>פלטינום כתב השירות — יצירת לידים חמים</p>
+    <p style="margin-top:8px;opacity:.75">אסטרטגיה שיווקית מלאה לשנת 2026 | פייסבוק | דיגיטל | תקציב ₪1,000/חודש</p>
     <div class="date">הופק: אפריל 2026 | platinum-service.co.il</div>
   </div>
 
-  <!-- Summary -->
+  <!-- Summary Cards -->
   <div class="summary">
     <div class="sum-card">
       <div class="num">442</div>
-      <div class="label">סה"כ לידים בשנה</div>
+      <div class="label">לידים שנתיים</div>
     </div>
     <div class="sum-card">
       <div class="num">~110</div>
-      <div class="label">עסקאות צפויות (25%)</div>
+      <div class="label">עסקאות צפויות</div>
     </div>
     <div class="sum-card">
       <div class="num">₪31</div>
@@ -99,7 +142,86 @@ tbody td{padding:11px 16px;font-size:.88rem;border-bottom:1px solid #e8ecf4}
     </div>
     <div class="sum-card">
       <div class="num">+220%</div>
-      <div class="label">צמיחה בלידים (חודש 12)</div>
+      <div class="label">צמיחה בשנה</div>
+    </div>
+  </div>
+
+  <!-- Quarterly Goals -->
+  <div class="section">
+    <h2>יעדים שנתיים</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>רבעון</th>
+          <th>יעד לידים</th>
+          <th>יעד עסקאות</th>
+          <th>תקציב</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>רבעון 1 (ינואר–מרץ)</td>
+          <td>60</td>
+          <td>15</td>
+          <td>₪3,000</td>
+        </tr>
+        <tr>
+          <td>רבעון 2 (אפריל–יוני)</td>
+          <td>107</td>
+          <td>27</td>
+          <td>₪3,000</td>
+        </tr>
+        <tr>
+          <td>רבעון 3 (יולי–ספטמבר)</td>
+          <td>134</td>
+          <td>33</td>
+          <td>₪3,000</td>
+        </tr>
+        <tr>
+          <td>רבעון 4 (אוקטובר–דצמבר)</td>
+          <td>141</td>
+          <td>35</td>
+          <td>₪3,000</td>
+        </tr>
+        <tr class="total-row">
+          <td>סה"כ</td>
+          <td><strong>442</strong></td>
+          <td><strong>110</strong></td>
+          <td><strong>₪12,000</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Marketing Channels -->
+  <div class="section">
+    <h2>ערוצי שיווק</h2>
+    <div class="channels-grid">
+
+      <div class="channel-card primary">
+        <h3>פייסבוק <span>עיקרי</span></h3>
+        <div class="channel-row"><span class="ch-key">קהל יעד</span><span class="ch-val">55–75, בריאות</span></div>
+        <div class="channel-row"><span class="ch-key">תקציב</span><span class="ch-val">₪900/חודש</span></div>
+        <div class="channel-row"><span class="ch-key">סוג</span><span class="ch-val">וידאו + תמונה</span></div>
+        <div class="channel-row"><span class="ch-key">מטרה</span><span class="ch-val">לידים לדף הנחיתה</span></div>
+      </div>
+
+      <div class="channel-card secondary">
+        <h3>רטארגטינג <span>משני</span></h3>
+        <div class="channel-row"><span class="ch-key">קהל</span><span class="ch-val">עוזבי האתר</span></div>
+        <div class="channel-row"><span class="ch-key">תקציב</span><span class="ch-val">₪100/חודש</span></div>
+        <div class="channel-row"><span class="ch-key">יתרון</span><span class="ch-val">40% פחות עלות</span></div>
+        <div class="channel-row"><span class="ch-key">מטרה</span><span class="ch-val">החזרת עוזבים</span></div>
+      </div>
+
+      <div class="channel-card organic">
+        <h3>אורגני <span>חינם</span></h3>
+        <div class="channel-row"><span class="ch-key">כלי</span><span class="ch-val">Search Console</span></div>
+        <div class="channel-row"><span class="ch-key">טקטיקה</span><span class="ch-val">SEO בסיסי</span></div>
+        <div class="channel-row"><span class="ch-key">פולו-אפ</span><span class="ch-val">WhatsApp</span></div>
+        <div class="channel-row"><span class="ch-key">מטרה</span><span class="ch-val">חיזוק מותג</span></div>
+      </div>
+
     </div>
   </div>
 
@@ -122,7 +244,7 @@ tbody td{padding:11px 16px;font-size:.88rem;border-bottom:1px solid #e8ecf4}
     </div>
   </div>
 
-  <!-- Table -->
+  <!-- Monthly Table -->
   <div class="section">
     <h2>טבלה מפורטת — חודש אחר חודש</h2>
     <table>
@@ -156,6 +278,60 @@ tbody td{padding:11px 16px;font-size:.88rem;border-bottom:1px solid #e8ecf4}
     </table>
   </div>
 
+  <!-- Lead Process Timeline -->
+  <div class="section">
+    <h2>תהליך העבודה עם ליד</h2>
+    <div class="timeline">
+
+      <div class="tl-step active">
+        <div class="tl-title">ליד נכנס</div>
+        <div class="tl-sub">דף נחיתה</div>
+        <div class="tl-time">0 דקות</div>
+      </div>
+
+      <div class="tl-arrow">&#x25BA;</div>
+
+      <div class="tl-step active">
+        <div class="tl-title">התראה מיידית</div>
+        <div class="tl-sub">CRM + Push</div>
+        <div class="tl-time">0 דקות</div>
+      </div>
+
+      <div class="tl-arrow">&#x25BA;</div>
+
+      <div class="tl-step active">
+        <div class="tl-title">שיחה ראשונה</div>
+        <div class="tl-sub">תסריט מוכן</div>
+        <div class="tl-time">עד 5 דקות</div>
+      </div>
+
+      <div class="tl-arrow">&#x25BA;</div>
+
+      <div class="tl-step">
+        <div class="tl-title">ניתוח CRM</div>
+        <div class="tl-sub">ניקוד + היסטוריה</div>
+        <div class="tl-time">שיחה 1</div>
+      </div>
+
+      <div class="tl-arrow">&#x25BA;</div>
+
+      <div class="tl-step">
+        <div class="tl-title">מעקב שוטף</div>
+        <div class="tl-sub">פולו-אפ מתוזמן</div>
+        <div class="tl-time">יום 2–7</div>
+      </div>
+
+      <div class="tl-arrow">&#x25BA;</div>
+
+      <div class="tl-step" style="border-color:#d4af37;background:#fffbeb">
+        <div class="tl-title" style="color:#d4af37">סגירה</div>
+        <div class="tl-sub" style="color:#92400e">לקוח חדש</div>
+        <div class="tl-time" style="background:rgba(212,175,55,.3)">אחוז 25%</div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ROI -->
   <div class="section">
     <h2>תשואה על ההשקעה (ROI)</h2>
@@ -175,23 +351,21 @@ tbody td{padding:11px 16px;font-size:.88rem;border-bottom:1px solid #e8ecf4}
     </div>
   </div>
 
-  <!-- Notes -->
+  <!-- Success Keys -->
   <div class="section">
-    <h2>הנחות ומפתחות הצלחה</h2>
-    <div class="notes">
-      <h3>מה משפיע על התוצאות:</h3>
-      <ul>
-        <li>ירידת עלות הליד מבוססת על לימוד הפיקסל (Meta Pixel — מוטמע באתר)</li>
-        <li>אחוז סגירה 25% — ריאלי לשוק כתבי שירות עם תסריט שיחה מקצועי</li>
-        <li>מענה ללידים תוך 5 דקות — מכפיל אחוז הסגירה פי 4</li>
-        <li>אל תכפיל תקציב בבת אחת — הגדל 20-30% בשבוע למניעת איפוס הפיקסל</li>
-        <li>מחודש 6 כדאי להגדיל תקציב ל-₪2,000-3,000 להאצת הצמיחה</li>
-      </ul>
-    </div>
+    <h2>מפתחות הצלחה</h2>
+    <ul class="keys-list">
+      <li data-icon="⚡">מענה ללידים תוך 5 דקות — מכפיל סגירה פי 4</li>
+      <li data-icon="📡">פיקסל פייסבוק מוטמע — מוריד עלות ליד ב-40% תוך 3 חודשים</li>
+      <li data-icon="📋">דף נחיתה עם שאלון 5 שלבים — מסנן לידים חמים בניקוד 1–10</li>
+      <li data-icon="🎙️">תסריט שיחה מותאם לגיל 60+ — מבוסס על כאב אמיתי</li>
+      <li data-icon="💼">מערכת CRM עם היסטוריה — אף ליד לא הולך לאיבוד</li>
+      <li data-icon="🔄">רטארגטינג אוטומטי — מחזיר 15% מהעוזבים</li>
+    </ul>
   </div>
 
   <div class="footer">
-    הופק ע"י <strong>פלטינום שירות</strong> | platinum-service.co.il | אפריל 2026
+    הופק ע"י <strong>פלטינום שירות</strong> | platinum-service.co.il | 2026
   </div>
 
 </div>
