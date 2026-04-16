@@ -57,6 +57,9 @@ body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color
 .disc-btn{padding:7px 13px;border:1.5px solid #c4b5fd;border-radius:20px;background:#f5f3ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#5b21b6;font-family:'Heebo',sans-serif;transition:all .15s}
 .disc-btn:hover{background:#ede9fe;border-color:#7c3aed}
 .disc-btn.active{background:#7c3aed;border-color:#6d28d9;color:#fff}
+.pain-q-btn{padding:7px 13px;border:1.5px solid #fda4af;border-radius:20px;background:#fff1f2;cursor:pointer;font-size:.8rem;font-weight:600;color:#be123c;font-family:'Heebo',sans-serif;transition:all .15s}
+.pain-q-btn:hover{background:#ffe4e6;border-color:#f43f5e}
+.pain-q-btn.active{background:#e11d48;border-color:#be123c;color:#fff}
 
 /* CALCULATOR */
 .calc-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
@@ -243,6 +246,23 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
       <button class="stage-btn" onclick="setStage(this,'שאלות רפואיות')">🏥 שאלות רפואיות</button>
       <button class="stage-btn" onclick="setStage(this,'סגירה')">✅ סגירה</button>
       <button class="stage-btn" onclick="setStage(this,'התנגדויות')">🛡️ התנגדויות</button>
+    </div>
+  </div>
+
+  <!-- IDENTITY & VISION QUESTIONS -->
+  <div class="card hide-focus" style="border-color:#fda4af">
+    <div class="card-label" style="color:#be123c">🔥 שאלות זהות וכאב — יוציאו אותו מאיזון ויניעו לפעולה</div>
+    <div class="btn-grid">
+      <button class="pain-q-btn" onclick="setObj(this,'המשפחה שלך רואה בך האדם החזק, הדומיננטי בבית — מה יקרה אם הם יראו אותך ככה, תלוי בכולם?')">👑 האדם החזק בבית</button>
+      <button class="pain-q-btn" onclick="setObj(this,'איך אתה רואה את החיים שלך ללא כאב? חופשי, מטייל עם הנכדים, נהנה מכל רגע?')">🌅 חיים ללא כאב</button>
+      <button class="pain-q-btn" onclick="setObj(this,'מה הדבר הכי חשוב שאתה רוצה להמשיך לעשות עם הנכדים שלך? מה יקרה אם יום אחד לא תוכל?')">👶 הנכדים</button>
+      <button class="pain-q-btn" onclick="setObj(this,'מתי בפעם האחרונה הרגשת באמת בריא ואנרגטי — שקמת בבוקר ואמרת "אני מרגיש מעולה"?')">⚡ מתי הרגשת שלם?</button>
+      <button class="pain-q-btn" onclick="setObj(this,'אם המצב יחמיר — מה הדבר הראשון שתפסיק לעשות? מה הכי כואב לך לאבד?')">💔 מה תאבד ראשון?</button>
+      <button class="pain-q-btn" onclick="setObj(this,'מה הכי לא רוצה שהילדים שלך יצטרכו לעשות בשבילך? מה ירגיש כמו נטל שמפיל עליהם?')">😔 לא להיות נטל</button>
+      <button class="pain-q-btn" onclick="setObj(this,'כשאתה מדמיין את עצמך בעוד 5 שנים — מה אתה רואה? איך אתה רוצה שזה ייראה?')">🔮 בעוד 5 שנים</button>
+      <button class="pain-q-btn" onclick="setObj(this,'מה יגידו עליך הילדים שלך אם ידעו שסירבת לדאוג לעצמך?')">🗣️ מה יגידו עליך?</button>
+      <button class="pain-q-btn" onclick="setObj(this,'אתה האדם שכולם מסתמכים עליו — אם אתה נופל, מה קורה לכולם סביבך?')">🏛️ כולם מסתמכים עליך</button>
+      <button class="pain-q-btn" onclick="setObj(this,'מה יותר כואב — לשלם 248 שקל בחודש, או לחכות 4 חודשים לתור כשכואב לך?')">⚖️ מה יותר כואב?</button>
     </div>
   </div>
 
@@ -626,6 +646,34 @@ const BASE_SYSTEM = `אתה סוכן מכירות מנוסה של פלטינום
 "הרבה אנשים אומרים 'יהיה בסדר' וממשיכים הלאה. למה בשבילך זה חשוב לטפל בזה עכשיו?"
 "האחריות של מי זה לוודא שהמשפחה שלך מוגנת — של המדינה, או שלך?"
 (אף אחד לא רוצה להודות שהוא האדם שמרים ידיים ומשאיר את המשפחה חשופה)
+
+===שאלות זהות וחזון — להוציא מאיזון ולהניע לפעולה===
+אלו לא שאלות מידע. אלו שאלות שגורמות ללקוח לראות בעיניו מה הוא מסתכן לאבד.
+המוח האנושי מגיב חזק יותר לאיבוד ממה שיש לו מאשר לרווח חדש.
+
+עקרון 1 — זהות: "האדם החזק בבית"
+הלקוח הגיל שלישי רואה את עצמו כמבוגר הדומיננטי, האחראי, החזק. מה שכי מפחיד אותו — להיות תלוי.
+"המשפחה שלך רואה בך האדם החזק — מה יקרה אם יום אחד הם יראו אותך ככה?"
+(לא לפרט. לתת לו לדמיין בעצמו.)
+
+עקרון 2 — חזון חיובי: "ללא כאב, עם הנכדים"
+לפני שאתה מגיב לכאב — בנה את החלום. "איך אתה רואה את עצמך חופשי, מטייל עם הנכדים?"
+ואז: "כדי שזה יקרה — מה אתה עושה היום כדי לשמור על זה?"
+(הפער בין החלום למציאות יוצר את המוטיבציה)
+
+עקרון 3 — מה תאבד ראשון:
+"מה הדבר הראשון שתפסיק לעשות אם המצב יחמיר? מה הכי כואב לך לאבד?"
+(הלקוח מגדיר בעצמו את הכאב. הגדרה שלו = עוצמה פי עשר ממה שאתה אומר)
+
+עקרון 4 — לא להיות נטל על הילדים:
+"מה הכי לא רוצה שהילדים שלך יצטרכו לעשות בשבילך?"
+(כמעט כל הורה — הפחד מלהיות נטל גדול מהפחד ממוות)
+
+עקרון 5 — שאלת המחיר האמיתי:
+"מה יותר כואב — 248 שקל בחודש, או לחכות 4 חודשים לתור כשכואב לך?"
+(מסגור מחדש של המחיר. 248 ש"ח = 8 שקל ביום = כוס קפה)
+
+כלל: לשאול שאלת זהות/חזון אחת — ולחכות. השתיקה עובדת בשבילך.
 
 ===תחמושת מהפה שלו — שימוש בדברי הלקוח נגד ההתנגדויות===
 זו הטכניקה הכי חזקה: הלקוח לא יכול להתווכח עם עצמו.
