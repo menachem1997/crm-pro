@@ -192,6 +192,24 @@ body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color
 /* SECTION LABEL */
 .sec-label{font-size:.73rem;font-weight:800;color:#6b7a99;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 7px;display:block}
 
+/* NEW CALL BUTTON */
+.new-call-btn{background:linear-gradient(135deg,#065f46,#059669);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:'Heebo',sans-serif;transition:all .2s;letter-spacing:.2px}
+.new-call-btn:hover{background:#047857;box-shadow:0 2px 10px rgba(5,150,105,.4)}
+
+/* PRICE LADDER */
+.price-ladder{display:flex;align-items:center;gap:0;margin-top:12px;border-radius:12px;overflow:hidden;border:1.5px solid var(--border)}
+.price-step{flex:1;padding:10px 6px;text-align:center;cursor:pointer;border:none;font-family:'Heebo',sans-serif;font-size:.78rem;font-weight:700;transition:all .2s;background:#f8f9fd;color:#6b7a99;border-left:1px solid var(--border)}
+.price-step:first-child{border-left:none}
+.price-step .ps-price{font-size:1rem;font-weight:900;display:block;margin-bottom:2px}
+.price-step .ps-label{font-size:.65rem;opacity:.7}
+.price-step.active{background:var(--gold);color:var(--navy)}
+.price-step.crossed{background:#f1f5f9;color:#cbd5e1;text-decoration:line-through}
+.price-step:hover:not(.crossed){background:#fffbeb}
+
+/* WA TEMPLATES */
+.wa-tpl-btn{padding:8px 14px;border:1.5px solid #86efac;border-radius:20px;background:#ecfdf5;cursor:pointer;font-size:.8rem;font-weight:600;color:#065f46;font-family:'Heebo',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px}
+.wa-tpl-btn:hover{background:#25d366;border-color:#25d366;color:#fff}
+
 @media(max-width:560px){
   .profile-grid{grid-template-columns:1fr}
   .resp-card{padding:60px 14px 14px}
@@ -212,6 +230,7 @@ body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color
   </div>
   <div class="hdr-actions">
     <div class="timer-display" id="timer">00:00</div>
+    <button class="new-call-btn" onclick="newCall()">📞 שיחה חדשה</button>
     <button class="focus-btn" onclick="toggleFocus()" id="focus-btn">🎯 מצב שיחה</button>
     <span style="font-size:.78rem;color:rgba(255,255,255,.55)"><span class="status-dot"></span>פעיל</span>
   </div>
@@ -258,6 +277,9 @@ body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color
         <div class="pf pf-full"><label>🧠 מה הלקוח אמר — ישמש תחמושת נגד ההתנגדויות שלו</label>
           <textarea id="p-revealed" rows="2" placeholder='גר לבד, הילדים בחו"ל, ביטוח מנורה 400 ש"ח שלא השתמש בו, כאבי גב...'></textarea>
         </div>
+        <div class="pf pf-full"><label>📝 הערות מהירות — תוך כדי שיחה</label>
+          <textarea id="p-callnotes" rows="2" placeholder="כתוב הערות חשובות כאן — יישמרו אוטומטית..."></textarea>
+        </div>
       </div>
     </div>
   </div>
@@ -283,6 +305,14 @@ body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color
         <button class="call-btn call-btn-hot" id="open-btn" onclick="generateOpening()">🔥 צור פתיחה מותאמת אישית</button>
         <button class="call-btn call-btn-cold" id="pain-btn" onclick="generatePainScript()">🧊 תסריט ליד קר — נגיעה עמוקה בכאב (שיטת מאור)</button>
         <button class="call-btn call-btn-married" onclick="setObj(document.createElement('span'),'הכל בסדר אצלי, אני פשוט מחפש לשפר — אני לא חייב שינוי')">💍 הנשוי באושר — "הכל בסדר אצלי"</button>
+        <button class="call-btn" style="background:linear-gradient(135deg,#1e3a5f,#1e40af);color:#fff" onclick="generateKatavScript()">📋 יש לי כבר כתב שירות — השוואה והחלפה</button>
+      </div>
+      <span class="sec-label" style="margin-top:16px">💰 סולם מחיר — סמן את הסטטוס הנוכחי</span>
+      <div class="price-ladder">
+        <button class="price-step crossed" id="ps-350" onclick="setPriceStep(0)"><span class="ps-price">₪350</span><span class="ps-label">מחיר מקור</span></button>
+        <button class="price-step active" id="ps-248" onclick="setPriceStep(1)"><span class="ps-price">₪248</span><span class="ps-label">מבצע קבוע</span></button>
+        <button class="price-step" id="ps-220" onclick="setPriceStep(2)"><span class="ps-price">₪220</span><span class="ps-label">אישור מנהל</span></button>
+        <button class="price-step" id="ps-198" onclick="setPriceStep(3)"><span class="ps-price">₪198</span><span class="ps-label">מקרה קיצוני</span></button>
       </div>
     </div>
   </div>
@@ -466,10 +496,29 @@ body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color
     </div>
   </div>
 
-  <!-- PHASE 9: CALCULATOR -->
+  <!-- PHASE 9: WA TEMPLATES -->
+  <div class="phase p-green hide-focus" id="ph-wa">
+    <div class="phase-hdr" onclick="togglePhase('ph-wa')">
+      <div class="phase-num">9</div>
+      <div><div class="phase-title">📲 תבניות WhatsApp מהירות</div><div class="phase-desc">שלח בלחיצה אחת — אחרי כל תרחיש</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <div class="btn-grid" style="margin-top:12px">
+        <button class="wa-tpl-btn" onclick="sendWATemplate('noAnswer')">📵 לא ענה</button>
+        <button class="wa-tpl-btn" onclick="sendWATemplate('thinking')">🤔 אמר "אחשוב"</button>
+        <button class="wa-tpl-btn" onclick="sendWATemplate('afterClose')">✅ אחרי סגירה</button>
+        <button class="wa-tpl-btn" onclick="sendWATemplate('spouse')">👫 צריך להתייעץ</button>
+        <button class="wa-tpl-btn" onclick="sendWATemplate('expensive')">💸 אמר "יקר לי"</button>
+        <button class="wa-tpl-btn" onclick="sendWATemplate('nextDay')">🌅 פולו-אפ מחר</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 10: CALCULATOR -->
   <div class="phase p-gold hide-focus" id="ph-calc">
     <div class="phase-hdr" onclick="togglePhase('ph-calc')">
-      <div class="phase-num">9</div>
+      <div class="phase-num">10</div>
       <div><div class="phase-title">🧮 מחשבון החזר</div><div class="phase-desc">כמה פלטינום מחזיר בפועל?</div></div>
       <span class="phase-chevron">▼</span>
     </div>
@@ -535,6 +584,9 @@ if (apiKey) {
   w.style.background = '#f0fdf4'; w.style.borderColor = '#22c55e';
 }
 
+// Restore previous session on load
+window.addEventListener('DOMContentLoaded', () => restoreSession());
+
 function saveKey() {
   const k = document.getElementById('api-key').value.trim();
   if (!k) return;
@@ -548,6 +600,7 @@ function saveKey() {
 function setStage(el, s) {
   document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active'); currentStage = s;
+  saveSession();
 }
 
 function setObj(el, text) {
@@ -1422,6 +1475,173 @@ function clearHistory() {
   document.getElementById('history-log').innerHTML = '';
   document.getElementById('history-wrap').style.display = 'none';
 }
+
+// ════════════════════════════════════
+// NEW CALL — reset everything
+// ════════════════════════════════════
+function newCall() {
+  if (!confirm('להתחיל שיחה חדשה? כל הנתונים הנוכחיים יימחקו.')) return;
+  // Clear profile fields
+  ['p-name','p-phone','p-age','p-notes','p-revealed','p-callnotes','customer-said'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('p-fund').value = '';
+  document.getElementById('p-insurance').value = '';
+  // Reset history
+  conversationHistory = [];
+  document.getElementById('history-log').innerHTML = '';
+  document.getElementById('history-wrap').style.display = 'none';
+  // Reset timer
+  resetTimer();
+  // Reset price ladder
+  setPriceStep(1);
+  // Reset stage buttons
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.stage-btn').classList.add('active');
+  currentStage = 'פתיחה — ליד חם';
+  // Reset output
+  document.getElementById('output').innerHTML = `<div class="empty"><div class="empty-icon">🎯</div><p>מלא פרופיל ← בחר שלב ← לחץ על שאלה ← קבל 3 תשובות</p></div>`;
+  // Clear localStorage session
+  localStorage.removeItem('sales_session');
+  // Open profile phase
+  document.getElementById('ph-profile').classList.add('open');
+  document.getElementById('p-name').focus();
+}
+
+// ════════════════════════════════════
+// PRICE LADDER
+// ════════════════════════════════════
+const PRICE_STEPS = [
+  { id: 'ps-350', price: 350 },
+  { id: 'ps-248', price: 248 },
+  { id: 'ps-220', price: 220 },
+  { id: 'ps-198', price: 198 },
+];
+let currentPriceStep = 1;
+
+function setPriceStep(idx) {
+  currentPriceStep = idx;
+  PRICE_STEPS.forEach((s, i) => {
+    const el = document.getElementById(s.id);
+    el.classList.remove('active','crossed');
+    if (i < idx) el.classList.add('crossed');
+    else if (i === idx) el.classList.add('active');
+  });
+  saveSession();
+}
+
+// ════════════════════════════════════
+// SESSION SAVE / RESTORE (localStorage)
+// ════════════════════════════════════
+const SESSION_FIELDS = ['p-name','p-phone','p-age','p-fund','p-insurance','p-notes','p-revealed','p-callnotes'];
+
+function saveSession() {
+  const data = {};
+  SESSION_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  data.priceStep = currentPriceStep;
+  data.stage = currentStage;
+  localStorage.setItem('sales_session', JSON.stringify(data));
+}
+
+function restoreSession() {
+  const raw = localStorage.getItem('sales_session');
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    SESSION_FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data[id]) el.value = data[id];
+    });
+    if (data.priceStep !== undefined) setPriceStep(data.priceStep);
+    if (data.stage) currentStage = data.stage;
+  } catch(e) {}
+}
+
+// Auto-save on input
+SESSION_FIELDS.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', saveSession);
+});
+
+// ════════════════════════════════════
+// WA TEMPLATES
+// ════════════════════════════════════
+function sendWATemplate(type) {
+  const name = document.getElementById('p-name').value.trim() || 'שלום';
+  const phone = document.getElementById('p-phone').value.trim();
+
+  const templates = {
+    noAnswer: `${name} שלום, כאן מאור מפלטינום כתב שירות.\nניסיתי להגיע אליך — אשמח לדבר איתך כמה דקות בנוח.\nמתי נוח לך שאחזור?`,
+    thinking: `${name} שלום, מאור מפלטינום.\nהבנתי שאתה עדיין שוקל — זה טבעי לגמרי.\nרק רציתי להזכיר: הכיסוי מתחיל מהיום הראשון בלי שום הצהרת בריאות.\nיש לך שאלה שאני יכול לענות עליה?`,
+    afterClose: `${name} שלום!\nשמח שהצטרפת לפלטינום כתב שירות 🎉\nאם יש שאלות — אני כאן.\nשירות לקוחות: *3779`,
+    spouse: `${name} שלום, מאור מפלטינום.\nרציתי לשלוח לך את הפרטים כדי שתוכל לשתף עם בן/בת הזוג.\nכתב השירות: ₪248/חודש · ללא הצהרת בריאות · ביטול בכל עת.\nאשמח לענות לכם יחד על כל שאלה 😊`,
+    expensive: `${name} שלום, מאור מפלטינום.\nחשבתי עליך אחרי השיחה.\nמדברים על פחות מ-10 שקלים ביום — פחות מכוס קפה.\nהמון אנשים שחשבו "יקר לי" — מגלים שהם מחזירים הרבה יותר מפיזיותרפיה, מומחים ובדיקות.\nאשמח לחזור לשיחה קצרה — מתי נוח?`,
+    nextDay: `${name} בוקר טוב! מאור מפלטינום.\nחזרתי אליך כמו שאמרתי 🙂\nיש לך 5 דקות לשיחה קצרה?`,
+  };
+
+  const text = templates[type];
+  if (!text) return;
+
+  const rawPhone = phone.replace(/[^0-9]/g,'');
+  const waPhone = rawPhone.startsWith('0') ? '972' + rawPhone.slice(1) : rawPhone;
+  window.open(waPhone
+    ? `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`
+    : `https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+// ════════════════════════════════════
+// KATAV SCRIPT — יש לי כבר כתב שירות
+// ════════════════════════════════════
+async function generateKatavScript() {
+  if (!apiKey) { alert('הכנס API Key קודם'); return; }
+  startTimer();
+  showStreamCard('בונה תסריט השוואת כתבי שירות...');
+
+  const profile = getProfile();
+  const name = document.getElementById('p-name').value.trim() || '[שם]';
+
+  const userPrompt = `צור תסריט מלא לסיטואציה שבה ${name} אומר "כבר יש לי כתב שירות ממקום אחר".
+${profile}
+
+מבנה התסריט:
+1. הכרה ("מצוין שאתה מוגן!") — אל תתקפל
+2. שאלות השוואה: "מאיזו חברה? מה הכיסוי שיש לך? כמה משלם? האם כולל ליווי סיעודי? רפואה משלימה?"
+3. מציאת הפרצה — מה שיש לפלטינום ואין להם:
+   - ליווי סיעודי (ביטוח לאומי, עובד זר, ועדה רפואית) — שרות ייחודי לפלטינום
+   - רפואה משלימה (20 טיפולים, 21 סוגים, גם בבית)
+   - לחצן מצוקה 24/7
+   - אפשר להגיש לשניהם — פלטינום כהשלמה
+4. מסגור: "אתה לא מחליף — אתה מוסיף שכבת הגנה שאין לך"
+5. סגירה: "בשביל 248 ש"ח בחודש — מה מונע ממך להוסיף את השכבה הזאת?"
+
+כתוב מילה במילה. עברית שוטפת ויומיומית.`;
+
+  try {
+    const fullText = await streamAI(BASE_SYSTEM + profile, userPrompt,
+      text => { document.getElementById('stream-text').textContent = text; });
+    renderSpecial('📋 תסריט — יש לי כבר כתב שירות', fullText);
+  } catch(e) { showError(e.message); }
+}
+
+// ════════════════════════════════════
+// KEYBOARD SHORTCUTS (Alt+1 to Alt+9)
+// ════════════════════════════════════
+const PHASE_IDS = ['ph-profile','ph-open','ph-disc','ph-pain','ph-vision','ph-pitch','ph-obj','ph-close','ph-wa','ph-calc'];
+document.addEventListener('keydown', function(e) {
+  if (e.altKey && e.key >= '1' && e.key <= '9') {
+    e.preventDefault();
+    const idx = parseInt(e.key) - 1;
+    const phase = document.getElementById(PHASE_IDS[idx]);
+    if (phase) {
+      phase.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      phase.classList.add('open');
+    }
+  }
+});
 
 // ════════════════════════════════════
 // PHASE ACCORDION
