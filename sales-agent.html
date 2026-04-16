@@ -54,6 +54,9 @@ body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color
 .val-btn{padding:7px 13px;border:1.5px solid #bfdbfe;border-radius:20px;background:#eff6ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#1e40af;font-family:'Heebo',sans-serif;transition:all .15s}
 .val-btn:hover{background:#dbeafe;border-color:var(--blue)}
 .val-btn.active{background:var(--blue);border-color:#1d4ed8;color:#fff}
+.disc-btn{padding:7px 13px;border:1.5px solid #c4b5fd;border-radius:20px;background:#f5f3ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#5b21b6;font-family:'Heebo',sans-serif;transition:all .15s}
+.disc-btn:hover{background:#ede9fe;border-color:#7c3aed}
+.disc-btn.active{background:#7c3aed;border-color:#6d28d9;color:#fff}
 
 /* CALCULATOR */
 .calc-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
@@ -195,6 +198,10 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
       </div>
       <div class="pf"><label>הערות / מצב רפואי</label><input type="text" id="p-notes" placeholder="כאבי גב, סוכרת..." /></div>
     </div>
+    <div style="margin-top:10px">
+      <label style="display:block;font-size:.74rem;font-weight:700;color:var(--navy);opacity:.55;margin-bottom:3px">מה הלקוח אמר בשיחה — תרשום כאן (ישמש נגד ההתנגדויות שלו)</label>
+      <textarea id="p-revealed" placeholder='למשל: "גר לבד, הילדים בחו&quot;ל, יש לו כאבי גב, ביטוח מנורה 400 ש&quot;ח, מעולם לא השתמש בו"' style="width:100%;height:60px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;font-family:Heebo,sans-serif;direction:rtl;resize:none;background:#fafbfc"></textarea>
+    </div>
   </div>
 
   <!-- OPENING SCRIPT GENERATOR -->
@@ -203,7 +210,26 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
 
   <!-- TIP -->
   <div class="tip hide-focus">
-    <strong>איך משתמשים:</strong> מלא פרופיל ← לחץ "צור פתיחה" ← בחר שלב ← לחץ על התנגדות/שאלה ← קבל 3 תשובות + שלח WhatsApp
+    <strong>איך משתמשים:</strong> מלא פרופיל ← שאל שאלות גילוי ← רשום מה הלקוח אמר ← בחר שלב/התנגדות ← קבל 3 תשובות שמשתמשות בדבריו שלו
+  </div>
+
+  <!-- DISCOVERY QUESTIONS -->
+  <div class="card hide-focus" style="border-color:#c4b5fd">
+    <div class="card-label" style="color:#5b21b6">🔍 שאלות גילוי — שאל בתחילת השיחה, רשום את התשובות למעלה</div>
+    <div class="btn-grid">
+      <button class="disc-btn" onclick="setDisc(this,'יש לך ילדים? הם גרים קרוב אליך?')">👨‍👩‍👧 יש ילדים?</button>
+      <button class="disc-btn" onclick="setDisc(this,'מי עוזר לך בדברים יום-יומיים אם צריך?')">🤝 מי עוזר לך?</button>
+      <button class="disc-btn" onclick="setDisc(this,'אתה גר לבד או עם מישהו?')">🏠 גר לבד?</button>
+      <button class="disc-btn" onclick="setDisc(this,'איך אתה מרגיש כללית מבחינה בריאותית? יש משהו שמתעסק איתך?')">❤️ איך הבריאות?</button>
+      <button class="disc-btn" onclick="setDisc(this,'כמה פעמים בשנה אתה הולך לרופא מומחה?')">🏥 כמה רופאים?</button>
+      <button class="disc-btn" onclick="setDisc(this,'אי פעם המתנת הרבה זמן לתור לרופא מומחה? מה קרה?')">⏳ המתנת לתור?</button>
+      <button class="disc-btn" onclick="setDisc(this,'יש לך ביטוח בריאות פרטי? כמה אתה משלם עליו?')">🛡️ יש לך ביטוח?</button>
+      <button class="disc-btn" onclick="setDisc(this,'השתמשת בביטוח הפרטי שלך בשנה האחרונה? קיבלת ממנו כסף?')">💸 השתמשת בביטוח?</button>
+      <button class="disc-btn" onclick="setDisc(this,'יש לך מישהו במשפחה שעבר מצב רפואי קשה? איך זה היה?')">👴 יש ניסיון קשה?</button>
+      <button class="disc-btn" onclick="setDisc(this,'מה הכי מדאיג אותך לגבי הבריאות שלך בשנים הקרובות?')">😟 מה מדאיג אותך?</button>
+      <button class="disc-btn" onclick="setDisc(this,'אתה עדיין עובד או בפנסיה?')">💼 עובד/פנסיה?</button>
+      <button class="disc-btn" onclick="setDisc(this,'אם חס וחלילה היית צריך עובד זר — יש לך מי שיעזור לך להסתדר עם כל הניירת?')">📋 מי יעזור עם ניירת?</button>
+    </div>
   </div>
 
   <!-- STAGE -->
@@ -349,6 +375,12 @@ function setObj(el, text) {
   document.getElementById('customer-said').value = text;
 }
 
+function setDisc(el, text) {
+  document.querySelectorAll('.disc-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('customer-said').value = text;
+}
+
 function toggleFocus() {
   document.body.classList.toggle('focus-mode');
   document.getElementById('focus-btn').textContent =
@@ -356,18 +388,20 @@ function toggleFocus() {
 }
 
 function getProfile() {
-  const name = document.getElementById('p-name').value.trim();
-  const age  = document.getElementById('p-age').value.trim();
-  const fund = document.getElementById('p-fund').value;
-  const ins  = document.getElementById('p-insurance').value;
-  const notes= document.getElementById('p-notes').value.trim();
-  if (!name && !age && !fund && !notes) return '';
+  const name     = document.getElementById('p-name').value.trim();
+  const age      = document.getElementById('p-age').value.trim();
+  const fund     = document.getElementById('p-fund').value;
+  const ins      = document.getElementById('p-insurance').value;
+  const notes    = document.getElementById('p-notes').value.trim();
+  const revealed = document.getElementById('p-revealed').value.trim();
+  if (!name && !age && !fund && !notes && !revealed) return '';
   let p = '\n===פרופיל לקוח נוכחי===\n';
-  if (name) p += `שם: ${name}\n`;
-  if (age)  p += `גיל: ${age}\n`;
-  if (fund) p += `קופת חולים: ${fund}\n`;
-  if (ins)  p += `ביטוח פרטי: ${ins==='yes'?'יש':'אין'}\n`;
-  if (notes)p += `הערות: ${notes}\n`;
+  if (name)     p += `שם: ${name}\n`;
+  if (age)      p += `גיל: ${age}\n`;
+  if (fund)     p += `קופת חולים: ${fund}\n`;
+  if (ins)      p += `ביטוח פרטי: ${ins==='yes'?'יש':'אין'}\n`;
+  if (notes)    p += `מצב רפואי/הערות: ${notes}\n`;
+  if (revealed) p += `\n===מה הלקוח אמר בשיחה — השתמש בזה נגד ההתנגדויות שלו===\n${revealed}\nחשוב: כשהלקוח מעלה התנגדות — חזור על מה שהוא עצמו אמר קודם והשתמש בזה כדי לנפץ את ההתנגדות. דוגמה: אם אמר "הילדים גרים בחו"ל" ועכשיו אומר "יש לי את הילדים" — הזכר לו בדיוק את מה שאמר.\n`;
   p += 'התאם את התשובות אישית לפרופיל זה.\n';
   return p;
 }
@@ -592,6 +626,19 @@ const BASE_SYSTEM = `אתה סוכן מכירות מנוסה של פלטינום
 "הרבה אנשים אומרים 'יהיה בסדר' וממשיכים הלאה. למה בשבילך זה חשוב לטפל בזה עכשיו?"
 "האחריות של מי זה לוודא שהמשפחה שלך מוגנת — של המדינה, או שלך?"
 (אף אחד לא רוצה להודות שהוא האדם שמרים ידיים ומשאיר את המשפחה חשופה)
+
+===תחמושת מהפה שלו — שימוש בדברי הלקוח נגד ההתנגדויות===
+זו הטכניקה הכי חזקה: הלקוח לא יכול להתווכח עם עצמו.
+כשיש מידע מהשדה "מה הלקוח אמר" — השתמש בו ישירות בתשובה לכל התנגדות.
+
+דוגמאות:
+- אמר "הילדים גרים בחו"ל" ← מתנגד "יש לי את הילדים" → "אבל אמרת לי שהם בחו"ל — מי יגיע כשצריך מישהו עכשיו?"
+- אמר "יש לי ביטוח מנורה ב-400 ש"ח" ← מתנגד "יקר לי" → "אתה משלם 400 ש"ח ולא השתמשת בו — פלטינום זה 248 ש"ח ותשתמש בו כל חודש"
+- אמר "אני בריא ברוך השם" ← מתנגד "לא צריך" → "אמרת שאתה בריא — בדיוק עכשיו זה הזמן להצטרף, כי בלי הצהרת בריאות הכל מתקבל"
+- אמר "יש לי כאבי גב" ← מתנגד "אני בריא" → "עם כאבי הגב שסיפרת — כמה פעמים בשנה אתה צריך פיזיותרפיה? ב-248 ש"ח אתה מקבל 10 טיפולים"
+- אמר "גר לבד" ← מתנגד "לא צריך" → "אמרת שאתה לבד — מה קורה אם מחר אתה לא יכול לקום? מי בא?"
+
+כלל: בכל פעם שיש מידע מהשדה "מה הלקוח אמר" — פתח את התשובה ב"אבל אמרת..." או "זכור שסיפרת לי ש..."
 
 ===כללי עברית — חובה לקיים===
 - התאמת מין בדיוק: אישה/בת/היא/שלה | גבר/בן/הוא/שלו
