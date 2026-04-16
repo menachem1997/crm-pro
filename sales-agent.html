@@ -74,6 +74,11 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
 .api-input-row input{flex:1;padding:10px 14px;border:1.5px solid #ffc107;border-radius:8px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fff}
 .api-save-btn{background:#ffc107;color:#000;border:none;border-radius:8px;padding:0 16px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:'Heebo',sans-serif}
 
+/* VALUE BUTTONS */
+.val-btn{padding:7px 13px;border:1.5px solid #bfdbfe;border-radius:20px;background:#eff6ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#1e40af;font-family:'Heebo',sans-serif;transition:all .15s}
+.val-btn:hover{background:#dbeafe;border-color:#3b82f6}
+.val-btn.active{background:#3b82f6;border-color:#1d4ed8;color:#fff}
+
 /* TIP */
 .tip{background:#e8f4fd;border:1.5px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:#1e40af;line-height:1.5}
 .tip strong{font-weight:800}
@@ -147,6 +152,25 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
     </div>
   </div>
 
+  <!-- VALUE QUESTIONS -->
+  <div class="obj-wrap" style="border-color:#bfdbfe">
+    <div class="obj-label" style="color:#1e40af">💡 שאלות ערך — "למה אני צריך את זה?"</div>
+    <div class="obj-grid">
+      <button class="val-btn" onclick="setObj(this,'מה זה בכלל כתב שירות? מה ההבדל מביטוח?')">🤷 מה זה בכלל?</button>
+      <button class="val-btn" onclick="setObj(this,'יש לי קופת חולים — למה אני צריך עוד משהו?')">🏥 יש לי קופה</button>
+      <button class="val-btn" onclick="setObj(this,'תן לי דוגמה — מה קורה אם אני צריך MRI?')">🔬 דוגמה מעשית</button>
+      <button class="val-btn" onclick="setObj(this,'מה ההבדל בינכם לבין ביטוח סיעודי?')">⚖️ לעומת ביטוח סיעוד</button>
+      <button class="val-btn" onclick="setObj(this,'מה קורה אם אני מגיש תביעה — איך זה עובד?')">📝 איך מגישים תביעה?</button>
+      <button class="val-btn" onclick="setObj(this,'מה אני מקבל בפועל? תפרט את הכיסויים')">📋 מה הכיסויים?</button>
+      <button class="val-btn" onclick="setObj(this,'מה קורה אם אצטרך לבטל? יש קנס?')">🚪 אפשר לבטל?</button>
+      <button class="val-btn" onclick="setObj(this,'כמה אנשים כבר יש לכם? החברה אמינה?')">🏢 החברה אמינה?</button>
+      <button class="val-btn" onclick="setObj(this,'מה קורה אם חס וחלילה אני מגיע למצב סיעודי?')">🛌 מצב סיעודי</button>
+      <button class="val-btn" onclick="setObj(this,'מה זה ליווי בסיעוד — מה בדיוק עושים?')">🤝 מה זה ליווי?</button>
+      <button class="val-btn" onclick="setObj(this,'מה זה רפואה משלימה — מה כלול?')">🌿 רפואה משלימה</button>
+      <button class="val-btn" onclick="setObj(this,'יש לי מחלה קיימת — האם אני יכול להצטרף?')">💊 יש לי מחלה</button>
+    </div>
+  </div>
+
   <!-- INPUT -->
   <div class="input-wrap">
     <div class="input-label">✍️ מה הלקוח אמר? (כתוב בחופשיות)</div>
@@ -195,7 +219,7 @@ function setStage(el, stage) {
 }
 
 function setObj(el, text) {
-  document.querySelectorAll('.obj-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.obj-btn,.val-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('customer-said').value = text;
 }
