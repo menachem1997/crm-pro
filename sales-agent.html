@@ -6,160 +6,190 @@
 <title>סוכן מכירות — פלטינום</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#1a2744;--gold:#d4af37;--gold2:#f0d060;--bg:#f4f6fb;--white:#fff;--border:#e8ecf4;--green:#22c55e;--red:#e74c3c;--blue:#3b82f6;--wa:#25d366}
+:root{--navy:#1a2744;--gold:#d4af37;--gold2:#f0d060;--bg:#eef1f8;--white:#fff;--border:#dde3f0;--green:#22c55e;--red:#e74c3c;--blue:#3b82f6;--wa:#25d366;--phase1:#7c3aed;--phase2:#c2410c;--phase3:#be123c;--phase4:#0369a1;--phase5:#065f46}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--navy);min-height:100vh;direction:rtl}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--navy);min-height:100vh;direction:rtl;padding-bottom:140px}
 body.focus-mode .hide-focus{display:none!important}
 
 /* HEADER */
-.hdr{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--gold);position:sticky;top:0;z-index:100}
-.hdr-brand{font-size:1.1rem;font-weight:900;color:var(--gold)}
-.hdr-sub{font-size:.75rem;color:rgba(255,255,255,.6)}
+.hdr{background:linear-gradient(135deg,#0d1628,var(--navy));color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--gold);position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+.hdr-brand{font-size:1.05rem;font-weight:900;color:var(--gold);letter-spacing:.3px}
+.hdr-sub{font-size:.72rem;color:rgba(255,255,255,.55)}
 .hdr-actions{display:flex;align-items:center;gap:10px}
-.status-dot{width:9px;height:9px;border-radius:50%;background:var(--green);display:inline-block;margin-left:6px;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-left:5px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
 .focus-btn{background:none;border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:5px 12px;font-size:.75rem;font-weight:700;color:rgba(255,255,255,.8);cursor:pointer;font-family:'Heebo',sans-serif;transition:all .2s}
 .focus-btn:hover{border-color:var(--gold);color:var(--gold)}
 body.focus-mode .focus-btn{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.timer-display{font-size:.85rem;font-weight:800;color:var(--gold);letter-spacing:1px;font-variant-numeric:tabular-nums;min-width:50px;text-align:center}
 
 /* LAYOUT */
-.container{max-width:820px;margin:0 auto;padding:16px}
+.container{max-width:860px;margin:0 auto;padding:16px 16px 0}
 
-/* CARD */
-.card{background:var(--white);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border)}
-.card-label{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:10px;opacity:.7}
+/* PHASE CARD */
+.phase{background:var(--white);border-radius:16px;margin-bottom:12px;box-shadow:0 2px 16px rgba(26,39,68,.07);border:1.5px solid var(--border);overflow:hidden;transition:box-shadow .2s}
+.phase:hover{box-shadow:0 4px 24px rgba(26,39,68,.12)}
+.phase-hdr{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;user-select:none;transition:background .15s}
+.phase-hdr:hover{background:#f8f9fd}
+.phase-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;color:#fff;flex-shrink:0}
+.phase-title{font-size:.9rem;font-weight:800;color:var(--navy);flex:1}
+.phase-desc{font-size:.72rem;color:#6b7a99;font-weight:400}
+.phase-chevron{font-size:.75rem;color:#9ca3af;transition:transform .2s;margin-right:auto}
+.phase.open .phase-chevron{transform:rotate(180deg)}
+.phase-body{display:none;padding:0 18px 16px;border-top:1px solid var(--border)}
+.phase.open .phase-body{display:block}
+
+/* API KEY */
+.api-wrap{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fbbf24;border-radius:16px;padding:16px;margin-bottom:12px}
+.api-wrap.ok{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#4ade80}
+.api-wrap label{display:block;font-size:.82rem;font-weight:700;color:#92400e;margin-bottom:8px}
+.api-wrap.ok label{color:#166534}
+.api-row{display:flex;gap:8px}
+.api-row input{flex:1;padding:10px 14px;border:1.5px solid #fbbf24;border-radius:8px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fff}
+.api-save{background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:0 18px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:'Heebo',sans-serif}
 
 /* PROFILE */
-.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pf label{display:block;font-size:.74rem;font-weight:700;color:var(--navy);opacity:.55;margin-bottom:3px}
-.pf input,.pf select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fafbfc;color:var(--navy)}
-.pf input:focus,.pf select:focus{outline:none;border-color:var(--gold)}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.pf label{display:block;font-size:.72rem;font-weight:700;color:#6b7a99;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.pf input,.pf select,.pf textarea{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fafbff;color:var(--navy);transition:border .2s}
+.pf input:focus,.pf select:focus,.pf textarea:focus{outline:none;border-color:var(--gold);background:#fff}
+.pf-full{grid-column:1/-1}
 
-/* OPENING BUTTON */
-.open-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy),#2a3f6e);color:var(--gold);border:none;border-radius:12px;font-size:1rem;font-weight:900;cursor:pointer;font-family:'Heebo',sans-serif;margin-bottom:14px;transition:all .2s;letter-spacing:.3px}
-.open-btn:hover{background:linear-gradient(135deg,#2a3f6e,var(--navy));box-shadow:0 4px 16px rgba(26,39,68,.3)}
-.open-btn:disabled{opacity:.5;cursor:not-allowed}
+/* CALL BUTTONS */
+.call-btns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.call-btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:.95rem;font-weight:900;cursor:pointer;font-family:'Heebo',sans-serif;transition:all .2s;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:8px}
+.call-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.call-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.call-btn-hot{background:linear-gradient(135deg,#b45309,#d97706);color:#fff}
+.call-btn-cold{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff}
+.call-btn-pain{background:linear-gradient(135deg,#7f1d1d,#b91c1c);color:#fff}
+.call-btn-pitch{background:linear-gradient(135deg,var(--navy),#2a3f6e);color:var(--gold)}
+.call-btn-close{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff}
+.call-btn-married{background:linear-gradient(135deg,#4c1d95,#6d28d9);color:#fff}
 
-/* STAGE */
-.stages{display:flex;flex-wrap:wrap;gap:8px}
+/* BTN GRID */
+.btn-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+
+/* BUTTON STYLES BY CATEGORY */
 .stage-btn{padding:8px 14px;border:2px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--navy);font-family:'Heebo',sans-serif;transition:all .15s}
-.stage-btn:hover{border-color:var(--gold);background:#fffbeb}
-.stage-btn.active{border-color:var(--gold);background:var(--gold);color:var(--navy);font-weight:800}
+.stage-btn:hover,.stage-btn.active{border-color:var(--gold);background:var(--gold);color:var(--navy);font-weight:800}
 
-/* QUICK BUTTONS */
-.btn-grid{display:flex;flex-wrap:wrap;gap:7px}
-.obj-btn{padding:7px 13px;border:1.5px solid #fcd34d;border-radius:20px;background:#fffbeb;cursor:pointer;font-size:.8rem;font-weight:600;color:#92400e;font-family:'Heebo',sans-serif;transition:all .15s}
-.obj-btn:hover{background:#fef3c7;border-color:#f59e0b}
-.obj-btn.active{background:#f59e0b;border-color:#d97706;color:#fff}
-.val-btn{padding:7px 13px;border:1.5px solid #bfdbfe;border-radius:20px;background:#eff6ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#1e40af;font-family:'Heebo',sans-serif;transition:all .15s}
-.val-btn:hover{background:#dbeafe;border-color:var(--blue)}
-.val-btn.active{background:var(--blue);border-color:#1d4ed8;color:#fff}
 .disc-btn{padding:7px 13px;border:1.5px solid #c4b5fd;border-radius:20px;background:#f5f3ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#5b21b6;font-family:'Heebo',sans-serif;transition:all .15s}
-.disc-btn:hover{background:#ede9fe;border-color:#7c3aed}
-.disc-btn.active{background:#7c3aed;border-color:#6d28d9;color:#fff}
-.pain-q-btn{padding:7px 13px;border:1.5px solid #fda4af;border-radius:20px;background:#fff1f2;cursor:pointer;font-size:.8rem;font-weight:600;color:#be123c;font-family:'Heebo',sans-serif;transition:all .15s}
-.pain-q-btn:hover{background:#ffe4e6;border-color:#f43f5e}
-.pain-q-btn.active{background:#e11d48;border-color:#be123c;color:#fff}
+.disc-btn:hover,.disc-btn.active{background:#7c3aed;border-color:#6d28d9;color:#fff}
+
 .lion-btn{padding:7px 13px;border:1.5px solid #fed7aa;border-radius:20px;background:#fff7ed;cursor:pointer;font-size:.8rem;font-weight:600;color:#c2410c;font-family:'Heebo',sans-serif;transition:all .15s}
-.lion-btn:hover{background:#ffedd5;border-color:#f97316}
-.lion-btn.active{background:#ea580c;border-color:#c2410c;color:#fff}
+.lion-btn:hover,.lion-btn.active{background:#ea580c;border-color:#c2410c;color:#fff}
+
+.pain-q-btn{padding:7px 13px;border:1.5px solid #fda4af;border-radius:20px;background:#fff1f2;cursor:pointer;font-size:.8rem;font-weight:600;color:#be123c;font-family:'Heebo',sans-serif;transition:all .15s}
+.pain-q-btn:hover,.pain-q-btn.active{background:#e11d48;border-color:#be123c;color:#fff}
+
+.obj-btn{padding:7px 13px;border:1.5px solid #fcd34d;border-radius:20px;background:#fffbeb;cursor:pointer;font-size:.8rem;font-weight:600;color:#92400e;font-family:'Heebo',sans-serif;transition:all .15s}
+.obj-btn:hover,.obj-btn.active{background:#f59e0b;border-color:#d97706;color:#fff}
+
+.val-btn{padding:7px 13px;border:1.5px solid #bfdbfe;border-radius:20px;background:#eff6ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#1e40af;font-family:'Heebo',sans-serif;transition:all .15s}
+.val-btn:hover,.val-btn.active{background:var(--blue);border-color:#1d4ed8;color:#fff}
+
 .close-btn{padding:7px 13px;border:1.5px solid #6ee7b7;border-radius:20px;background:#ecfdf5;cursor:pointer;font-size:.8rem;font-weight:600;color:#065f46;font-family:'Heebo',sans-serif;transition:all .15s}
-.close-btn:hover{background:#d1fae5;border-color:#10b981}
-.close-btn.active{background:#059669;border-color:#065f46;color:#fff}
+.close-btn:hover,.close-btn.active{background:#059669;border-color:#065f46;color:#fff}
 
 /* CALCULATOR */
-.calc-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.calc-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:12px}
 .calc-row select,.calc-row input{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fafbfc}
-.calc-row select{flex:2}
-.calc-row input{flex:1;min-width:100px}
-.calc-go{background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:9px 18px;font-size:.88rem;font-weight:900;cursor:pointer;font-family:'Heebo',sans-serif;white-space:nowrap}
-.calc-result{margin-top:12px;padding:12px;background:#f0fdf4;border-radius:10px;border:1.5px solid #86efac;font-size:.88rem;line-height:1.8}
-.calc-result .big{font-size:1.1rem;font-weight:900;color:#166534}
-.calc-result .note{font-size:.75rem;color:#6b7a99;margin-top:4px}
+.calc-row select{flex:2}.calc-row input{flex:1;min-width:100px}
+.calc-go{background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:9px 18px;font-size:.88rem;font-weight:900;cursor:pointer;font-family:'Heebo',sans-serif}
+.calc-result{margin-top:12px;padding:14px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:12px;border:1.5px solid #86efac}
+.calc-result .big{font-size:1.15rem;font-weight:900;color:#166534;margin:4px 0}
+.calc-result .note{font-size:.74rem;color:#6b7a99;margin-top:6px}
 
-/* INPUT */
+/* STICKY BOTTOM INPUT */
+.sticky-input{position:fixed;bottom:0;right:0;left:0;background:var(--white);border-top:2px solid var(--gold);box-shadow:0 -4px 24px rgba(26,39,68,.12);padding:12px 16px;z-index:150}
+.sticky-inner{max-width:860px;margin:0 auto}
 .input-row{display:flex;gap:10px}
-textarea{flex:1;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.93rem;font-family:'Heebo',sans-serif;resize:none;height:70px;direction:rtl;background:#fafbfc;transition:border .2s}
-textarea:focus{outline:none;border-color:var(--gold);background:#fff}
+.sticky-input textarea{flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.93rem;font-family:'Heebo',sans-serif;resize:none;height:52px;direction:rtl;background:#fafbfc;transition:border .2s}
+.sticky-input textarea:focus{outline:none;border-color:var(--gold);background:#fff}
 .ask-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);border:none;border-radius:10px;padding:0 20px;font-size:.95rem;font-weight:900;cursor:pointer;font-family:'Heebo',sans-serif;transition:all .2s;white-space:nowrap;align-self:stretch}
 .ask-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,175,55,.4)}
 .ask-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.action-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.action-btn{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:.8rem;font-weight:700;color:var(--navy);font-family:'Heebo',sans-serif;transition:all .15s;flex:1;text-align:center}
+.action-row{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.action-btn{padding:7px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:.78rem;font-weight:700;color:var(--navy);font-family:'Heebo',sans-serif;transition:all .15s}
 .action-btn:hover{border-color:var(--navy);background:#e8ecf4}
 .action-btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* RESPONSES */
-.responses{display:flex;flex-direction:column;gap:12px}
-.resp-card{background:var(--white);border-radius:14px;padding:18px 20px 18px 100px;box-shadow:0 2px 12px rgba(26,39,68,.08);border-right:4px solid var(--gold);border-left:1.5px solid var(--border);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);position:relative}
-.resp-num{display:inline-block;background:var(--gold);color:var(--navy);border-radius:50%;width:24px;height:24px;font-size:.78rem;font-weight:900;text-align:center;line-height:24px;margin-bottom:8px}
-.resp-text{font-size:.93rem;line-height:1.75;color:var(--navy);white-space:pre-wrap}
+/* OUTPUT SECTION */
+.output-section{margin-bottom:12px}
+.responses{display:flex;flex-direction:column;gap:10px}
+.resp-card{background:var(--white);border-radius:14px;padding:18px 20px 18px 100px;box-shadow:0 2px 16px rgba(26,39,68,.08);border-right:4px solid var(--gold);border:1.5px solid var(--border);border-right-width:4px;position:relative;transition:box-shadow .2s}
+.resp-card:hover{box-shadow:0 4px 24px rgba(26,39,68,.13)}
+.resp-num{display:inline-block;border-radius:50%;width:26px;height:26px;font-size:.78rem;font-weight:900;text-align:center;line-height:26px;margin-bottom:8px}
+.resp-text{font-size:.93rem;line-height:1.8;color:var(--navy);white-space:pre-wrap}
 .resp-actions{position:absolute;top:14px;left:10px;display:flex;flex-direction:column;gap:5px}
-.copy-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:5px 8px;font-size:.72rem;font-weight:700;cursor:pointer;color:#6b7a99;font-family:'Heebo',sans-serif;transition:all .15s;white-space:nowrap}
+.copy-btn{background:none;border:1.5px solid var(--border);border-radius:7px;padding:5px 9px;font-size:.72rem;font-weight:700;cursor:pointer;color:#6b7a99;font-family:'Heebo',sans-serif;transition:all .15s;white-space:nowrap}
 .copy-btn:hover{border-color:var(--gold);color:var(--navy);background:#fffbeb}
 .copy-btn.copied{border-color:var(--green);color:var(--green);background:#f0fdf4}
-.wa-btn{background:none;border:1.5px solid #86efac;border-radius:7px;padding:5px 8px;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--wa);font-family:'Heebo',sans-serif;transition:all .15s;white-space:nowrap}
+.wa-btn{background:none;border:1.5px solid #86efac;border-radius:7px;padding:5px 9px;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--wa);font-family:'Heebo',sans-serif;transition:all .15s;white-space:nowrap}
 .wa-btn:hover{background:#f0fdf4;border-color:var(--wa)}
+.copy-all-btn{background:var(--navy);border:none;border-radius:8px;padding:8px 16px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--gold);font-family:'Heebo',sans-serif;transition:all .15s;width:100%;margin-top:8px}
+.copy-all-btn:hover{background:#2a3f6e}
 
 /* SCORE BAR */
-.score-wrap{background:var(--white);border-radius:12px;padding:14px 18px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border);margin-bottom:12px;display:flex;align-items:center;gap:14px}
-.score-label{font-size:.8rem;font-weight:800;color:var(--navy);white-space:nowrap}
+.score-wrap{background:var(--white);border-radius:12px;padding:14px 18px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border);margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.score-label{font-size:.78rem;font-weight:800;color:var(--navy);white-space:nowrap}
 .score-bar{flex:1;height:10px;background:#e8ecf4;border-radius:10px;overflow:hidden}
-.score-fill{height:100%;border-radius:10px;transition:width .6s}
-.score-num{font-size:1.1rem;font-weight:900;min-width:28px;text-align:center}
+.score-fill{height:100%;border-radius:10px;transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.score-num{font-size:1.2rem;font-weight:900;min-width:30px;text-align:center}
 .score-text{font-size:.78rem;color:#6b7a99;flex:2}
 
 /* SPECIAL CARD */
-.special-card{background:var(--white);border-radius:14px;padding:18px 20px;box-shadow:0 2px 12px rgba(26,39,68,.08);border-right:4px solid var(--navy);border-left:1.5px solid var(--border);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);position:relative}
-.special-card .resp-text{font-size:.93rem;line-height:1.8;color:var(--navy);white-space:pre-wrap}
-.special-actions{display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.special-card{background:var(--white);border-radius:14px;padding:20px;box-shadow:0 2px 16px rgba(26,39,68,.08);border:1.5px solid var(--border);border-right:4px solid var(--navy)}
+.special-card .resp-text{font-size:.93rem;line-height:1.85;color:var(--navy);white-space:pre-wrap}
+.special-actions{display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
 
 /* STREAM */
-.stream-card{background:var(--white);border-radius:14px;padding:18px 20px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border);border-right:4px solid var(--gold)}
-.stream-text{font-size:.93rem;line-height:1.75;color:var(--navy);white-space:pre-wrap;min-height:40px}
+.stream-card{background:var(--white);border-radius:14px;padding:20px;box-shadow:0 2px 16px rgba(26,39,68,.08);border:1.5px solid var(--border);border-right:4px solid var(--gold)}
+.stream-text{font-size:.93rem;line-height:1.8;color:var(--navy);white-space:pre-wrap;min-height:40px}
 .cursor{display:inline-block;width:2px;height:1em;background:var(--gold);margin-right:1px;vertical-align:text-bottom;animation:blink .7s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
 /* HISTORY */
-.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-top:12px}
 .clear-btn{font-size:.75rem;color:var(--red);background:none;border:1.5px solid #fecaca;border-radius:6px;padding:4px 10px;cursor:pointer;font-family:'Heebo',sans-serif;font-weight:700}
-.clear-btn:hover{background:#fef2f2}
 .h-entry{padding:9px 12px;border-radius:9px;margin-bottom:7px;font-size:.82rem;line-height:1.6}
 .h-user{background:#fffbeb;border-right:3px solid var(--gold)}
 .h-ai{background:#f0fdf4;border-right:3px solid var(--green)}
 .h-lbl{font-size:.7rem;font-weight:800;opacity:.55;margin-bottom:2px}
 
 /* LOADING */
-.loading{text-align:center;padding:32px;color:#6b7a99}
-.loading-dots span{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin:0 3px;animation:ldot 1s infinite}
+.loading-dots{text-align:center;padding:24px}
+.loading-dots span{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--gold);margin:0 3px;animation:ldot 1s infinite}
 .loading-dots span:nth-child(2){animation-delay:.2s}
 .loading-dots span:nth-child(3){animation-delay:.4s}
-@keyframes ldot{0%,80%,100%{transform:scale(0.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+@keyframes ldot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
 
 /* EMPTY */
-.empty{text-align:center;padding:40px 20px;color:#6b7a99;background:var(--white);border-radius:14px;box-shadow:0 2px 12px rgba(26,39,68,.08)}
-.empty-icon{font-size:2.5rem;margin-bottom:12px}
+.empty{text-align:center;padding:40px 20px;color:#6b7a99;background:var(--white);border-radius:14px;box-shadow:0 2px 12px rgba(26,39,68,.06);border:1.5px solid var(--border)}
+.empty-icon{font-size:2.5rem;margin-bottom:10px}
 .empty p{font-size:.9rem;line-height:1.6}
 
-/* API KEY */
-.api-wrap{background:#fff3cd;border:1.5px solid #ffc107;border-radius:14px;padding:16px;margin-bottom:14px}
-.api-wrap label{display:block;font-size:.82rem;font-weight:700;color:#856404;margin-bottom:8px}
-.api-row{display:flex;gap:8px}
-.api-row input{flex:1;padding:10px 14px;border:1.5px solid #ffc107;border-radius:8px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fff}
-.api-save{background:#ffc107;color:#000;border:none;border-radius:8px;padding:0 16px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:'Heebo',sans-serif}
+/* PHASE COLORS */
+.p-purple .phase-num{background:#7c3aed}.p-purple .phase-hdr:hover{background:#f5f3ff}
+.p-orange .phase-num{background:#ea580c}.p-orange .phase-hdr:hover{background:#fff7ed}
+.p-red .phase-num{background:#e11d48}.p-red .phase-hdr:hover{background:#fff1f2}
+.p-blue .phase-num{background:#2563eb}.p-blue .phase-hdr:hover{background:#eff6ff}
+.p-gold .phase-num{background:var(--gold)}.p-gold .phase-hdr:hover{background:#fffbeb}
+.p-green .phase-num{background:#059669}.p-green .phase-hdr:hover{background:#ecfdf5}
+.p-navy .phase-num{background:var(--navy)}.p-navy .phase-hdr:hover{background:#f0f2f8}
 
-/* TIP */
-.tip{background:#e8f4fd;border:1.5px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:#1e40af;line-height:1.5}
-.tip strong{font-weight:800}
+/* SECTION LABEL */
+.sec-label{font-size:.73rem;font-weight:800;color:#6b7a99;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 7px;display:block}
 
-@media(max-width:540px){
-  .input-row{flex-direction:column}
-  .ask-btn{height:44px}
+@media(max-width:560px){
   .profile-grid{grid-template-columns:1fr}
-  .resp-card{padding:60px 16px 16px}
-  .resp-actions{flex-direction:row;top:10px;left:10px;right:auto}
+  .resp-card{padding:60px 14px 14px}
+  .resp-actions{flex-direction:row;top:10px;left:6px;right:auto}
   .calc-row{flex-direction:column}
   .calc-row select,.calc-row input,.calc-go{width:100%}
+  .hdr-sub{display:none}
+  .timer-display{min-width:40px}
 }
 </style>
 </head>
@@ -167,16 +197,25 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
 
 <div class="hdr">
   <div>
-    <div class="hdr-brand">💬 סוכן מכירות AI</div>
-    <div class="hdr-sub">פלטינום כתב שירות</div>
+    <div class="hdr-brand">💬 סוכן מכירות — פלטינום</div>
+    <div class="hdr-sub">מכירה לזהות · שיטת מאור</div>
   </div>
   <div class="hdr-actions">
+    <div class="timer-display" id="timer">00:00</div>
     <button class="focus-btn" onclick="toggleFocus()" id="focus-btn">🎯 מצב שיחה</button>
-    <span style="font-size:.8rem;color:rgba(255,255,255,.6)"><span class="status-dot"></span>פעיל</span>
+    <span style="font-size:.78rem;color:rgba(255,255,255,.55)"><span class="status-dot"></span>פעיל</span>
   </div>
 </div>
 
 <div class="container">
+
+  <!-- OUTPUT always on top during focus -->
+  <div id="output" class="output-section">
+    <div class="empty">
+      <div class="empty-icon">🎯</div>
+      <p>מלא פרופיל ← בחר שלב ← לחץ על שאלה ← קבל 3 תשובות</p>
+    </div>
+  </div>
 
   <!-- API KEY -->
   <div class="api-wrap hide-focus" id="api-wrap">
@@ -187,215 +226,263 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
     </div>
   </div>
 
-  <!-- CUSTOMER PROFILE -->
-  <div class="card hide-focus">
-    <div class="card-label">👤 פרופיל לקוח — מלא לפני השיחה</div>
-    <div class="profile-grid">
-      <div class="pf"><label>שם הלקוח</label><input type="text" id="p-name" placeholder="ישראל ישראלי" /></div>
-      <div class="pf"><label>טלפון (WhatsApp)</label><input type="tel" id="p-phone" placeholder="0501234567" /></div>
-      <div class="pf"><label>גיל</label><input type="number" id="p-age" placeholder="65" min="18" max="99" /></div>
-      <div class="pf"><label>קופת חולים</label>
-        <select id="p-fund">
-          <option value="">לא ידוע</option>
-          <option>מכבי</option><option>מאוחדת</option><option>כללית</option><option>לאומית</option>
-        </select>
+  <!-- PHASE 1: PROFILE -->
+  <div class="phase p-navy open hide-focus" id="ph-profile">
+    <div class="phase-hdr" onclick="togglePhase('ph-profile')">
+      <div class="phase-num">1</div>
+      <div><div class="phase-title">👤 פרופיל לקוח</div><div class="phase-desc">מלא לפני השיחה</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <div class="profile-grid">
+        <div class="pf"><label>שם</label><input type="text" id="p-name" placeholder="ישראל ישראלי" /></div>
+        <div class="pf"><label>טלפון WhatsApp</label><input type="tel" id="p-phone" placeholder="0501234567" /></div>
+        <div class="pf"><label>גיל</label><input type="number" id="p-age" placeholder="65" min="18" max="99" /></div>
+        <div class="pf"><label>קופת חולים</label>
+          <select id="p-fund"><option value="">לא ידוע</option><option>מכבי</option><option>מאוחדת</option><option>כללית</option><option>לאומית</option></select>
+        </div>
+        <div class="pf"><label>ביטוח פרטי?</label>
+          <select id="p-insurance"><option value="">לא ידוע</option><option value="no">אין</option><option value="yes">יש</option></select>
+        </div>
+        <div class="pf"><label>מצב רפואי / הערות</label><input type="text" id="p-notes" placeholder="כאבי גב, סוכרת..." /></div>
+        <div class="pf pf-full"><label>🧠 מה הלקוח אמר — ישמש תחמושת נגד ההתנגדויות שלו</label>
+          <textarea id="p-revealed" rows="2" placeholder='גר לבד, הילדים בחו"ל, ביטוח מנורה 400 ש"ח שלא השתמש בו, כאבי גב...'></textarea>
+        </div>
       </div>
-      <div class="pf"><label>ביטוח פרטי?</label>
-        <select id="p-insurance">
-          <option value="">לא ידוע</option><option value="no">אין</option><option value="yes">יש</option>
-        </select>
+    </div>
+  </div>
+
+  <!-- PHASE 2: OPEN CALL -->
+  <div class="phase p-gold hide-focus" id="ph-open">
+    <div class="phase-hdr" onclick="togglePhase('ph-open')">
+      <div class="phase-num">2</div>
+      <div><div class="phase-title">🎬 פתיחת שיחה</div><div class="phase-desc">בחר סוג ליד וצור תסריט מותאם אישית</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <div class="btn-grid" style="margin-top:12px">
+        <button class="stage-btn active" onclick="setStage(this,'פתיחה — ליד חם')">🔥 ליד חם</button>
+        <button class="stage-btn" onclick="setStage(this,'פתיחה — ליד קר')">🧊 ליד קר</button>
+        <button class="stage-btn" onclick="setStage(this,'החזרת לקוח שבוטל')">🔄 לקוח חוזר</button>
+        <button class="stage-btn" onclick="setStage(this,'הצגת ערך')">💎 הצגת ערך</button>
+        <button class="stage-btn" onclick="setStage(this,'שאלות רפואיות')">🏥 שאלות רפואיות</button>
+        <button class="stage-btn" onclick="setStage(this,'סגירה')">✅ סגירה</button>
+        <button class="stage-btn" onclick="setStage(this,'התנגדויות')">🛡️ התנגדויות</button>
       </div>
-      <div class="pf"><label>הערות / מצב רפואי</label><input type="text" id="p-notes" placeholder="כאבי גב, סוכרת..." /></div>
-    </div>
-    <div style="margin-top:10px">
-      <label style="display:block;font-size:.74rem;font-weight:700;color:var(--navy);opacity:.55;margin-bottom:3px">מה הלקוח אמר בשיחה — תרשום כאן (ישמש נגד ההתנגדויות שלו)</label>
-      <textarea id="p-revealed" placeholder='למשל: "גר לבד, הילדים בחו&quot;ל, יש לו כאבי גב, ביטוח מנורה 400 ש&quot;ח, מעולם לא השתמש בו"' style="width:100%;height:60px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;font-family:Heebo,sans-serif;direction:rtl;resize:none;background:#fafbfc"></textarea>
-    </div>
-  </div>
-
-  <!-- OPENING SCRIPT GENERATOR -->
-  <button class="open-btn hide-focus" id="open-btn" onclick="generateOpening()">🎬 צור פתיחת שיחה מותאמת אישית</button>
-  <button class="open-btn hide-focus" id="pain-btn" onclick="generatePainScript()" style="background:linear-gradient(135deg,#7c1d1d,#b91c1c);margin-top:-6px">🧊 תסריט ליד קר — גע בכאב עמוק</button>
-
-  <!-- TIP -->
-  <div class="tip hide-focus">
-    <strong>איך משתמשים:</strong> מלא פרופיל ← שאל שאלות גילוי ← רשום מה הלקוח אמר ← בחר שלב/התנגדות ← קבל 3 תשובות שמשתמשות בדבריו שלו
-  </div>
-
-  <!-- DISCOVERY QUESTIONS -->
-  <div class="card hide-focus" style="border-color:#c4b5fd">
-    <div class="card-label" style="color:#5b21b6">🔍 שאלות גילוי — שאל בתחילת השיחה, רשום את התשובות למעלה</div>
-    <div class="btn-grid">
-      <button class="disc-btn" onclick="setDisc(this,'יש לך ילדים? הם גרים קרוב אליך?')">👨‍👩‍👧 יש ילדים?</button>
-      <button class="disc-btn" onclick="setDisc(this,'מי עוזר לך בדברים יום-יומיים אם צריך?')">🤝 מי עוזר לך?</button>
-      <button class="disc-btn" onclick="setDisc(this,'אתה גר לבד או עם מישהו?')">🏠 גר לבד?</button>
-      <button class="disc-btn" onclick="setDisc(this,'איך אתה מרגיש כללית מבחינה בריאותית? יש משהו שמתעסק איתך?')">❤️ איך הבריאות?</button>
-      <button class="disc-btn" onclick="setDisc(this,'כמה פעמים בשנה אתה הולך לרופא מומחה?')">🏥 כמה רופאים?</button>
-      <button class="disc-btn" onclick="setDisc(this,'אי פעם המתנת הרבה זמן לתור לרופא מומחה? מה קרה?')">⏳ המתנת לתור?</button>
-      <button class="disc-btn" onclick="setDisc(this,'יש לך ביטוח בריאות פרטי? כמה אתה משלם עליו?')">🛡️ יש לך ביטוח?</button>
-      <button class="disc-btn" onclick="setDisc(this,'השתמשת בביטוח הפרטי שלך בשנה האחרונה? קיבלת ממנו כסף?')">💸 השתמשת בביטוח?</button>
-      <button class="disc-btn" onclick="setDisc(this,'יש לך מישהו במשפחה שעבר מצב רפואי קשה? איך זה היה?')">👴 יש ניסיון קשה?</button>
-      <button class="disc-btn" onclick="setDisc(this,'מה הכי מדאיג אותך לגבי הבריאות שלך בשנים הקרובות?')">😟 מה מדאיג אותך?</button>
-      <button class="disc-btn" onclick="setDisc(this,'אתה עדיין עובד או בפנסיה?')">💼 עובד/פנסיה?</button>
-      <button class="disc-btn" onclick="setDisc(this,'אם חס וחלילה היית צריך עובד זר — יש לך מי שיעזור לך להסתדר עם כל הניירת?')">📋 מי יעזור עם ניירת?</button>
+      <div class="call-btns" style="margin-top:14px">
+        <button class="call-btn call-btn-hot" id="open-btn" onclick="generateOpening()">🔥 צור פתיחה מותאמת אישית</button>
+        <button class="call-btn call-btn-cold" id="pain-btn" onclick="generatePainScript()">🧊 תסריט ליד קר — נגיעה עמוקה בכאב (שיטת מאור)</button>
+        <button class="call-btn call-btn-married" onclick="setObj(document.createElement('span'),'הכל בסדר אצלי, אני פשוט מחפש לשפר — אני לא חייב שינוי')">💍 הנשוי באושר — "הכל בסדר אצלי"</button>
+      </div>
     </div>
   </div>
 
-  <!-- STAGE -->
-  <div class="card hide-focus">
-    <div class="card-label">📍 שלב בשיחה</div>
-    <div class="stages">
-      <button class="stage-btn active" onclick="setStage(this,'פתיחה — ליד חם')">🔥 ליד חם</button>
-      <button class="stage-btn" onclick="setStage(this,'פתיחה — ליד קר')">🧊 ליד קר</button>
-      <button class="stage-btn" onclick="setStage(this,'החזרת לקוח שבוטל')">🔄 לקוח חוזר</button>
-      <button class="stage-btn" onclick="setStage(this,'הצגת ערך')">💎 הצגת ערך</button>
-      <button class="stage-btn" onclick="setStage(this,'שאלות רפואיות')">🏥 שאלות רפואיות</button>
-      <button class="stage-btn" onclick="setStage(this,'סגירה')">✅ סגירה</button>
-      <button class="stage-btn" onclick="setStage(this,'התנגדויות')">🛡️ התנגדויות</button>
+  <!-- PHASE 3: DISCOVERY -->
+  <div class="phase p-purple hide-focus" id="ph-disc">
+    <div class="phase-hdr" onclick="togglePhase('ph-disc')">
+      <div class="phase-num">3</div>
+      <div><div class="phase-title">🔍 גילוי</div><div class="phase-desc">שאל — רשום את התשובות בפרופיל למעלה</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <div class="btn-grid">
+        <button class="disc-btn" onclick="setDisc(this,'יש לך ילדים? הם גרים קרוב אליך?')">👨‍👩‍👧 יש ילדים?</button>
+        <button class="disc-btn" onclick="setDisc(this,'מי עוזר לך בדברים יום-יומיים אם צריך?')">🤝 מי עוזר?</button>
+        <button class="disc-btn" onclick="setDisc(this,'אתה גר לבד או עם מישהו?')">🏠 גר לבד?</button>
+        <button class="disc-btn" onclick="setDisc(this,'איך אתה מרגיש כללית מבחינה בריאותית? יש משהו שמתעסק איתך?')">❤️ איך הבריאות?</button>
+        <button class="disc-btn" onclick="setDisc(this,'כמה פעמים בשנה אתה הולך לרופא מומחה?')">🏥 כמה רופאים?</button>
+        <button class="disc-btn" onclick="setDisc(this,'אי פעם המתנת הרבה זמן לתור לרופא מומחה? מה קרה?')">⏳ המתנת לתור?</button>
+        <button class="disc-btn" onclick="setDisc(this,'יש לך ביטוח בריאות פרטי? כמה אתה משלם עליו בחודש?')">🛡️ יש ביטוח?</button>
+        <button class="disc-btn" onclick="setDisc(this,'השתמשת בביטוח בשנה האחרונה? קיבלת ממנו כסף?')">💸 השתמשת בביטוח?</button>
+        <button class="disc-btn" onclick="setDisc(this,'יש לך מישהו במשפחה שעבר מצב רפואי קשה? איך זה היה?')">👴 יש ניסיון קשה?</button>
+        <button class="disc-btn" onclick="setDisc(this,'מה הכי מדאיג אותך לגבי הבריאות שלך בשנים הקרובות?')">😟 מה מדאיג?</button>
+        <button class="disc-btn" onclick="setDisc(this,'אתה עובד עדיין או בפנסיה?')">💼 עובד/פנסיה?</button>
+        <button class="disc-btn" onclick="setDisc(this,'אם היית צריך עובד זר — יש לך מי שיעזור עם כל הניירת מול הרשויות?')">📋 מי יעזור עם ניירת?</button>
+      </div>
     </div>
   </div>
 
-  <!-- IDENTITY & VISION QUESTIONS -->
-  <div class="card hide-focus" style="border-color:#fda4af">
-    <div class="card-label" style="color:#be123c">🔥 שאלות זהות וכאב — יוציאו אותו מאיזון ויניעו לפעולה</div>
-    <div class="btn-grid">
-      <button class="pain-q-btn" onclick="setObj(this,'המשפחה שלך רואה בך האדם החזק, הדומיננטי בבית — מה יקרה אם הם יראו אותך ככה, תלוי בכולם?')">👑 האדם החזק בבית</button>
-      <button class="pain-q-btn" onclick="setObj(this,'איך אתה רואה את החיים שלך ללא כאב? חופשי, מטייל עם הנכדים, נהנה מכל רגע?')">🌅 חיים ללא כאב</button>
-      <button class="pain-q-btn" onclick="setObj(this,'מה הדבר הכי חשוב שאתה רוצה להמשיך לעשות עם הנכדים שלך? מה יקרה אם יום אחד לא תוכל?')">👶 הנכדים</button>
-      <button class="pain-q-btn" onclick="setObj(this,'מתי בפעם האחרונה הרגשת באמת בריא ואנרגטי — שקמת בבוקר ואמרת "אני מרגיש מעולה"?')">⚡ מתי הרגשת שלם?</button>
-      <button class="pain-q-btn" onclick="setObj(this,'אם המצב יחמיר — מה הדבר הראשון שתפסיק לעשות? מה הכי כואב לך לאבד?')">💔 מה תאבד ראשון?</button>
-      <button class="pain-q-btn" onclick="setObj(this,'מה הכי לא רוצה שהילדים שלך יצטרכו לעשות בשבילך? מה ירגיש כמו נטל שמפיל עליהם?')">😔 לא להיות נטל</button>
-      <button class="pain-q-btn" onclick="setObj(this,'כשאתה מדמיין את עצמך בעוד 5 שנים — מה אתה רואה? איך אתה רוצה שזה ייראה?')">🔮 בעוד 5 שנים</button>
-      <button class="pain-q-btn" onclick="setObj(this,'מה יגידו עליך הילדים שלך אם ידעו שסירבת לדאוג לעצמך?')">🗣️ מה יגידו עליך?</button>
-      <button class="pain-q-btn" onclick="setObj(this,'אתה האדם שכולם מסתמכים עליו — אם אתה נופל, מה קורה לכולם סביבך?')">🏛️ כולם מסתמכים עליך</button>
-      <button class="pain-q-btn" onclick="setObj(this,'מה יותר כואב — לשלם 248 שקל בחודש, או לחכות 4 חודשים לתור כשכואב לך?')">⚖️ מה יותר כואב?</button>
+  <!-- PHASE 4: PAIN & LION -->
+  <div class="phase p-orange hide-focus" id="ph-pain">
+    <div class="phase-hdr" onclick="togglePhase('ph-pain')">
+      <div class="phase-num">4</div>
+      <div><div class="phase-title">🦁 כאב והשלכות</div><div class="phase-desc">הוצא את האריה — עלות אי-עשייה</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <span class="sec-label">שאלות האריה</span>
+      <div class="btn-grid">
+        <button class="lion-btn" onclick="setObj(this,'מה קורה אם שום דבר לא משתנה? בעוד חצי שנה, שנה — איך ייראו החיים שלך?')">⏳ מה קורה אם כלום לא משתנה?</button>
+        <button class="lion-btn" onclick="setObj(this,'מה קורה אם המצב פתאום מחמיר ואין לך שום כיסוי?')">💥 מה קורה אם יחמיר?</button>
+        <button class="lion-btn" onclick="setObj(this,'בשבילך — מה הסיטואציה שאתה הכי לא רוצה שתקרה לך?')">🦁 מה האריה שלך?</button>
+        <button class="lion-btn" onclick="setObj(this,'כמה בריאות, זמן וכסף אתה מפסיד כרגע בגלל המצב הזה?')">💸 כמה אתה מפסיד?</button>
+        <button class="lion-btn" onclick="setObj(this,'אתה אוהב לחכות חודשים לתור כשכואב לך?')">😤 אוהב לחכות?</button>
+        <button class="lion-btn" onclick="setObj(this,'אם המצב יחמיר — מי יעשה את כל הניירת? מי ידפוק על הדלתות?')">🚪 מי ידפוק בשביל?</button>
+        <button class="lion-btn" onclick="setObj(this,'האם אתה מוכן להסתפק במציאות הזו?')">❓ מוכן להסתפק?</button>
+      </div>
     </div>
   </div>
 
-  <!-- OBJECTIONS -->
-  <div class="card hide-focus">
-    <div class="card-label">⚡ התנגדויות נפוצות</div>
-    <div class="btn-grid">
-      <button class="obj-btn" onclick="setObj(this,'זה יקר לי, אני לא יכול להרשות לעצמי')">💸 יקר לי</button>
-      <button class="obj-btn" onclick="setObj(this,'שלח לי מידע ואני אסתכל ואחזור אלייך')">📧 שלח מידע</button>
-      <button class="obj-btn" onclick="setObj(this,'אין לי זמן עכשיו, תתקשר אליי מאוחר יותר')">⏰ אין זמן</button>
-      <button class="obj-btn" onclick="setObj(this,'יש לי כבר ביטוח בריאות פרטי')">🛡️ יש לי ביטוח</button>
-      <button class="obj-btn" onclick="setObj(this,'זה נראה לי הונאה, אני לא בטוח שזה אמיתי')">🚨 נראה הונאה</button>
-      <button class="obj-btn" onclick="setObj(this,'אני לא מבין בדברים האלה, לא בעניינים')">❓ לא מבין</button>
-      <button class="obj-btn" onclick="setObj(this,'אני בריא ברוך השם, לא צריך עכשיו')">💪 אני בריא</button>
-      <button class="obj-btn" onclick="setObj(this,'צריך להתייעץ עם בן/בת הזוג לפני שאני מחליט')">👫 צריך להתייעץ</button>
-      <button class="obj-btn" onclick="setObj(this,'לא מעוניין, תודה')">❌ לא מעוניין</button>
-      <button class="obj-btn" onclick="setObj(this,'צריך לחשוב על זה, אחזור אלייך')">🤔 צריך לחשוב</button>
-      <button class="obj-btn" onclick="setObj(this,'אין לי כרטיס אשראי ביד עכשיו')">💳 אין כרטיס</button>
-      <button class="obj-btn" onclick="setObj(this,'כבר יש לי כתב שירות ממקום אחר')">📋 יש לי כתב שירות</button>
+  <!-- PHASE 5: IDENTITY & VISION -->
+  <div class="phase p-red hide-focus" id="ph-vision">
+    <div class="phase-hdr" onclick="togglePhase('ph-vision')">
+      <div class="phase-num">5</div>
+      <div><div class="phase-title">🌅 זהות וחזון</div><div class="phase-desc">בנה את העתיד החלומי — הוצא מאיזון</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <div class="btn-grid">
+        <button class="pain-q-btn" onclick="setObj(this,'המשפחה שלך רואה בך האדם החזק, הדומיננטי בבית — מה יקרה אם הם יראו אותך תלוי בכולם?')">👑 האדם החזק בבית</button>
+        <button class="pain-q-btn" onclick="setObj(this,'איך אתה רואה את החיים שלך ללא כאב? חופשי, מטייל עם הנכדים, נהנה?')">🌅 חיים ללא כאב</button>
+        <button class="pain-q-btn" onclick="setObj(this,'מה הדבר הכי חשוב שאתה רוצה להמשיך לעשות עם הנכדים? מה יקרה אם לא תוכל?')">👶 הנכדים</button>
+        <button class="pain-q-btn" onclick="setObj(this,'מתי בפעם האחרונה הרגשת באמת בריא ואנרגטי?')">⚡ מתי הרגשת שלם?</button>
+        <button class="pain-q-btn" onclick="setObj(this,'אם המצב יחמיר — מה הדבר הראשון שתפסיק לעשות?')">💔 מה תאבד ראשון?</button>
+        <button class="pain-q-btn" onclick="setObj(this,'מה הכי לא רוצה שהילדים שלך יצטרכו לעשות בשבילך?')">😔 לא להיות נטל</button>
+        <button class="pain-q-btn" onclick="setObj(this,'כשאתה מדמיין את עצמך בעוד 5 שנים — מה אתה רואה?')">🔮 בעוד 5 שנים</button>
+        <button class="pain-q-btn" onclick="setObj(this,'מה יגידו עליך הילדים אם ידעו שסירבת לדאוג לעצמך?')">🗣️ מה יגידו?</button>
+        <button class="pain-q-btn" onclick="setObj(this,'אתה האדם שכולם מסתמכים עליו — אם אתה נופל, מה קורה לכולם?')">🏛️ כולם מסתמכים</button>
+        <button class="pain-q-btn" onclick="setObj(this,'מה יותר כואב — 248 שקל בחודש, או לחכות 4 חודשים לתור כשכואב?')">⚖️ מה יותר כואב?</button>
+      </div>
     </div>
   </div>
 
-  <!-- VALUE QUESTIONS -->
-  <div class="card hide-focus" style="border-color:#bfdbfe">
-    <div class="card-label" style="color:#1e40af">💡 שאלות ערך — "למה אני צריך את זה?"</div>
-    <div class="btn-grid">
-      <button class="val-btn" onclick="setObj(this,'מה זה בכלל כתב שירות? מה ההבדל מביטוח?')">🤷 מה זה בכלל?</button>
-      <button class="val-btn" onclick="setObj(this,'יש לי קופת חולים — למה אני צריך עוד משהו?')">🏥 יש לי קופה</button>
-      <button class="val-btn" onclick="setObj(this,'תן לי דוגמה — מה קורה אם אני צריך MRI?')">🔬 דוגמה מעשית</button>
-      <button class="val-btn" onclick="setObj(this,'מה ההבדל בינכם לבין ביטוח סיעודי?')">⚖️ לעומת ביטוח סיעוד</button>
-      <button class="val-btn" onclick="setObj(this,'מה קורה אם אני מגיש תביעה — איך זה עובד?')">📝 איך מגישים תביעה?</button>
-      <button class="val-btn" onclick="setObj(this,'מה אני מקבל בפועל? תפרט את הכיסויים')">📋 מה הכיסויים?</button>
-      <button class="val-btn" onclick="setObj(this,'מה קורה אם אצטרך לבטל? יש קנס?')">🚪 אפשר לבטל?</button>
-      <button class="val-btn" onclick="setObj(this,'כמה אנשים כבר יש לכם? החברה אמינה?')">🏢 החברה אמינה?</button>
-      <button class="val-btn" onclick="setObj(this,'מה קורה אם חס וחלילה אני מגיע למצב סיעודי?')">🛌 מצב סיעודי</button>
-      <button class="val-btn" onclick="setObj(this,'מה זה ליווי בסיעוד — מה בדיוק עושים?')">🤝 מה זה ליווי?</button>
-      <button class="val-btn" onclick="setObj(this,'מה זה רפואה משלימה — מה כלול?')">🌿 רפואה משלימה</button>
-      <button class="val-btn" onclick="setObj(this,'יש לי מחלה קיימת — האם אני יכול להצטרף?')">💊 יש לי מחלה</button>
-      <button class="val-btn" onclick="setObj(this,'מה זה יעזור לי בפועל בחיי היום-יום? תן דוגמאות קונקרטיות')">💡 מה זה יעזור לי?</button>
-      <button class="val-btn" onclick="setObj(this,'יש לי ביטוח בריאות פרטי של מנורה/הראל/כלל — למה שאצטרך גם אתכם? מה אתם נותנים שהם לא?')">🔄 יש לי ביטוח — למה אתכם?</button>
-      <button class="val-btn" onclick="setObj(this,'מה ההבדל בין כתב שירות לביטוח בריאות רגיל?')">⚖️ מה ההבדל?</button>
-      <button class="val-btn" onclick="setObj(this,'מה אתם נותנים שקופת החולים לא נותנת לי?')">🏥 מה אין בקופה?</button>
+  <!-- PHASE 6: PITCH -->
+  <div class="phase p-navy hide-focus" id="ph-pitch">
+    <div class="phase-hdr" onclick="togglePhase('ph-pitch')">
+      <div class="phase-num">6</div>
+      <div><div class="phase-title">💎 הצגת המוצר</div><div class="phase-desc">פיצ׳ר → תועלת → למה (לפי מה שהלקוח אמר)</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <div class="call-btns" style="margin-top:12px">
+        <button class="call-btn call-btn-pitch" id="pitch-btn" onclick="generatePitch()">💎 צור פיץ׳ מוצר מותאם — פיצ׳ר / תועלת / למה</button>
+      </div>
     </div>
   </div>
 
-  <!-- CONSEQUENCES / LION QUESTIONS -->
-  <div class="card hide-focus" style="border-color:#fed7aa">
-    <div class="card-label" style="color:#c2410c">🦁 שאלות האריה — כאב עתידי ועלות אי-עשייה</div>
-    <div class="btn-grid">
-      <button class="lion-btn" onclick="setObj(this,'מה קורה אם שום דבר לא משתנה? בעוד חצי שנה, שנה — איך ייראו החיים שלך?')">⏳ מה קורה אם כלום לא משתנה?</button>
-      <button class="lion-btn" onclick="setObj(this,'מה קורה אם המצב פתאום מחמיר ואין לך שום כיסוי?')">💥 מה קורה אם יחמיר?</button>
-      <button class="lion-btn" onclick="setObj(this,'בשבילך — מה הסיטואציה שאתה הכי לא רוצה שתקרה לך או למשפחה שלך?')">🦁 מה האריה שלך?</button>
-      <button class="lion-btn" onclick="setObj(this,'כמה בריאות, זמן וכסף אתה מרגיש שאתה מפסיד כרגע בגלל המצב הזה?')">💸 כמה אתה מפסיד?</button>
-      <button class="lion-btn" onclick="setObj(this,'אתה אוהב לחכות חודשים לתור כשכואב לך? אתה נהנה מזה?')">😤 אוהב לחכות?</button>
-      <button class="lion-btn" onclick="setObj(this,'אם המצב יחמיר — מי יעשה את כל הניירת? מי ידפוק על הדלתות?')">🚪 מי ידפוק בשביל?</button>
-      <button class="lion-btn" onclick="setObj(this,'האם אתה מוכן להסתפק במציאות הזו? זה טוב לך ככה?')">❓ מוכן להסתפק?</button>
+  <!-- PHASE 7: OBJECTIONS + VALUE -->
+  <div class="phase p-blue hide-focus" id="ph-obj">
+    <div class="phase-hdr" onclick="togglePhase('ph-obj')">
+      <div class="phase-num">7</div>
+      <div><div class="phase-title">⚡ התנגדויות ושאלות ערך</div><div class="phase-desc">תחמושת מהפה שלו — לא להתווכח, לשאול</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <span class="sec-label">התנגדויות</span>
+      <div class="btn-grid">
+        <button class="obj-btn" onclick="setObj(this,'זה יקר לי, אני לא יכול להרשות לעצמי')">💸 יקר לי</button>
+        <button class="obj-btn" onclick="setObj(this,'שלח לי מידע ואני אחזור אלייך')">📧 שלח מידע</button>
+        <button class="obj-btn" onclick="setObj(this,'אין לי זמן עכשיו')">⏰ אין זמן</button>
+        <button class="obj-btn" onclick="setObj(this,'יש לי כבר ביטוח בריאות פרטי')">🛡️ יש לי ביטוח</button>
+        <button class="obj-btn" onclick="setObj(this,'זה נראה לי הונאה, אני לא בטוח שזה אמיתי')">🚨 נראה הונאה</button>
+        <button class="obj-btn" onclick="setObj(this,'אני לא מבין בדברים האלה')">❓ לא מבין</button>
+        <button class="obj-btn" onclick="setObj(this,'אני בריא ברוך השם, לא צריך')">💪 אני בריא</button>
+        <button class="obj-btn" onclick="setObj(this,'צריך להתייעץ עם בן/בת הזוג')">👫 צריך להתייעץ</button>
+        <button class="obj-btn" onclick="setObj(this,'לא מעוניין, תודה')">❌ לא מעוניין</button>
+        <button class="obj-btn" onclick="setObj(this,'צריך לחשוב על זה')">🤔 צריך לחשוב</button>
+        <button class="obj-btn" onclick="setObj(this,'אין לי כרטיס אשראי ביד')">💳 אין כרטיס</button>
+        <button class="obj-btn" onclick="setObj(this,'כבר יש לי כתב שירות ממקום אחר')">📋 יש כתב שירות</button>
+      </div>
+      <span class="sec-label" style="margin-top:14px">שאלות ערך</span>
+      <div class="btn-grid">
+        <button class="val-btn" onclick="setObj(this,'מה זה בכלל כתב שירות? מה ההבדל מביטוח?')">🤷 מה זה בכלל?</button>
+        <button class="val-btn" onclick="setObj(this,'יש לי קופת חולים — למה אני צריך עוד?')">🏥 יש לי קופה</button>
+        <button class="val-btn" onclick="setObj(this,'תן דוגמה — מה קורה אם אני צריך MRI?')">🔬 דוגמה MRI</button>
+        <button class="val-btn" onclick="setObj(this,'מה ההבדל בינכם לבין ביטוח סיעודי?')">⚖️ לעומת סיעוד</button>
+        <button class="val-btn" onclick="setObj(this,'מה קורה אם אני מגיש תביעה? איך זה עובד?')">📝 איך מגישים?</button>
+        <button class="val-btn" onclick="setObj(this,'מה אני מקבל בפועל? תפרט את הכיסויים')">📋 הכיסויים?</button>
+        <button class="val-btn" onclick="setObj(this,'מה קורה אם אצטרך לבטל? יש קנס?')">🚪 אפשר לבטל?</button>
+        <button class="val-btn" onclick="setObj(this,'כמה אנשים יש לכם? החברה אמינה?')">🏢 החברה?</button>
+        <button class="val-btn" onclick="setObj(this,'מה קורה חס וחלילה במצב סיעודי?')">🛌 מצב סיעודי</button>
+        <button class="val-btn" onclick="setObj(this,'מה זה ליווי בסיעוד — מה בדיוק עושים?')">🤝 מה זה ליווי?</button>
+        <button class="val-btn" onclick="setObj(this,'מה זה רפואה משלימה — מה כלול?')">🌿 רפואה משלימה</button>
+        <button class="val-btn" onclick="setObj(this,'יש לי מחלה קיימת — האם אני יכול להצטרף?')">💊 יש לי מחלה</button>
+        <button class="val-btn" onclick="setObj(this,'מה זה יעזור לי בחיי היום-יום?')">💡 מה יעזור לי?</button>
+        <button class="val-btn" onclick="setObj(this,'יש לי ביטוח פרטי מנורה/הראל — למה שאצטרך גם אתכם?')">🔄 יש ביטוח — למה אתם?</button>
+        <button class="val-btn" onclick="setObj(this,'מה אתם נותנים שקופה לא נותנת?')">🏥 מה אין בקופה?</button>
+      </div>
     </div>
   </div>
 
-  <!-- GAP & CLOSING QUESTIONS -->
-  <div class="card hide-focus" style="border-color:#6ee7b7">
-    <div class="card-label" style="color:#065f46">🎯 שאלות יצירת פער וסגירה — בחירה בינארית</div>
-    <div class="btn-grid">
-      <button class="close-btn" onclick="setObj(this,'בסולם 1 עד 10 — כש-10 זה האדם שיש לו שליטה מלאה על הבריאות שלו — איפה אתה נמצא היום?')">📊 סולם 1-10</button>
-      <button class="close-btn" onclick="setObj(this,'אם לא תעשה שינוי — איזה אדם תישאר? מה זה אומר על המשפחה שלך?')">🪞 איזה אדם תישאר?</button>
-      <button class="close-btn" onclick="setObj(this,'האם תישאר האדם שמוותר לעצמו — או שתבחר להיות האדם שלוקח שליטה על החיים שלו?')">⚡ מוותר או לוקח שליטה?</button>
-      <button class="close-btn" onclick="setObj(this,'בסופו של דבר — האחריות של מי זה לוודא שהמשפחה שלך מוגנת? של המדינה, או שלך?')">🤝 האחריות של מי?</button>
-      <button class="close-btn" onclick="setObj(this,'למה לטפל בזה דווקא עכשיו ולא לחכות עוד חודש כמו שהרבה אנשים עושים?')">🕐 למה עכשיו?</button>
-      <button class="close-btn" onclick="setObj(this,'תשמע — אם בן אדם נשוי באושר הוא לא מחפש משהו אחר. מה בכלל גורם לך להיות פתוח לפתרון אחר?')">💍 הנשוי באושר</button>
-      <button class="close-btn" onclick="setObj(this,'מה דעתך על החלק הזה בשירות? אתה חושב שזה יכול לעזור לך?')">✅ הסכמה קטנה</button>
-      <button class="close-btn" onclick="setObj(this,'ההשקעה היא 248 שקל בחודש — 8 שקל ביום. איך אתה רוצה להמשיך מכאן?')">💳 סגירה — 248 ש״ח</button>
+  <!-- PHASE 8: GAP & CLOSE -->
+  <div class="phase p-green hide-focus" id="ph-close">
+    <div class="phase-hdr" onclick="togglePhase('ph-close')">
+      <div class="phase-num">8</div>
+      <div><div class="phase-title">🎯 יצירת פער וסגירה</div><div class="phase-desc">בחירה בינארית — האחריות שלו</div></div>
+      <span class="phase-chevron">▼</span>
+    </div>
+    <div class="phase-body">
+      <div class="btn-grid">
+        <button class="close-btn" onclick="setObj(this,'בסולם 1 עד 10 — כש-10 זה אדם עם שליטה מלאה על הבריאות — איפה אתה היום?')">📊 סולם 1-10</button>
+        <button class="close-btn" onclick="setObj(this,'אם לא תעשה שינוי — איזה אדם תישאר? מה זה אומר על המשפחה שלך?')">🪞 איזה אדם תישאר?</button>
+        <button class="close-btn" onclick="setObj(this,'האם תישאר מוותר לעצמו — או שתבחר להיות האדם שלוקח שליטה?')">⚡ מוותר / שולט?</button>
+        <button class="close-btn" onclick="setObj(this,'האחריות של מי זה לוודא שהמשפחה שלך מוגנת?')">🤝 האחריות של מי?</button>
+        <button class="close-btn" onclick="setObj(this,'למה לטפל בזה דווקא עכשיו?')">🕐 למה עכשיו?</button>
+        <button class="close-btn" onclick="setObj(this,'מה דעתך על החלק הזה? אתה חושב שזה יכול לעזור לך?')">✅ הסכמה קטנה</button>
+        <button class="close-btn" onclick="setObj(this,'ההשקעה היא 248 שקל בחודש — 8 שקל ביום. איך אתה רוצה להמשיך?')">💳 סגירה 248 ש״ח</button>
+      </div>
+      <div class="call-btns" style="margin-top:12px">
+        <button class="call-btn call-btn-close" id="closing-btn" onclick="generateClosingScript()">✅ צור תסריט סגירה מלא — כולל שאלות רפואיות + מחיר</button>
+      </div>
     </div>
   </div>
 
-  <!-- CALCULATOR -->
-  <div class="card hide-focus">
-    <div class="card-label">🧮 מחשבון החזר — כמה פלטינום מחזיר?</div>
-    <div class="calc-row">
-      <select id="calc-type">
-        <option value="physio">פיזיותרפיה / הידרותרפיה</option>
-        <option value="alt">רפואה משלימה (מרפאה)</option>
-        <option value="alt_home">רפואה משלימה (בבית)</option>
-        <option value="specialist1">רופא מומחה (ייעוץ 1-2)</option>
-        <option value="specialist2">רופא מומחה (ייעוץ 3-5)</option>
-        <option value="mri">MRI</option>
-        <option value="imaging">CT / אולטרסאונד</option>
-        <option value="ambulance">אמבולנס</option>
-        <option value="ortho">מכשיר אורתופדי</option>
-        <option value="nutrition">תזונאי/ת</option>
-      </select>
-      <input type="number" id="calc-cost" placeholder="עלות הטיפול ₪" min="0" />
-      <button class="calc-go" onclick="calcRefund()">חשב</button>
+  <!-- PHASE 9: CALCULATOR -->
+  <div class="phase p-gold hide-focus" id="ph-calc">
+    <div class="phase-hdr" onclick="togglePhase('ph-calc')">
+      <div class="phase-num">9</div>
+      <div><div class="phase-title">🧮 מחשבון החזר</div><div class="phase-desc">כמה פלטינום מחזיר בפועל?</div></div>
+      <span class="phase-chevron">▼</span>
     </div>
-    <div id="calc-result"></div>
-  </div>
-
-  <!-- INPUT -->
-  <div class="card">
-    <div class="card-label">✍️ מה הלקוח אמר?</div>
-    <div class="input-row">
-      <textarea id="customer-said" placeholder='למשל: "תקשיב, אני לא בטוח שזה בשבילי..."'></textarea>
-      <button class="ask-btn" id="ask-btn" onclick="getResponse()">קבל<br>תשובות</button>
-    </div>
-    <div class="action-row">
-      <button class="action-btn" id="followup-btn" onclick="generateFollowup()">📲 צור הודעת פולו-אפ</button>
-      <button class="action-btn" id="summary-btn" onclick="generateSummary()">📋 סכם את השיחה</button>
-    </div>
-  </div>
-
-  <!-- OUTPUT -->
-  <div id="output">
-    <div class="empty">
-      <div class="empty-icon">🎯</div>
-      <p>מלא פרופיל לקוח → לחץ "צור פתיחה"<br>או בחר שלב + התנגדות ולחץ <strong>"קבל תשובות"</strong></p>
+    <div class="phase-body">
+      <div class="calc-row">
+        <select id="calc-type">
+          <option value="physio">פיזיותרפיה / הידרותרפיה</option>
+          <option value="alt">רפואה משלימה (מרפאה)</option>
+          <option value="alt_home">רפואה משלימה (בבית)</option>
+          <option value="specialist1">רופא מומחה (ייעוץ 1-2)</option>
+          <option value="specialist2">רופא מומחה (ייעוץ 3-5)</option>
+          <option value="mri">MRI</option>
+          <option value="imaging">CT / אולטרסאונד</option>
+          <option value="ambulance">אמבולנס</option>
+          <option value="ortho">מכשיר אורתופדי</option>
+          <option value="nutrition">תזונאי/ת</option>
+        </select>
+        <input type="number" id="calc-cost" placeholder="עלות הטיפול ₪" min="0" />
+        <button class="calc-go" onclick="calcRefund()">חשב</button>
+      </div>
+      <div id="calc-result"></div>
     </div>
   </div>
 
   <!-- HISTORY -->
-  <div class="card hide-focus" id="history-wrap" style="display:none">
-    <div class="history-header">
-      <span style="font-size:.85rem;font-weight:800">📜 היסטוריית שיחה</span>
-      <button class="clear-btn" onclick="clearHistory()">נקה שיחה</button>
+  <div class="phase p-navy hide-focus" id="history-wrap" style="display:none">
+    <div class="phase-hdr" onclick="togglePhase('history-wrap')">
+      <div class="phase-num" style="background:#6b7a99">📜</div>
+      <div><div class="phase-title">היסטוריית שיחה</div></div>
+      <button class="clear-btn" onclick="clearHistory()" style="margin-right:auto">נקה</button>
+      <span class="phase-chevron">▼</span>
     </div>
-    <div id="history-log"></div>
+    <div class="phase-body"><div id="history-log"></div></div>
   </div>
 
 </div><!-- /container -->
+
+<!-- STICKY BOTTOM INPUT -->
+<div class="sticky-input">
+  <div class="sticky-inner">
+    <div class="input-row">
+      <textarea id="customer-said" placeholder="מה הלקוח אמר? מה ענה? מה התנגד?..." rows="2"></textarea>
+      <button class="ask-btn" id="ask-btn" onclick="getResponse()">קבל<br>תשובות</button>
+    </div>
+    <div class="action-row">
+      <button class="action-btn" id="followup-btn" onclick="generateFollowup()">📲 פולו-אפ</button>
+      <button class="action-btn" id="summary-btn" onclick="generateSummary()">📋 סכם שיחה</button>
+      <button class="action-btn" onclick="copyAllResponses()">📋 העתק הכל</button>
+      <button class="action-btn" onclick="resetTimer()" style="margin-right:auto;color:#e74c3c;border-color:#fecaca">⏱ אפס שעון</button>
+    </div>
+  </div>
+</div>
 
 <script>
 let currentStage = 'פתיחה — ליד חם';
@@ -896,6 +983,7 @@ async function getResponse() {
 
   const btn = document.getElementById('ask-btn');
   btn.disabled = true;
+  startTimer();
   showStreamCard('מכין תשובות...');
 
   const userPrompt = `שלב בשיחה: ${currentStage}
@@ -935,6 +1023,7 @@ async function generateOpening() {
   if (!apiKey) { alert('הכנס API Key קודם'); return; }
   const btn = document.getElementById('open-btn');
   btn.disabled = true;
+  startTimer();
   showStreamCard('מכין פתיחת שיחה מותאמת...');
 
   const profile = getProfile();
@@ -961,6 +1050,7 @@ async function generatePainScript() {
   if (!apiKey) { alert('הכנס API Key קודם'); return; }
   const btn = document.getElementById('pain-btn');
   btn.disabled = true;
+  startTimer();
   showStreamCard('בונה תסריט נגיעה בכאב...');
 
   const profile = getProfile();
@@ -1137,6 +1227,10 @@ function renderResponses(responses, score, scoreText) {
       <div class="resp-text">${escH(r)}</div>
     </div>`).join('') + '</div>';
 
+  if (responses.length > 1) {
+    html += `<button class="copy-all-btn" onclick="copyAllResponses()">📋 העתק את כל 3 התשובות</button>`;
+  }
+
   document.getElementById('output').innerHTML = html;
 }
 
@@ -1203,6 +1297,125 @@ function clearHistory() {
   conversationHistory = [];
   document.getElementById('history-log').innerHTML = '';
   document.getElementById('history-wrap').style.display = 'none';
+}
+
+// ════════════════════════════════════
+// PHASE ACCORDION
+// ════════════════════════════════════
+function togglePhase(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+// ════════════════════════════════════
+// CALL TIMER
+// ════════════════════════════════════
+let timerInterval = null;
+let timerSeconds = 0;
+let timerStarted = false;
+
+function startTimer() {
+  if (timerStarted) return;
+  timerStarted = true;
+  timerSeconds = 0;
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+    const s = String(timerSeconds % 60).padStart(2, '0');
+    document.getElementById('timer').textContent = m + ':' + s;
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerStarted = false;
+  timerSeconds = 0;
+  document.getElementById('timer').textContent = '00:00';
+}
+
+// ════════════════════════════════════
+// PITCH GENERATOR (פיצ'ר → תועלת → למה)
+// ════════════════════════════════════
+async function generatePitch() {
+  if (!apiKey) { alert('הכנס API Key קודם'); return; }
+  const btn = document.getElementById('pitch-btn');
+  btn.disabled = true;
+  startTimer();
+  showStreamCard('בונה פיץ׳ מוצר מותאם...');
+
+  const profile = getProfile();
+  const userPrompt = `צור הצגת מוצר מותאמת לפי מודל פיצ'ר → תועלת → למה.
+${profile || 'פרופיל לא סופק — צור הצגה כללית.'}
+
+בחר 3-4 כיסויים הכי רלוונטיים לפרופיל הלקוח.
+לכל אחד:
+🔷 פיצ'ר: [שם הכיסוי + פרטים ספציפיים]
+✅ תועלת: [מה הלקוח מרוויח בפועל — בשפה יומיומית]
+❓ למה: "ולמה אני מכניס לך את זה? כי אמרת לי ש[מה שהלקוח אמר / מצבו]"
+
+אחרי כל פיצ'ר — שאלת הסכמה קטנה: "מה דעתך על החלק הזה?"
+סיים ב: "ההשקעה כדי שיהיה לך שקט נפשי הרמטי — 248 שקל בחודש, 8 שקל ביום. איך אתה רוצה להמשיך?"`;
+
+  try {
+    const fullText = await streamAI(BASE_SYSTEM + profile, userPrompt,
+      text => { document.getElementById('stream-text').textContent = text; });
+    renderSpecial('💎 פיץ׳ מוצר — פיצ׳ר / תועלת / למה', fullText);
+  } catch(e) { showError(e.message); }
+  btn.disabled = false;
+}
+
+// ════════════════════════════════════
+// CLOSING SCRIPT GENERATOR
+// ════════════════════════════════════
+async function generateClosingScript() {
+  if (!apiKey) { alert('הכנס API Key קודם'); return; }
+  const btn = document.getElementById('closing-btn');
+  btn.disabled = true;
+  showStreamCard('בונה תסריט סגירה מלא...');
+
+  const profile = getProfile();
+  const name = document.getElementById('p-name').value.trim() || '[שם]';
+
+  const userPrompt = `צור תסריט סגירה מלא עבור ${name}.
+${profile}
+
+כולל בדיוק בסדר הזה:
+1. שאלת זהות: "בסולם 1 עד 10 — כמה חשוב לך שהמשפחה שלך תהיה מוגנת?"
+2. בחירה בינארית: "האם תישאר האדם שמוותר לעצמו — או שתבחר להיות האדם שלוקח שליטה?"
+3. שאלת אחריות: "בסופו של דבר — האחריות של מי זה לוודא שהמשפחה שלך מוגנת?"
+4. שאלות רפואיות (לדבר בטון שגרתי, לא רפואי):
+   — "היו לך שינויים במצב הרפואי בשנה האחרונה?"
+   — "עישנת סיגריות בשנתיים האחרונות?"
+   — "חלית בסרטן, מחלת לב, או שבץ בשנה האחרונה?"
+5. אישור: "ברוך השם — יש אישור ראשוני. מצרף אותך ב-248 ש"ח קבוע לכל החיים."
+6. אם מתנגד למחיר — טכניקת מנהל:
+   "תמציא איתי רגע על הקו — אני בודק עם המנהל."
+   (30 שניות) "לא יודע איך הצלחתי — אישור חריג ל-220 ש"ח. זה כמעט לא קורה."
+
+כתוב מילה במילה כמו שנציג מדבר בטלפון. עברית שוטפת ויומיומית. ממוספר בצורה ברורה.`;
+
+  try {
+    const fullText = await streamAI(BASE_SYSTEM + profile, userPrompt,
+      text => { document.getElementById('stream-text').textContent = text; });
+    renderSpecial('✅ תסריט סגירה מלא', fullText);
+  } catch(e) { showError(e.message); }
+  btn.disabled = false;
+}
+
+// ════════════════════════════════════
+// COPY ALL RESPONSES
+// ════════════════════════════════════
+function copyAllResponses() {
+  const cards = document.querySelectorAll('.resp-text');
+  if (!cards.length) { alert('אין תשובות להעתקה'); return; }
+  const allText = Array.from(cards).map((c, i) => `תשובה ${i+1}:\n${c.textContent}`).join('\n\n');
+  navigator.clipboard.writeText(allText).then(() => {
+    const btn = event.currentTarget;
+    const orig = btn.textContent;
+    btn.textContent = '✓ הועתק הכל!';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  });
 }
 
 document.getElementById('customer-said').addEventListener('keydown', function(e) {
