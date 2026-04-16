@@ -6,7 +6,7 @@
 <title>סוכן מכירות — פלטינום</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#1a2744;--gold:#d4af37;--gold2:#f0d060;--bg:#f4f6fb;--white:#fff;--border:#e8ecf4;--green:#22c55e;--red:#e74c3c}
+:root{--navy:#1a2744;--gold:#d4af37;--gold2:#f0d060;--bg:#f4f6fb;--white:#fff;--border:#e8ecf4;--green:#22c55e;--red:#e74c3c;--blue:#3b82f6;--wa:#25d366}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--navy);min-height:100vh;direction:rtl}
 
@@ -20,25 +20,34 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--navy);min-h
 /* LAYOUT */
 .container{max-width:800px;margin:0 auto;padding:16px}
 
+/* CARD BASE */
+.card{background:var(--white);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border)}
+.card-label{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:10px;opacity:.7}
+
+/* CUSTOMER PROFILE */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.profile-field label{display:block;font-size:.75rem;font-weight:700;color:var(--navy);opacity:.6;margin-bottom:4px}
+.profile-field input,.profile-field select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fafbfc;color:var(--navy)}
+.profile-field input:focus,.profile-field select:focus{outline:none;border-color:var(--gold);background:#fff}
+.profile-full{grid-column:1/-1}
+.profile-toggle{font-size:.78rem;color:var(--blue);cursor:pointer;font-weight:700;text-decoration:underline;margin-bottom:10px;display:inline-block}
+
 /* STAGE SELECTOR */
-.stage-wrap{background:var(--white);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border)}
-.stage-label{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:10px;opacity:.7}
 .stages{display:flex;flex-wrap:wrap;gap:8px}
 .stage-btn{padding:8px 14px;border:2px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--navy);font-family:'Heebo',sans-serif;transition:all .15s}
 .stage-btn:hover{border-color:var(--gold);background:#fffbeb}
 .stage-btn.active{border-color:var(--gold);background:var(--gold);color:var(--navy);font-weight:800}
 
-/* QUICK OBJECTIONS */
-.obj-wrap{background:var(--white);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border)}
-.obj-label{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:10px;opacity:.7}
-.obj-grid{display:flex;flex-wrap:wrap;gap:7px}
+/* BUTTONS GRID */
+.btn-grid{display:flex;flex-wrap:wrap;gap:7px}
 .obj-btn{padding:7px 13px;border:1.5px solid #fcd34d;border-radius:20px;background:#fffbeb;cursor:pointer;font-size:.8rem;font-weight:600;color:#92400e;font-family:'Heebo',sans-serif;transition:all .15s}
 .obj-btn:hover{background:#fef3c7;border-color:#f59e0b}
 .obj-btn.active{background:#f59e0b;border-color:#d97706;color:#fff}
+.val-btn{padding:7px 13px;border:1.5px solid #bfdbfe;border-radius:20px;background:#eff6ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#1e40af;font-family:'Heebo',sans-serif;transition:all .15s}
+.val-btn:hover{background:#dbeafe;border-color:var(--blue)}
+.val-btn.active{background:var(--blue);border-color:#1d4ed8;color:#fff}
 
 /* INPUT */
-.input-wrap{background:var(--white);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px rgba(26,39,68,.08);border:1.5px solid var(--border)}
-.input-label{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:8px;opacity:.7}
 .input-row{display:flex;gap:10px}
 textarea{flex:1;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.93rem;font-family:'Heebo',sans-serif;resize:none;height:70px;direction:rtl;background:#fafbfc;transition:border .2s}
 textarea:focus{outline:none;border-color:var(--gold);background:#fff}
@@ -50,10 +59,29 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
 .responses{display:flex;flex-direction:column;gap:12px}
 .resp-card{background:var(--white);border-radius:14px;padding:18px 20px;box-shadow:0 2px 12px rgba(26,39,68,.08);border-right:4px solid var(--gold);border-left:1.5px solid var(--border);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);position:relative}
 .resp-num{display:inline-block;background:var(--gold);color:var(--navy);border-radius:50%;width:24px;height:24px;font-size:.78rem;font-weight:900;text-align:center;line-height:24px;margin-bottom:10px}
-.resp-text{font-size:.93rem;line-height:1.75;color:var(--navy);white-space:pre-wrap}
-.copy-btn{position:absolute;top:14px;left:14px;background:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.78rem;font-weight:700;cursor:pointer;color:#6b7a99;font-family:'Heebo',sans-serif;transition:all .15s}
+.resp-text{font-size:.93rem;line-height:1.75;color:var(--navy);white-space:pre-wrap;padding-left:80px}
+.resp-actions{position:absolute;top:14px;left:14px;display:flex;gap:6px}
+.copy-btn{background:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:.75rem;font-weight:700;cursor:pointer;color:#6b7a99;font-family:'Heebo',sans-serif;transition:all .15s}
 .copy-btn:hover{border-color:var(--gold);color:var(--navy);background:#fffbeb}
 .copy-btn.copied{border-color:var(--green);color:var(--green);background:#f0fdf4}
+.wa-btn{background:none;border:1.5px solid #86efac;border-radius:8px;padding:5px 10px;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--wa);font-family:'Heebo',sans-serif;transition:all .15s}
+.wa-btn:hover{background:#f0fdf4;border-color:var(--wa)}
+
+/* STREAMING */
+.stream-card{background:var(--white);border-radius:14px;padding:18px 20px;box-shadow:0 2px 12px rgba(26,39,68,.08);border-right:4px solid var(--gold);border:1.5px solid var(--border);border-right:4px solid var(--gold)}
+.stream-text{font-size:.93rem;line-height:1.75;color:var(--navy);white-space:pre-wrap;min-height:40px}
+.cursor{display:inline-block;width:2px;height:1em;background:var(--gold);margin-right:2px;animation:blink .7s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* HISTORY */
+.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.history-title{font-size:.85rem;font-weight:800;color:var(--navy)}
+.clear-btn{font-size:.75rem;color:var(--red);background:none;border:1.5px solid #fecaca;border-radius:6px;padding:4px 10px;cursor:pointer;font-family:'Heebo',sans-serif;font-weight:700}
+.clear-btn:hover{background:#fef2f2}
+.history-entry{padding:10px 12px;border-radius:10px;margin-bottom:8px;font-size:.82rem;line-height:1.6}
+.history-user{background:#fffbeb;border-right:3px solid var(--gold)}
+.history-ai{background:#f0fdf4;border-right:3px solid var(--green)}
+.history-label{font-size:.72rem;font-weight:800;opacity:.6;margin-bottom:3px}
 
 /* LOADING */
 .loading{text-align:center;padding:32px;color:#6b7a99}
@@ -74,11 +102,6 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
 .api-input-row input{flex:1;padding:10px 14px;border:1.5px solid #ffc107;border-radius:8px;font-size:.88rem;font-family:'Heebo',sans-serif;background:#fff}
 .api-save-btn{background:#ffc107;color:#000;border:none;border-radius:8px;padding:0 16px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:'Heebo',sans-serif}
 
-/* VALUE BUTTONS */
-.val-btn{padding:7px 13px;border:1.5px solid #bfdbfe;border-radius:20px;background:#eff6ff;cursor:pointer;font-size:.8rem;font-weight:600;color:#1e40af;font-family:'Heebo',sans-serif;transition:all .15s}
-.val-btn:hover{background:#dbeafe;border-color:#3b82f6}
-.val-btn.active{background:#3b82f6;border-color:#1d4ed8;color:#fff}
-
 /* TIP */
 .tip{background:#e8f4fd;border:1.5px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:#1e40af;line-height:1.5}
 .tip strong{font-weight:800}
@@ -88,6 +111,9 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
   .ask-btn{height:44px}
   .stages{gap:6px}
   .stage-btn{font-size:.78rem;padding:7px 11px}
+  .profile-grid{grid-template-columns:1fr}
+  .resp-text{padding-left:0;padding-top:44px}
+  .resp-actions{top:14px;left:14px}
 }
 </style>
 </head>
@@ -114,14 +140,55 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
     </div>
   </div>
 
+  <!-- CUSTOMER PROFILE -->
+  <div class="card">
+    <div class="card-label">👤 פרופיל לקוח — ממלאים לפני השיחה</div>
+    <div class="profile-grid">
+      <div class="profile-field">
+        <label>שם הלקוח</label>
+        <input type="text" id="p-name" placeholder="ישראל ישראלי" />
+      </div>
+      <div class="profile-field">
+        <label>טלפון (לשליחת WhatsApp)</label>
+        <input type="tel" id="p-phone" placeholder="0501234567" />
+      </div>
+      <div class="profile-field">
+        <label>גיל</label>
+        <input type="number" id="p-age" placeholder="65" min="18" max="99" />
+      </div>
+      <div class="profile-field">
+        <label>קופת חולים</label>
+        <select id="p-fund">
+          <option value="">לא ידוע</option>
+          <option value="מכבי">מכבי</option>
+          <option value="מאוחדת">מאוחדת</option>
+          <option value="כללית">כללית</option>
+          <option value="לאומית">לאומית</option>
+        </select>
+      </div>
+      <div class="profile-field">
+        <label>ביטוח פרטי קיים?</label>
+        <select id="p-insurance">
+          <option value="">לא ידוע</option>
+          <option value="no">אין</option>
+          <option value="yes">יש</option>
+        </select>
+      </div>
+      <div class="profile-field">
+        <label>מצב רפואי / הערות</label>
+        <input type="text" id="p-notes" placeholder="למשל: כאבי גב, מחלת סוכרת..." />
+      </div>
+    </div>
+  </div>
+
   <!-- TIP -->
   <div class="tip">
-    <strong>איך משתמשים:</strong> בחר שלב בשיחה → לחץ על התנגדות נפוצה או כתוב מה הלקוח אמר → קבל 3 תשובות מוכנות
+    <strong>איך משתמשים:</strong> מלא פרטי לקוח למעלה → בחר שלב בשיחה → לחץ על התנגדות/שאלה → קבל 3 תשובות מוכנות + שלח ב-WhatsApp
   </div>
 
   <!-- STAGE -->
-  <div class="stage-wrap">
-    <div class="stage-label">📍 שלב בשיחה</div>
+  <div class="card">
+    <div class="card-label">📍 שלב בשיחה</div>
     <div class="stages">
       <button class="stage-btn active" onclick="setStage(this,'פתיחה — ליד חם')">🔥 ליד חם</button>
       <button class="stage-btn" onclick="setStage(this,'פתיחה — ליד קר')">🧊 ליד קר</button>
@@ -134,9 +201,9 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
   </div>
 
   <!-- OBJECTIONS -->
-  <div class="obj-wrap">
-    <div class="obj-label">⚡ התנגדויות נפוצות — לחץ לבחירה מהירה</div>
-    <div class="obj-grid">
+  <div class="card">
+    <div class="card-label">⚡ התנגדויות נפוצות — לחץ לבחירה מהירה</div>
+    <div class="btn-grid">
       <button class="obj-btn" onclick="setObj(this,'זה יקר לי, אני לא יכול להרשות לעצמי')">💸 יקר לי</button>
       <button class="obj-btn" onclick="setObj(this,'שלח לי מידע ואני אסתכל ואחזור אלייך')">📧 שלח לי מידע</button>
       <button class="obj-btn" onclick="setObj(this,'אין לי זמן עכשיו, תתקשר אליי מאוחר יותר')">⏰ אין זמן עכשיו</button>
@@ -153,9 +220,9 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
   </div>
 
   <!-- VALUE QUESTIONS -->
-  <div class="obj-wrap" style="border-color:#bfdbfe">
-    <div class="obj-label" style="color:#1e40af">💡 שאלות ערך — "למה אני צריך את זה?"</div>
-    <div class="obj-grid">
+  <div class="card" style="border-color:#bfdbfe">
+    <div class="card-label" style="color:#1e40af">💡 שאלות ערך — "למה אני צריך את זה?"</div>
+    <div class="btn-grid">
       <button class="val-btn" onclick="setObj(this,'מה זה בכלל כתב שירות? מה ההבדל מביטוח?')">🤷 מה זה בכלל?</button>
       <button class="val-btn" onclick="setObj(this,'יש לי קופת חולים — למה אני צריך עוד משהו?')">🏥 יש לי קופה</button>
       <button class="val-btn" onclick="setObj(this,'תן לי דוגמה — מה קורה אם אני צריך MRI?')">🔬 דוגמה מעשית</button>
@@ -172,10 +239,10 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
   </div>
 
   <!-- INPUT -->
-  <div class="input-wrap">
-    <div class="input-label">✍️ מה הלקוח אמר? (כתוב בחופשיות)</div>
+  <div class="card">
+    <div class="card-label">✍️ מה הלקוח אמר? (כתוב בחופשיות)</div>
     <div class="input-row">
-      <textarea id="customer-said" placeholder="למשל: &quot;תקשיב, אני לא בטוח שזה בשבילי...&quot;"></textarea>
+      <textarea id="customer-said" placeholder='למשל: "תקשיב, אני לא בטוח שזה בשבילי..."'></textarea>
       <button class="ask-btn" id="ask-btn" onclick="getResponse()">קבל<br>תשובות</button>
     </div>
   </div>
@@ -188,13 +255,23 @@ textarea:focus{outline:none;border-color:var(--gold);background:#fff}
     </div>
   </div>
 
+  <!-- HISTORY -->
+  <div class="card" id="history-wrap" style="display:none">
+    <div class="history-header">
+      <span class="history-title">📜 היסטוריית שיחה</span>
+      <button class="clear-btn" onclick="clearHistory()">נקה שיחה</button>
+    </div>
+    <div id="history-log"></div>
+  </div>
+
 </div>
 
 <script>
-let currentStage = 'פתיחה';
+let currentStage = 'פתיחה — ליד חם';
 let apiKey = localStorage.getItem('sales_api_key') || '';
+let conversationHistory = [];
 
-// Init
+// Init API key
 if (apiKey) {
   document.getElementById('api-key').value = apiKey;
   document.getElementById('api-wrap').style.background = '#f0fdf4';
@@ -224,27 +301,24 @@ function setObj(el, text) {
   document.getElementById('customer-said').value = text;
 }
 
-async function getResponse() {
-  if (!apiKey) {
-    alert('הכנס API Key קודם');
-    return;
-  }
-  const customerSaid = document.getElementById('customer-said').value.trim();
-  if (!customerSaid) {
-    alert('כתוב מה הלקוח אמר');
-    return;
-  }
+function getProfile() {
+  const name = document.getElementById('p-name').value.trim();
+  const age = document.getElementById('p-age').value.trim();
+  const fund = document.getElementById('p-fund').value;
+  const ins = document.getElementById('p-insurance').value;
+  const notes = document.getElementById('p-notes').value.trim();
+  if (!name && !age && !fund && !notes) return '';
+  let p = '\n===פרופיל לקוח נוכחי===\n';
+  if (name) p += `שם: ${name}\n`;
+  if (age) p += `גיל: ${age}\n`;
+  if (fund) p += `קופת חולים: ${fund}\n`;
+  if (ins) p += `ביטוח פרטי: ${ins === 'yes' ? 'יש' : 'אין'}\n`;
+  if (notes) p += `הערות: ${notes}\n`;
+  p += 'השתמש בפרטים אלה כדי להתאים את התשובות אישית.\n';
+  return p;
+}
 
-  const btn = document.getElementById('ask-btn');
-  btn.disabled = true;
-
-  document.getElementById('output').innerHTML = `
-    <div class="loading">
-      <div class="loading-dots"><span></span><span></span><span></span></div>
-      <p style="margin-top:12px;font-size:.88rem">מכין תשובות...</p>
-    </div>`;
-
-  const systemPrompt = `אתה סוכן מכירות מנוסה של פלטינום כתב שירות — כתב שירות רפואי פרטי משלים.
+const BASE_SYSTEM = `אתה סוכן מכירות מנוסה של פלטינום כתב שירות — כתב שירות רפואי פרטי משלים.
 החברה: פלטינום רפואה משלימה בע"מ | ח.פ 515443554 | מאז 2016 | עשרות אלפי לקוחות מרוצים | כ-100 נציגים ומשווקים.
 
 ===מחירים===
@@ -402,6 +476,22 @@ async function getResponse() {
 - כשיש התנגדות — תאמת רגש → הצג ערך → סגור
 - עבור "לא צריך / לא מעוניין" — השתמש תמיד במסגרת הרופא ושלב ההשלכות`;
 
+async function getResponse() {
+  if (!apiKey) { alert('הכנס API Key קודם'); return; }
+  const customerSaid = document.getElementById('customer-said').value.trim();
+  if (!customerSaid) { alert('כתוב מה הלקוח אמר'); return; }
+
+  const btn = document.getElementById('ask-btn');
+  btn.disabled = true;
+
+  // Show streaming container
+  document.getElementById('output').innerHTML = `
+    <div class="stream-card">
+      <div style="font-size:.78rem;color:#6b7a99;margin-bottom:8px">מכין תשובות<span class="cursor"></span></div>
+      <div class="stream-text" id="stream-text"></div>
+    </div>`;
+
+  const systemPrompt = BASE_SYSTEM + getProfile();
   const userPrompt = `שלב בשיחה: ${currentStage}
 מה הלקוח אמר: "${customerSaid}"
 
@@ -422,36 +512,52 @@ async function getResponse() {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
+        max_tokens: 700,
+        stream: true,
         system: systemPrompt,
-        messages: [{ role: 'user', content: userPrompt }]
+        messages: [...conversationHistory, { role: 'user', content: userPrompt }]
       })
     });
 
     if (!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    const text = data.content[0].text;
 
-    // Parse responses
-    const lines = text.split('\n').filter(l => l.trim());
-    const responses = [];
-    let current = '';
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let buffer = '';
 
-    for (const line of lines) {
-      if (line.match(/^תשובה\s*\d+\s*:/)) {
-        if (current) responses.push(current.trim());
-        current = line.replace(/^תשובה\s*\d+\s*:\s*/, '');
-      } else if (current) {
-        current += '\n' + line;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') continue;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
+              fullText += parsed.delta.text;
+              document.getElementById('stream-text').textContent = fullText;
+            }
+          } catch {}
+        }
       }
     }
-    if (current) responses.push(current.trim());
 
-    if (responses.length === 0) {
-      responses.push(text);
-    }
+    // Save to conversation history
+    conversationHistory.push({ role: 'user', content: userPrompt });
+    conversationHistory.push({ role: 'assistant', content: fullText });
 
+    // Parse and render 3 cards
+    const responses = parseResponses(fullText);
     renderResponses(responses);
+
+    // Add to history log
+    addToHistory(customerSaid, responses[0] || fullText);
+
   } catch(e) {
     document.getElementById('output').innerHTML = `
       <div class="empty">
@@ -463,35 +569,102 @@ async function getResponse() {
   btn.disabled = false;
 }
 
+function parseResponses(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  const responses = [];
+  let current = '';
+  for (const line of lines) {
+    if (line.match(/^תשובה\s*\d+\s*:/)) {
+      if (current) responses.push(current.trim());
+      current = line.replace(/^תשובה\s*\d+\s*:\s*/, '');
+    } else if (current) {
+      current += '\n' + line;
+    }
+  }
+  if (current) responses.push(current.trim());
+  return responses.length ? responses : [text];
+}
+
 function renderResponses(responses) {
   const colors = ['#d4af37','#22c55e','#3b82f6'];
   const html = responses.map((r, i) => `
     <div class="resp-card" style="border-right-color:${colors[i]||'#d4af37'}">
       <span class="resp-num" style="background:${colors[i]||'#d4af37'}">${i+1}</span>
-      <button class="copy-btn" onclick="copyText(this, \`${r.replace(/`/g,'\\`')}\`)">העתק</button>
-      <div class="resp-text">${r}</div>
+      <div class="resp-actions">
+        <button class="copy-btn" onclick="copyText(this,'${escapeForAttr(r)}')">העתק</button>
+        <button class="wa-btn" onclick="sendWhatsApp('${escapeForAttr(r)}')">📲 WA</button>
+      </div>
+      <div class="resp-text">${escapeHtml(r)}</div>
     </div>
   `).join('');
   document.getElementById('output').innerHTML = `<div class="responses">${html}</div>`;
 }
 
+function escapeForAttr(text) {
+  return text.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n');
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 function copyText(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
+  const decoded = text.replace(/\\n/g,'\n').replace(/\\'/g,"'").replace(/\\\\/g,'\\');
+  navigator.clipboard.writeText(decoded).then(() => {
     btn.textContent = '✓ הועתק';
     btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'העתק';
-      btn.classList.remove('copied');
-    }, 2000);
+    setTimeout(() => { btn.textContent = 'העתק'; btn.classList.remove('copied'); }, 2000);
   });
 }
 
-// Enter to submit
+function sendWhatsApp(text) {
+  const decoded = text.replace(/\\n/g,'\n').replace(/\\'/g,"'").replace(/\\\\/g,'\\');
+  const rawPhone = document.getElementById('p-phone').value.trim().replace(/[^0-9]/g,'');
+  const phone = rawPhone.startsWith('0') ? '972' + rawPhone.slice(1) : rawPhone;
+  const url = phone
+    ? `https://wa.me/${phone}?text=${encodeURIComponent(decoded)}`
+    : `https://wa.me/?text=${encodeURIComponent(decoded)}`;
+  window.open(url, '_blank');
+}
+
+function addToHistory(customerText, aiResponse) {
+  const wrap = document.getElementById('history-wrap');
+  const log = document.getElementById('history-log');
+  wrap.style.display = 'block';
+
+  const entry = document.createElement('div');
+  entry.innerHTML = `
+    <div class="history-entry history-user">
+      <div class="history-label">👤 לקוח אמר — ${currentStage}</div>
+      ${escapeHtml(customerText)}
+    </div>
+    <div class="history-entry history-ai">
+      <div class="history-label">🤖 תשובה ראשונה</div>
+      ${escapeHtml(aiResponse)}
+    </div>`;
+  log.insertBefore(entry, log.firstChild);
+}
+
+function clearHistory() {
+  conversationHistory = [];
+  document.getElementById('history-log').innerHTML = '';
+  document.getElementById('history-wrap').style.display = 'none';
+}
+
+function setStage(el, stage) {
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentStage = stage;
+}
+
+function setObj(el, text) {
+  document.querySelectorAll('.obj-btn,.val-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('customer-said').value = text;
+}
+
 document.getElementById('customer-said').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    getResponse();
-  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); getResponse(); }
 });
 </script>
 </body>
