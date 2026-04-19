@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>סוכן מכירות AI — פלטינום</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#090c17;
+  --surface:#111827;
+  --surface2:#1a2235;
+  --border:rgba(200,169,110,0.15);
+  --gold:#c8a96e;
+  --gold2:#e8d9b8;
+  --text:#f0f0f0;
+  --muted:#8899aa;
+  --green:#22c55e;
+  --red:#ef4444;
+  --blue:#3b82f6;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Heebo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 20px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  gap:12px;
+}
+.header-logo{
+  font-size:16px;
+  font-weight:700;
+  color:var(--gold);
+  white-space:nowrap;
+}
+.header-logo span{color:var(--muted);font-weight:300;font-size:13px;margin-right:6px}
+.header-center{display:flex;align-items:center;gap:10px}
+.timer{
+  font-size:20px;
+  font-weight:700;
+  color:#fff;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:2px;
+  background:var(--surface2);
+  padding:6px 14px;
+  border-radius:8px;
+  border:1px solid var(--border);
+}
+.header-actions{display:flex;gap:8px}
+.btn-icon{
+  padding:7px 14px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text);
+  font-family:'Heebo',sans-serif;
+  font-size:13px;
+  cursor:pointer;
+  transition:all 0.15s;
+  white-space:nowrap;
+}
+.btn-icon:hover{border-color:var(--gold);color:var(--gold)}
+.btn-icon.active{background:var(--red);border-color:var(--red);color:#fff}
+.btn-new{background:linear-gradient(135deg,var(--gold),#a07838);border-color:transparent;color:#fff;font-weight:600}
+.btn-new:hover{opacity:0.88;color:#fff}
+
+/* SCORE */
+.score-bar{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 20px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  overflow-x:auto;
+}
+.score-label{font-size:12px;color:var(--muted);white-space:nowrap}
+.score-dots{display:flex;gap:4px}
+.dot{
+  width:22px;height:22px;
+  border-radius:50%;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+  cursor:pointer;
+  transition:all 0.15s;
+  color:var(--muted);
+}
+.dot:hover{border-color:var(--gold);color:var(--gold)}
+.dot.active{background:var(--gold);border-color:var(--gold);color:#fff}
+.score-num{
+  font-size:22px;font-weight:900;
+  margin-right:4px;
+  min-width:32px;
+  text-align:center;
+}
+.score-divider{width:1px;height:20px;background:var(--border);margin:0 6px}
+
+/* QUICK BUTTONS */
+.quick-section{
+  padding:10px 16px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  background:var(--surface);
+}
+.quick-label{font-size:11px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
+.quick-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.qbtn{
+  padding:6px 12px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text);
+  font-family:'Heebo',sans-serif;
+  font-size:12px;
+  cursor:pointer;
+  transition:all 0.15s;
+  white-space:nowrap;
+}
+.qbtn:hover{border-color:var(--gold);color:var(--gold);background:rgba(200,169,110,0.06)}
+.qbtn.red{border-color:rgba(239,68,68,0.3);color:#fca5a5}
+.qbtn.red:hover{border-color:var(--red);background:rgba(239,68,68,0.08)}
+.qbtn.green{border-color:rgba(34,197,94,0.3);color:#86efac}
+.qbtn.green:hover{border-color:var(--green);background:rgba(34,197,94,0.08)}
+
+/* MAIN */
+.main{
+  flex:1;
+  overflow-y:auto;
+  padding:16px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.main::-webkit-scrollbar{width:4px}
+.main::-webkit-scrollbar-track{background:transparent}
+.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* MESSAGES */
+.msg{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  animation:msgIn 0.3s ease both;
+}
+@keyframes msgIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.msg-user{align-items:flex-start}
+.msg-ai{align-items:flex-start}
+
+.bubble{
+  max-width:88%;
+  padding:12px 16px;
+  border-radius:14px;
+  font-size:15px;
+  line-height:1.65;
+  position:relative;
+}
+.bubble-user{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:14px 14px 4px 14px;
+  color:var(--text);
+}
+.bubble-ai{
+  background:linear-gradient(135deg,rgba(200,169,110,0.08),rgba(200,169,110,0.04));
+  border:1px solid rgba(200,169,110,0.2);
+  border-radius:14px 14px 14px 4px;
+  color:#fff;
+}
+.bubble-ai .ai-label{
+  font-size:11px;
+  color:var(--gold);
+  font-weight:600;
+  letter-spacing:1px;
+  margin-bottom:8px;
+}
+
+.score-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+  margin-top:8px;
+}
+.score-badge.high{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3)}
+.score-badge.mid{background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}
+.score-badge.low{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+
+.copy-btn{
+  position:absolute;
+  top:8px;left:8px;
+  padding:3px 8px;
+  border-radius:6px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  color:var(--muted);
+  font-size:11px;
+  cursor:pointer;
+  opacity:0;
+  transition:opacity 0.2s;
+}
+.bubble:hover .copy-btn{opacity:1}
+.copy-btn:hover{color:var(--gold)}
+
+/* TYPING */
+.typing{display:flex;gap:5px;padding:16px}
+.typing span{
+  width:7px;height:7px;
+  background:var(--gold);
+  border-radius:50%;
+  animation:bounce 1.2s ease-in-out infinite;
+}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{
+  0%,80%,100%{transform:translateY(0);opacity:0.4}
+  40%{transform:translateY(-8px);opacity:1}
+}
+
+/* VOICE STATUS */
+.voice-status{
+  display:none;
+  align-items:center;
+  gap:10px;
+  padding:10px 16px;
+  background:rgba(239,68,68,0.08);
+  border-top:1px solid rgba(239,68,68,0.2);
+  border-bottom:1px solid rgba(239,68,68,0.2);
+  flex-shrink:0;
+}
+.voice-status.active{display:flex}
+.voice-waves{display:flex;gap:3px;align-items:center}
+.wave{
+  width:3px;
+  background:var(--red);
+  border-radius:2px;
+  animation:wave-anim 0.6s ease-in-out infinite alternate;
+}
+.wave:nth-child(1){height:8px;animation-delay:0s}
+.wave:nth-child(2){height:16px;animation-delay:0.1s}
+.wave:nth-child(3){height:12px;animation-delay:0.2s}
+.wave:nth-child(4){height:20px;animation-delay:0.3s}
+.wave:nth-child(5){height:10px;animation-delay:0.4s}
+@keyframes wave-anim{to{height:4px}}
+.voice-text{font-size:13px;color:#fca5a5;flex:1}
+.voice-interim{font-size:13px;color:var(--muted);font-style:italic}
+
+/* INPUT */
+.input-bar{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  padding:12px 16px;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.input-wrap{
+  flex:1;
+  position:relative;
+}
+#userInput{
+  width:100%;
+  padding:12px 16px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:var(--text);
+  font-family:'Heebo',sans-serif;
+  font-size:15px;
+  outline:none;
+  resize:none;
+  min-height:46px;
+  max-height:120px;
+  line-height:1.5;
+  transition:border-color 0.2s;
+}
+#userInput::placeholder{color:var(--muted)}
+#userInput:focus{border-color:rgba(200,169,110,0.4)}
+
+.btn-send{
+  width:46px;height:46px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),#a07838);
+  border:none;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  transition:transform 0.15s,opacity 0.15s;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.btn-send:hover{transform:scale(1.06)}
+.btn-send:active{transform:scale(0.96)}
+.btn-send:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+.btn-mic{
+  width:46px;height:46px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--muted);
+  font-size:20px;
+  cursor:pointer;
+  transition:all 0.2s;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.btn-mic:hover{border-color:var(--red);color:var(--red)}
+.btn-mic.listening{background:var(--red);border-color:var(--red);color:#fff;animation:mic-pulse 1.5s ease-in-out infinite}
+@keyframes mic-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)}
+  50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}
+}
+
+/* API KEY MODAL */
+.modal-bg{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.85);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;
+  backdrop-filter:blur(4px);
+}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:36px 32px;
+  max-width:420px;
+  width:90%;
+  text-align:center;
+}
+.modal h2{font-size:22px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.modal p{color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.6}
+.modal input{
+  width:100%;
+  padding:14px 16px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-family:'Heebo',sans-serif;
+  font-size:14px;
+  outline:none;
+  margin-bottom:14px;
+  text-align:left;
+  direction:ltr;
+}
+.modal input:focus{border-color:var(--gold)}
+.modal .btn-save{
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg,var(--gold),#a07838);
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-family:'Heebo',sans-serif;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* WELCOME */
+.welcome{
+  text-align:center;
+  padding:40px 20px;
+  color:var(--muted);
+}
+.welcome h3{font-size:18px;color:var(--gold);margin-bottom:8px}
+.welcome p{font-size:14px;line-height:1.7}
+
+@media(max-width:600px){
+  .score-bar{padding:8px 12px}
+  .quick-section{padding:8px 12px}
+  .main{padding:12px}
+  .input-bar{padding:10px 12px}
+  .header{padding:10px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- API KEY MODAL -->
+<div class="modal-bg" id="apiModal">
+  <div class="modal">
+    <h2>🔑 מפתח API</h2>
+    <p>הכנס את מפתח ה-Anthropic API שלך.<br/>נשמר בדפדפן בלבד — לא נשלח לשום מקום.</p>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-api..."/>
+    <button class="btn-save" onclick="saveKey()">שמור והתחל</button>
+  </div>
+</div>
+
+<!-- LEAD BAR (מתמלא מ-URL params) -->
+<div id="leadBar" style="display:none;padding:8px 20px;background:#0f1a2e;border-bottom:1px solid rgba(200,169,110,0.2);display:none;align-items:center;gap:16px;flex-shrink:0;">
+  <span style="color:var(--gold);font-size:12px;letter-spacing:1px">ליד:</span>
+  <span id="leadName" style="color:#fff;font-weight:600;font-size:14px"></span>
+  <span id="leadPhone" style="color:var(--muted);font-size:13px"></span>
+  <span id="leadNotes" style="color:var(--muted);font-size:12px;font-style:italic"></span>
+  <span style="margin-right:auto;font-size:11px;color:rgba(200,169,110,0.5)">📡 הגיע מ-ToChat</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <span>פלטינום</span>סוכן מכירות AI
+  </div>
+  <div class="header-center">
+    <div class="timer" id="timer">00:00</div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-icon" onclick="clearKey()">🔑</button>
+    <button class="btn-icon btn-new" onclick="newCall()">+ שיחה חדשה</button>
+  </div>
+</div>
+
+<!-- SCORE BAR -->
+<div class="score-bar">
+  <div class="score-label">סיכוי סגירה:</div>
+  <div class="score-num" id="scoreNum">—</div>
+  <div class="score-dots" id="scoreDots">
+    <div class="dot" onclick="setScore(1)">1</div>
+    <div class="dot" onclick="setScore(2)">2</div>
+    <div class="dot" onclick="setScore(3)">3</div>
+    <div class="dot" onclick="setScore(4)">4</div>
+    <div class="dot" onclick="setScore(5)">5</div>
+    <div class="dot" onclick="setScore(6)">6</div>
+    <div class="dot" onclick="setScore(7)">7</div>
+    <div class="dot" onclick="setScore(8)">8</div>
+    <div class="dot" onclick="setScore(9)">9</div>
+    <div class="dot" onclick="setScore(10)">10</div>
+  </div>
+  <div class="score-divider"></div>
+  <button class="qbtn green" style="font-size:12px" onclick="askAI('תן לי סיכום השיחה עד עכשיו עם המלצה לצעד הבא')">📋 סכם שיחה</button>
+  <button class="qbtn" style="font-size:12px" onclick="askAI('צור לי הודעת וואטסאפ לפולו-אפ על הלקוח הזה')">💬 פולו-אפ WA</button>
+</div>
+
+<!-- QUICK BUTTONS -->
+<div class="quick-section">
+  <div class="quick-label">התנגדויות נפוצות — לחץ לקבל תשובה מיידית</div>
+  <div class="quick-grid">
+    <button class="qbtn red" onclick="objection('יקר לי')">💸 יקר לי</button>
+    <button class="qbtn red" onclick="objection('אני צריך לחשוב על זה')">🤔 צריך לחשוב</button>
+    <button class="qbtn red" onclick="objection('יש לי כבר ביטוח בריאות בקופה')">🏥 יש לי בקופה</button>
+    <button class="qbtn red" onclick="objection('אני צריך לדבר עם הבן/בת זוג שלי')">👫 בן/בת זוג</button>
+    <button class="qbtn red" onclick="objection('יש לי כבר כתב שירות אחר')">📄 כתב אחר</button>
+    <button class="qbtn red" onclick="objection('אני בריא לא צריך')">💪 אני בריא</button>
+    <button class="qbtn red" onclick="objection('שלח לי מידע במייל/וואטסאפ')">📧 שלח מידע</button>
+    <button class="qbtn red" onclick="objection('מה זה בכלל כתב שירות')">❓ מה זה</button>
+    <button class="qbtn red" onclick="objection('לא מעוניין')">❌ לא מעוניין</button>
+    <button class="qbtn red" onclick="objection('אני גמלאי אין לי כסף')">👴 גמלאי</button>
+    <button class="qbtn" onclick="objection('מה קורה אחרי 3 חודשי אכשרה')">⏳ אכשרה</button>
+    <button class="qbtn" onclick="objection('איך מבטלים')">🔄 ביטול</button>
+    <button class="qbtn green" onclick="askAI('הלקוח אומר שהוא רוצה לסגור, מה אני אומר עכשיו לסגור את העסקה?')">✅ רוצה לסגור!</button>
+    <button class="qbtn green" onclick="askAI('תן לי תסריט פתיחה לליד קר — שיחה ראשונה, לא מכיר את המוצר')">🎯 פתיחת שיחה</button>
+    <button class="qbtn green" onclick="askAI('תן לי 3 שאלות גילוי חזקות שיחברו אותי ללקוח ויגלו לי את הכאב שלו')">🔍 שאלות גילוי</button>
+  </div>
+</div>
+
+<!-- VOICE STATUS -->
+<div class="voice-status" id="voiceStatus">
+  <div class="voice-waves">
+    <div class="wave"></div><div class="wave"></div><div class="wave"></div>
+    <div class="wave"></div><div class="wave"></div>
+  </div>
+  <div class="voice-text">מאזין... דבר עם הלקוח</div>
+  <div class="voice-interim" id="voiceInterim"></div>
+</div>
+
+<!-- MAIN CHAT -->
+<div class="main" id="chatArea">
+  <div class="welcome">
+    <h3>שלום! מוכן לשיחה 💪</h3>
+    <p>לחץ על התנגדות כדי לקבל תשובה מיידית<br/>או הקלד מה הלקוח אמר בשורת הקלט<br/>או לחץ על 🎤 כדי שאשמע את השיחה</p>
+  </div>
+</div>
+
+<!-- INPUT BAR -->
+<div class="input-bar">
+  <button class="btn-mic" id="micBtn" onclick="toggleVoice()" title="האזן לשיחה">🎤</button>
+  <div class="input-wrap">
+    <textarea id="userInput" placeholder="מה הלקוח אמר?" rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
+      oninput="autoResize(this)"></textarea>
+  </div>
+  <button class="btn-send" id="sendBtn" onclick="sendMessage()">➤</button>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `אתה סוכן מכירות AI מומחה של פלטינום כתב שירות — חברת ביטוח בריאות משלים לגיל השלישי.
+
+## המוצר
+- **פלטינום כתב שירות** — ביטוח בריאות משלים
+- מחיר: ₪248/חודש (מבצע, במקום ₪350)
+- דרך מנהל: ₪220 | קיצוני: ₪198
+- ללא הצהרת בריאות — כולם מתקבלים
+- 3 חודשי אכשרה (6 לפרימיום)
+- ביטול בכל עת ללא קנס
+- תשלום תביעות תוך 72 שעות
+
+## קווי מוצר
+- רופא עד הבית — עד ₪3,000/שנה
+- בריאות בסיס — עד ₪13,000/שנה
+- בריאות פרימיום — עד ₪10,000/שנה
+- רפואה משלימה — עד ₪2,500/שנה
+
+## מתודולוגיית מכירה
+**7 שלבי מנשרוב:** Connection → Current → Problem → Gap → Identity → Commitment → Close
+**מסגרת הרופא:** טון שקט, מקצועי, ניתוק מהתוצאה
+**חוק הברזל:** כל תשובה מסתיימת בשאלה
+**תחמושת:** השתמש בדברי הלקוח עצמו
+**משפט סגירה:** "מה יותר מסוכן — 10 שקל ביום או 8,000 ש״ח בפעם אחת?"
+
+## פורמט תשובה
+תן תשובה **מיידית, קצרה, חדה** — מקסימום 3-4 משפטים.
+בסוף כל תשובה הוסף שאלה שמקדמת את הסגירה.
+בשורה נפרדת אחרי התשובה הוסף: SCORE:X (מספר 1-10 שמייצג סיכוי סגירה)
+אל תסביר את הציון — רק SCORE:X`;
+
+let history = [];
+let timerInterval = null;
+let seconds = 0;
+let isListening = false;
+let recognition = null;
+let voiceTimeout = null;
+let currentScore = 0;
+let leadContext = '';
+
+// INIT
+window.onload = () => {
+  const key = localStorage.getItem('anthropic_key');
+  if (key) document.getElementById('apiModal').style.display = 'none';
+  initSpeech();
+  loadLeadFromURL();
+};
+
+// קרא פרטי ליד מה-URL (מגיע מ-Zapier/ToChat)
+function loadLeadFromURL() {
+  const p = new URLSearchParams(window.location.search);
+  const name  = p.get('name')  || p.get('שם')   || '';
+  const phone = p.get('phone') || p.get('טלפון') || '';
+  const notes = p.get('notes') || p.get('הערות') || '';
+
+  if (!name && !phone) return;
+
+  const bar = document.getElementById('leadBar');
+  bar.style.display = 'flex';
+  document.getElementById('leadName').textContent  = name  || '';
+  document.getElementById('leadPhone').textContent = phone || '';
+  document.getElementById('leadNotes').textContent = notes || '';
+
+  // הכנס לתוך ה-system prompt כמידע על הלקוח
+  leadContext = `\n\n## פרטי הליד הנוכחי\nשם: ${name}\nטלפון: ${phone}\nהערות: ${notes}`;
+
+  // הודעת פתיחה אוטומטית
+  const welcome = document.querySelector('.welcome');
+  if (welcome) {
+    welcome.innerHTML = `
+      <h3>שיחה עם ${name || 'לקוח'} 📞</h3>
+      <p style="color:var(--muted);font-size:13px">${phone}</p>
+      ${notes ? `<p style="color:var(--muted);font-size:12px;margin-top:4px">${notes}</p>` : ''}
+      <p style="margin-top:12px">לחץ על התנגדות או הקלד מה הלקוח אמר</p>
+    `;
+  }
+
+  // התחל טיימר אוטומטית
+  startTimer();
+}
+
+function saveKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if (!k.startsWith('sk-')) { alert('מפתח לא תקין'); return; }
+  localStorage.setItem('anthropic_key', k);
+  document.getElementById('apiModal').style.display = 'none';
+}
+
+function clearKey() {
+  localStorage.removeItem('anthropic_key');
+  document.getElementById('apiModal').style.display = 'flex';
+}
+
+// TIMER
+function startTimer() {
+  if (timerInterval) return;
+  timerInterval = setInterval(() => {
+    seconds++;
+    const m = String(Math.floor(seconds/60)).padStart(2,'0');
+    const s = String(seconds%60).padStart(2,'0');
+    document.getElementById('timer').textContent = m+':'+s;
+  }, 1000);
+}
+
+function newCall() {
+  if (!confirm('להתחיל שיחה חדשה? ההיסטוריה תימחק.')) return;
+  history = [];
+  seconds = 0;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  document.getElementById('timer').textContent = '00:00';
+  document.getElementById('chatArea').innerHTML = `
+    <div class="welcome">
+      <h3>שיחה חדשה 💪</h3>
+      <p>מוכן! לחץ על התנגדות או הקלד מה הלקוח אמר</p>
+    </div>`;
+  currentScore = 0;
+  document.getElementById('scoreNum').textContent = '—';
+  document.querySelectorAll('.dot').forEach(d=>d.classList.remove('active'));
+}
+
+// SCORE
+function setScore(n) {
+  currentScore = n;
+  document.getElementById('scoreNum').textContent = n;
+  document.querySelectorAll('.dot').forEach((d,i) => {
+    d.classList.toggle('active', i < n);
+  });
+}
+
+function updateScoreFromAI(text) {
+  const match = text.match(/SCORE:(\d+)/i);
+  if (match) {
+    const s = parseInt(match[1]);
+    setScore(s);
+    return text.replace(/SCORE:\d+/i,'').trim();
+  }
+  return text;
+}
+
+// OBJECTION
+function objection(text) {
+  document.getElementById('userInput').value = text;
+  sendMessage();
+}
+
+function askAI(prompt) {
+  document.getElementById('userInput').value = prompt;
+  sendMessage();
+}
+
+// SEND
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const key = localStorage.getItem('anthropic_key');
+  if (!key) { document.getElementById('apiModal').style.display='flex'; return; }
+
+  startTimer();
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendMsg('user', text);
+  history.push({ role:'user', content: text });
+
+  const sendBtn = document.getElementById('sendBtn');
+  sendBtn.disabled = true;
+
+  const aiDiv = appendMsg('ai', '');
+  const bubble = aiDiv.querySelector('.bubble-ai');
+  const contentEl = document.createElement('div');
+  contentEl.className = 'ai-content';
+
+  const typingEl = document.createElement('div');
+  typingEl.className = 'typing';
+  typingEl.innerHTML = '<span></span><span></span><span></span>';
+  bubble.appendChild(typingEl);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-7',
+        max_tokens: 512,
+        stream: true,
+        system: SYSTEM_PROMPT + leadContext,
+        messages: history
+      })
+    });
+
+    typingEl.remove();
+    bubble.appendChild(contentEl);
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let full = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.type === 'content_block_delta' && data.delta?.text) {
+              full += data.delta.text;
+              contentEl.innerHTML = formatText(full);
+              scrollBottom();
+            }
+          } catch {}
+        }
+      }
+    }
+
+    const cleanText = updateScoreFromAI(full);
+    contentEl.innerHTML = formatText(cleanText);
+
+    // score badge
+    if (currentScore > 0) {
+      const badge = document.createElement('div');
+      const cls = currentScore >= 7 ? 'high' : currentScore >= 4 ? 'mid' : 'low';
+      badge.className = `score-badge ${cls}`;
+      badge.textContent = `סיכוי סגירה: ${currentScore}/10`;
+      bubble.appendChild(badge);
+    }
+
+    // copy button
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-btn';
+    copyBtn.textContent = 'העתק';
+    copyBtn.onclick = () => { navigator.clipboard.writeText(cleanText); copyBtn.textContent='✓'; setTimeout(()=>copyBtn.textContent='העתק',1500); };
+    bubble.appendChild(copyBtn);
+
+    history.push({ role:'assistant', content: cleanText });
+
+  } catch(e) {
+    typingEl?.remove();
+    contentEl.textContent = 'שגיאה: ' + e.message;
+    bubble.appendChild(contentEl);
+  }
+
+  sendBtn.disabled = false;
+  scrollBottom();
+}
+
+function formatText(t) {
+  return t
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n/g,'<br/>');
+}
+
+function appendMsg(role, text) {
+  const chat = document.getElementById('chatArea');
+  const welcome = chat.querySelector('.welcome');
+  if (welcome) welcome.remove();
+
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+
+  if (role === 'user') {
+    div.innerHTML = `<div class="bubble bubble-user">${text}</div>`;
+  } else {
+    div.innerHTML = `<div class="bubble bubble-ai"><div class="ai-label">✦ AI</div></div>`;
+  }
+
+  chat.appendChild(div);
+  scrollBottom();
+  return div;
+}
+
+function scrollBottom() {
+  const chat = document.getElementById('chatArea');
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// VOICE
+function initSpeech() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'he-IL';
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    document.getElementById('voiceInterim').textContent = interim;
+    if (final.trim()) {
+      clearTimeout(voiceTimeout);
+      document.getElementById('userInput').value = final.trim();
+      voiceTimeout = setTimeout(() => {
+        if (document.getElementById('userInput').value.trim()) sendMessage();
+      }, 1200);
+    }
+  };
+
+  recognition.onerror = () => stopVoice();
+  recognition.onend = () => { if (isListening) recognition.start(); };
+}
+
+function toggleVoice() {
+  if (!recognition) { alert('הדפדפן שלך לא תומך בזיהוי קול. נסה Chrome.'); return; }
+  isListening ? stopVoice() : startVoice();
+}
+
+function startVoice() {
+  isListening = true;
+  recognition.start();
+  document.getElementById('micBtn').classList.add('listening');
+  document.getElementById('micBtn').textContent = '⏹';
+  document.getElementById('voiceStatus').classList.add('active');
+  startTimer();
+}
+
+function stopVoice() {
+  isListening = false;
+  recognition.stop();
+  document.getElementById('micBtn').classList.remove('listening');
+  document.getElementById('micBtn').textContent = '🎤';
+  document.getElementById('voiceStatus').classList.remove('active');
+  document.getElementById('voiceInterim').textContent = '';
+}
+</script>
+</body>
+</html>
