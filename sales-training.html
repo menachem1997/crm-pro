@@ -393,11 +393,15 @@ body{
   <div class="chat" id="chat"></div>
 
   <div class="input-bar">
-    <textarea id="repInput" placeholder="הקלד את התגובה שלך ללקוח..." rows="2"></textarea>
+    <textarea id="repInput" placeholder="הקלד את התגובה שלך ללקוח... או לחץ 🎤 לדבר" rows="2"></textarea>
     <div class="input-btns">
+      <button class="send-btn" id="micBtn" onclick="toggleMic()" title="מיקרופון">🎤</button>
       <button class="send-btn" id="sendBtn" onclick="sendResponse()">שלח</button>
       <button class="end-btn" onclick="endTraining()">סיום</button>
     </div>
+  </div>
+  <div id="voiceStatus" style="display:none;text-align:center;padding:6px 20px;background:rgba(239,68,68,0.08);color:var(--red);font-size:12px">
+    🔴 מאזין... <span id="voiceInterim" style="color:var(--muted)"></span>
   </div>
 </div>
 
@@ -918,6 +922,67 @@ document.getElementById('repInput').addEventListener('keydown', e => {
     sendResponse();
   }
 });
+
+// ════════════════════════════════════
+// MICROPHONE (Web Speech API)
+// ════════════════════════════════════
+let recognition = null;
+let isListening = false;
+let voiceTimeout = null;
+
+function initSpeech(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'he-IL';
+
+  recognition.onresult = (e) => {
+    let interim = '', final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    const iel = document.getElementById('voiceInterim');
+    if (iel) iel.textContent = interim;
+    if (final.trim()) {
+      clearTimeout(voiceTimeout);
+      const input = document.getElementById('repInput');
+      input.value = (input.value + ' ' + final.trim()).trim();
+      voiceTimeout = setTimeout(() => {
+        if (input.value.trim()) sendResponse();
+      }, 1500);
+    }
+  };
+
+  recognition.onerror = () => stopMic();
+  recognition.onend = () => { if (isListening) try { recognition.start(); } catch(e){} };
+}
+
+function toggleMic(){
+  if (!recognition) { alert('הדפדפן שלך לא תומך בזיהוי קול. נסה Chrome.'); return; }
+  isListening ? stopMic() : startMic();
+}
+function startMic(){
+  isListening = true;
+  try { recognition.start(); } catch(e){}
+  document.getElementById('micBtn').textContent = '⏹';
+  document.getElementById('micBtn').style.background = 'linear-gradient(135deg,#ef4444,#991b1b)';
+  document.getElementById('voiceStatus').style.display = 'block';
+}
+function stopMic(){
+  isListening = false;
+  try { recognition.stop(); } catch(e){}
+  document.getElementById('micBtn').textContent = '🎤';
+  document.getElementById('micBtn').style.background = '';
+  document.getElementById('voiceStatus').style.display = 'none';
+  const iel = document.getElementById('voiceInterim');
+  if (iel) iel.textContent = '';
+}
+
+// init on load
+initSpeech();
 </script>
 </body>
 </html>
