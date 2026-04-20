@@ -33,7 +33,7 @@
   <meta property="og:locale" content="he_IL">
   <meta property="og:url" content="https://platinum-service.co.il/landing.html">
   <meta property="og:title" content="כתב שירות פלטינום — בדקו כמה אתם זכאים">
-  <meta property="og:description" content="ביקור רופא עד הבית, החזרים על MRI ו-CT, פיזיותרפיה ועוד — ללא הצהרת בריאות. בדקו עכשיו את הזכאות שלכם בשאלון קצר.">
+  <meta property="og:description" content="ביקור רופא עד הבית, החזרים על MRI ו-CT, פיזיותרפיה, מימוש זכויות רפואיות ועוד — ללא הצהרת בריאות. בדקו עכשיו את הזכאות שלכם בשאלון קצר.">
   <meta property="og:image" content="https://platinum.org.il/wp-content/uploads/2022/07/logo.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230a1f3d'/><text x='50' y='72' font-size='68' font-family='Arial' font-weight='bold' fill='%23c9973a' text-anchor='middle'>פ</text></svg>" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -137,6 +137,27 @@
     .ben-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
     .ben-text strong{display:block;font-size:.88rem;font-weight:800;color:var(--gold2);margin-bottom:2px}
     .ben-text span{font-size:.79rem;opacity:.78;line-height:1.45}
+
+    /* RIGHTS SECTION */
+    .rights{background:linear-gradient(180deg,#fff 0%,#f7f9fc 100%);padding:40px 20px;border-bottom:2px solid #e2e8f0}
+    .rights-inner{max-width:720px;margin:0 auto}
+    .rights-header{text-align:center;margin-bottom:24px}
+    .rights-badge{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:900;margin-bottom:10px;letter-spacing:.3px}
+    .rights-header h2{font-size:1.45rem;color:var(--navy);font-weight:900;line-height:1.35;margin-bottom:8px}
+    .rights-header h2 em{color:var(--gold);font-style:normal}
+    .rights-header p{color:#475569;font-size:.95rem;max-width:520px;margin:0 auto;line-height:1.65}
+    .rights-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:22px}
+    .right-card{background:#fff;border:1.5px solid #e2e8f0;border-right:4px solid var(--gold);border-radius:12px;padding:18px 18px 16px;transition:all .2s}
+    .right-card:hover{border-color:var(--gold);box-shadow:0 6px 20px rgba(201,151,58,.15);transform:translateY(-2px)}
+    .right-card .icon{font-size:1.8rem;margin-bottom:8px;display:block}
+    .right-card h3{font-size:1rem;color:var(--navy);font-weight:800;margin-bottom:6px}
+    .right-card p{font-size:.85rem;color:#475569;line-height:1.55;margin-bottom:8px}
+    .right-card .amount{display:inline-block;background:#f0fdf4;color:#15803d;padding:3px 10px;border-radius:6px;font-size:.8rem;font-weight:800;border:1px solid #86efac}
+    .rights-cta{text-align:center;margin-top:28px;padding:20px;background:var(--navy);border-radius:14px;border:2px solid var(--gold)}
+    .rights-cta p{color:#fff;font-size:1rem;margin-bottom:12px;font-weight:700}
+    .rights-cta p em{color:var(--gold2);font-style:normal}
+    .rights-cta a{display:inline-block;background:var(--gold);color:var(--navy);padding:12px 28px;border-radius:10px;font-weight:900;text-decoration:none;font-size:.95rem;transition:all .2s}
+    .rights-cta a:hover{background:var(--gold2);transform:translateY(-1px)}
 
     /* REVIEWS */
     .reviews{background:#fff;padding:36px 20px}
@@ -256,7 +277,7 @@
 <!-- HERO -->
 <section class="hero" aria-labelledby="hero-title">
   <h1 id="hero-title">כיסוי רפואי מלא —<br><em>ללא הצהרת בריאות</em></h1>
-  <p>ביקור רופא עד הבית, החזרים על MRI ו-CT, פיזיותרפיה, שיניים ועוד — מיד כשאתם צריכים</p>
+  <p>ביקור רופא עד הבית, החזרים על MRI ו-CT, פיזיותרפיה, מימוש זכויות רפואיות ועוד — מיד כשאתם צריכים</p>
   <div class="hero-stats">
     <span class="hero-stat">ללא הצהרת בריאות</span>
     <span class="hero-stat">ביטול בכל עת</span>
@@ -339,7 +360,7 @@
           <div class="opts-grid" role="radiogroup" aria-labelledby="med-label" id="med-group">
             <button class="opt-btn" role="radio" aria-checked="false" onclick="pick(this,'medical','specialist')">רופא מומחה</button>
             <button class="opt-btn" role="radio" aria-checked="false" onclick="pick(this,'medical','mri')">MRI / CT</button>
-            <button class="opt-btn" role="radio" aria-checked="false" onclick="pick(this,'medical','dental')">טיפול שיניים</button>
+            <button class="opt-btn" role="radio" aria-checked="false" onclick="pick(this,'medical','rights')">מימוש זכויות</button>
             <button class="opt-btn" role="radio" aria-checked="false" onclick="pick(this,'medical','none')">לא נדרשתי</button>
           </div>
           <span id="med-error" class="error-msg" role="alert" style="display:none">יש לבחור תשובה</span>
@@ -414,9 +435,69 @@
     <div class="ben-item">
       <span class="ben-icon">⚖️</span>
       <div class="ben-text">
-        <strong>מימוש זכויות — חינם</strong>
-        <span>מול ביטוח לאומי, מס הכנסה וחברות ביטוח</span>
+        <strong>מימוש זכויות רפואיות</strong>
+        <span>ממוצע ₪8,500 החזר מס + קצבאות ביטוח לאומי</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- RIGHTS SECTION -->
+<section class="rights" aria-labelledby="rights-title">
+  <div class="rights-inner">
+    <div class="rights-header">
+      <span class="rights-badge">⚖️ שירות בלעדי למנויים</span>
+      <h2 id="rights-title">מימוש זכויות רפואיות —<br><em>מקסימום החזרים, בלי התרוצצויות</em></h2>
+      <p>90% מהאנשים לא ממצים את הזכויות שמגיעות להם מביטוח לאומי, מס הכנסה וחברות הביטוח. אנחנו עושים את זה בשבילכם — <strong>חינם לחלוטין</strong> בתור מנויים.</p>
+    </div>
+
+    <div class="rights-grid">
+      <div class="right-card">
+        <span class="icon">🏛️</span>
+        <h3>ביטוח לאומי</h3>
+        <p>בדיקת זכאות לנכות כללית, נכות מעבודה, שירותים מיוחדים, גמלת סיעוד וניידות. הכנת ערעור + ליווי מלא.</p>
+        <span class="amount">עד ₪5,000 בחודש</span>
+      </div>
+
+      <div class="right-card">
+        <span class="icon">💰</span>
+        <h3>החזר מס — מס הכנסה</h3>
+        <p>החזרי מס רטרואקטיביים עד 6 שנים אחורה על הוצאות רפואיות, נכות, ועוד. מילוי טפסים וליווי עד קבלת הכסף.</p>
+        <span class="amount">ממוצע ₪8,500 החזר</span>
+      </div>
+
+      <div class="right-card">
+        <span class="icon">🏥</span>
+        <h3>חברות ביטוח</h3>
+        <p>הגשת תביעות לביטוחים קיימים שלכם (מחלות קשות, אובדן כושר, סיעוד). בדיקה שלא נשללה לכם תביעה בטעות.</p>
+        <span class="amount">ליווי ללא תשלום</span>
+      </div>
+
+      <div class="right-card">
+        <span class="icon">📋</span>
+        <h3>משרד הבריאות</h3>
+        <p>מימוש סל בריאות, קופות חולים, תרופות מיוחדות, סיוע לנפגעי פעולות איבה, זכויות ניצולי שואה.</p>
+        <span class="amount">זכויות מלאות</span>
+      </div>
+
+      <div class="right-card">
+        <span class="icon">🎗️</span>
+        <h3>נפגעי עבודה ותאונות דרכים</h3>
+        <p>ייצוג מול חברות ביטוח, ועדות רפואיות, וקביעת אחוזי נכות. תביעות רשלנות רפואית.</p>
+        <span class="amount">אחוזי נכות מירביים</span>
+      </div>
+
+      <div class="right-card">
+        <span class="icon">👨‍👩‍👧</span>
+        <h3>בני משפחה שכולים</h3>
+        <p>קצבת שאירים, הכרה כאלמן/ה, ביטוח לאומי, רשות המסים — כל הזכויות במקום אחד.</p>
+        <span class="amount">ליווי רגיש ומקצועי</span>
+      </div>
+    </div>
+
+    <div class="rights-cta">
+      <p>💡 <em>מנוי בכתב השירות =</em> בדיקה מקיפה של כל הזכויות שמגיעות לך</p>
+      <a href="#main-form">בדקו זכאות עכשיו →</a>
     </div>
   </div>
 </section>
@@ -569,7 +650,7 @@
     if (answers.insurance === 'no') s += 2;
     else if (answers.insurance === 'partial' || answers.insurance === 'unsure') s += 1;
     if (answers.medical === 'mri') s += 2;
-    else if (answers.medical === 'specialist' || answers.medical === 'dental') s += 1;
+    else if (answers.medical === 'specialist' || answers.medical === 'rights') s += 1;
     if (answers.priority === 'full' || answers.priority === 'cost') s += 1;
     return Math.min(10, s);
   }
