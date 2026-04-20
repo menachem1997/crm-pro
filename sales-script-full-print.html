@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>תסריט מכירה פלטינום — גרסה מלאה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Heebo',sans-serif}
+body{background:#f0f0f0;padding:20px;color:#1a2744}
+.page{
+  max-width:210mm;margin:0 auto 20px;background:#fff;padding:15mm 16mm;
+  box-shadow:0 2px 20px rgba(0,0,0,0.1);
+  font-size:11.5pt;line-height:1.5
+}
+h1{font-size:20pt;color:#1a2744;text-align:center;margin-bottom:2mm;font-weight:800}
+.subtitle{text-align:center;font-size:11pt;color:#666;margin-bottom:5mm;font-weight:600}
+.meta-box{
+  background:#fff8dc;border-right:4px solid #d4af37;
+  padding:3mm 5mm;margin-bottom:6mm;border-radius:4px;font-size:10pt
+}
+.meta-box b{color:#b8860b}
+.meta-box ul{margin-top:1.5mm;padding-right:5mm}
+.meta-box li{margin:0.5mm 0}
+
+h2.stage{
+  background:linear-gradient(90deg,#1a2744 0%,#2a3e6b 100%);
+  color:#d4af37;padding:2.5mm 5mm;border-radius:6px;
+  font-size:13pt;margin-top:5mm;margin-bottom:2.5mm;font-weight:800;
+  display:flex;justify-content:space-between;align-items:center
+}
+h2.stage .time{font-size:9pt;color:#fff;opacity:0.8;font-weight:400}
+h2.stage.new{background:linear-gradient(90deg,#0f766e 0%,#14a89e 100%);color:#fff}
+h2.stage.new::after{content:" 🆕";font-size:10pt}
+
+.script-box{
+  background:#fafafa;border-right:3px solid #d4af37;
+  padding:3mm 5mm;margin:2mm 0 3mm;border-radius:4px;
+  font-size:11pt;line-height:1.6
+}
+.script-box b{color:#b8860b;font-weight:700}
+.script-box em{color:#1a2744;font-weight:600;font-style:normal;background:#fff8dc;padding:0.5mm 1.5mm;border-radius:3px}
+.script-box .blank{color:#999;font-weight:600;letter-spacing:2px}
+
+.tip{
+  background:#e8f4fd;border-right:3px solid #3b82f6;
+  padding:2mm 4mm;margin:2mm 0;border-radius:3px;
+  font-size:9.5pt;color:#1e3a8a
+}
+.tip b{color:#1e3a8a}
+.tip::before{content:"💡 ";font-size:11pt}
+
+.ammo{
+  background:#fef3c7;border-right:3px solid #f59e0b;
+  padding:2mm 4mm;margin:2mm 0;border-radius:3px;font-size:9.5pt
+}
+.ammo b{color:#92400e}
+.ammo::before{content:"🎯 תחמושת: ";font-weight:700;color:#92400e}
+
+.features{margin-top:1.5mm}
+.feat{margin:1mm 0;padding-right:4mm;font-size:10.5pt}
+.feat::before{content:"✅ ";color:#22c55e}
+.feat b{color:#1a2744}
+
+.warn{
+  background:#fee2e2;border-right:3px solid #dc2626;
+  padding:2mm 4mm;margin:2mm 0;border-radius:3px;font-size:9.5pt;color:#991b1b
+}
+.warn::before{content:"⛔ ";font-weight:700}
+
+.compare-table{
+  width:100%;border-collapse:collapse;margin-top:3mm;font-size:9.5pt
+}
+.compare-table th{background:#1a2744;color:#d4af37;padding:2mm;text-align:right;font-weight:700}
+.compare-table td{border-bottom:1px solid #e5e7eb;padding:1.5mm 2mm}
+.compare-table tr:nth-child(even){background:#fafafa}
+
+.tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin-top:3mm}
+.tip-card{
+  background:#1a2744;color:#fff;padding:3mm;border-radius:5px;
+  font-size:9.5pt;line-height:1.4
+}
+.tip-card b{color:#d4af37;display:block;margin-bottom:1mm}
+
+.footer-strip{
+  margin-top:5mm;padding:3mm;background:#1a2744;color:#d4af37;
+  text-align:center;border-radius:5px;font-size:10pt;font-weight:700
+}
+
+.actions{text-align:center;margin-bottom:10px}
+.btn{
+  padding:8px 16px;margin:0 4px;background:#1a2744;color:#d4af37;
+  border:none;border-radius:6px;cursor:pointer;font-family:inherit;
+  font-weight:700;font-size:10pt
+}
+.btn:hover{background:#d4af37;color:#1a2744}
+
+@media print{
+  body{background:#fff;padding:0}
+  .page{box-shadow:none;max-width:none;margin:0;padding:10mm 12mm}
+  .actions{display:none}
+  h2.stage{page-break-after:avoid}
+  .script-box{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="actions">
+  <button class="btn" onclick="window.print()">🖨️ הדפס</button>
+  <button class="btn" onclick="location.href='sales-script-print.html'">📄 גרסה מקוצרת</button>
+  <button class="btn" onclick="location.href='sales-agent-v2.html'">← סוכן</button>
+</div>
+
+<div class="page">
+
+<h1>תסריט מכירה פלטינום — גרסה מלאה</h1>
+<div class="subtitle">11 שלבים · שילוב מנשרוב + רפורמה + מסגרת הרופא · 248 ₪/חודש</div>
+
+<div class="meta-box">
+<b>מה השתנה לעומת המקורי:</b>
+<ul>
+  <li>✅ נשאר: רפורמה אוקטובר 2025 (אמיתית), סולם מחיר 340→248, שאלות רפואיות בסוף</li>
+  <li>➕ הוסף: שלב 3 (כאב), שלב 4 (פער), שלב 6 (זהות) — 3 שלבים פסיכולוגיים ממנשרוב</li>
+  <li>❌ הוסר: טריק "הכרטיס שלך מתחיל ב-5326" — מניפולציה מיותרת</li>
+</ul>
+</div>
+
+<!-- שלב 1 -->
+<h2 class="stage">שלב 1 — פתיחה + הצדקת השיחה <span class="time">⏱ 15-20 שניות</span></h2>
+<div class="script-box">
+"שלום <span class="blank">_______</span>? מדבר <span class="blank">_______</span> מהבריאות והסיעוד, דרך השיווק של פלטינום. מה שלומך?<br><br>
+תשמע, יצרנו איתך קשר כי היום אתה מבוטח בביטוח סיעודי דרך קופת החולים, <b>והייתה עליית מחירים השנה.</b> לא מזמן באוקטובר 2025 הייתה רפורמה של החברה שבעצם נותנת למבוטחים שחצו את גילאי 50-60 את השיפוי של הסיעוד בהנחה משמעותית.<br><br>
+<b>התקשרנו לבדוק שהמצב הבריאותי שלך לא השתנה — כדי שנוכל לעדכן את ההנחה שמגיעה לך ולהשלים את החסר.</b><br><br>
+<em>היה לך שינוי במצב הרפואי בשנה האחרונה? חלילה?</em>"
+</div>
+<div class="tip"><b>למה זה עובד:</b> פותח עם "מגיעה לך הנחה" (זכאות, לא מכירה) + מבקש אישור קטן ("היה שינוי?") שמכניס את הלקוח למצב של "כן".</div>
+
+<!-- שלב 2 -->
+<h2 class="stage">שלב 2 — אימות פרטים <span class="time">⏱ מהיר, טכני</span></h2>
+<div class="script-box">
+"מצוין. אני רק עובר איתך רגע על כמה פרטים לאימות ונמשיך —<br><br>
+אתה <span class="blank">_______</span> (שם פרטי ומשפחה)?<br>
+התעודת זהות שלך <span class="blank">_______</span>? (תשלים לי רק את הספרה האחרונה לאימות)<br>
+תאריך לידה <span class="blank">_______</span>?<br><br>
+ונכון להיום יש לך ביטוח <span class="blank">_______</span> דרך קופת החולים, בעלות של <span class="blank">_______</span> שקלים בחודש — <em>שמכסה לך _______?</em>"
+</div>
+<div class="tip"><b>טריק:</b> הקצה את שאלת הכיסוי הקיים — זה פותח את הפתח לשלב הכאב הבא.</div>
+
+<!-- שלב 3 חדש -->
+<h2 class="stage new">שלב 3 — חשיפת כאב <span class="time">⏱ 20 שניות · שאלה אחת</span></h2>
+<div class="script-box">
+"תגיד לי <span class="blank">_______</span> בכנות —<br><br>
+<em>בשנה האחרונה, <b>כמה פעמים יצא לך לצאת מהכיס</b> על רופא פרטי, פיזיותרפיה או ביקור של רופא עד הבית בלילה/סופ"ש כשהקופה לא זמינה?</em><br><br>
+(הקשב — שמור כל מספר וכל סיפור)<br><br>
+"וואו, [חזרה על הסכום]. זה הרבה."
+</div>
+<div class="tip"><b>למה קריטי:</b> מכאן והלאה הלקוח שומע את <b>הבעיה שלו</b> שהוא עצמו הכיר. כל מה שיבוא אחר כך יפתור משהו אמיתי — לא תיאורטי.</div>
+<div class="ammo">שמור כל סכום שהוא אמר (₪500, ₪1000...) + כל סיפור (מי נפל, מי חלה) + משפטי תסכול ("חיכיתי שעות בתור"). אלה התחמושת להתנגדות "יקר לי".</div>
+
+<!-- שלב 4 חדש -->
+<h2 class="stage new">שלב 4 — פער (Vision) <span class="time">⏱ 15 שניות · שאלה אחת</span></h2>
+<div class="script-box">
+<em>"ומה היית רוצה שיהיה שונה? שלא תצטרך לחשוב על הכסף ברגע שאתה חולה, או שיהיה לך מישהו שאתה יכול להתקשר אליו בלילה?"</em>
+</div>
+<div class="tip"><b>הלקוח עונה — תקליט בראש.</b> המילים האלה הן הזהב שלך. תחזור עליהן מילה במילה בסגירה ("אמרת שאתה לא רוצה לדאוג לכסף כשחולה — בדיוק בשביל זה...").</div>
+
+<!-- שלב 5 -->
+<h2 class="stage">שלב 5 — הצגת פלטינום (הפתרון) <span class="time">⏱ 30-40 שניות</span></h2>
+<div class="script-box">
+"אז בדיוק בשביל זה אני מתקשר. <b>מה שמציעים זה כתב שירות פלטינום:</b>
+<div class="features">
+<div class="feat"><b>רופא עד הבית 24/7</b> — גם בלילה, גם בסופ"ש, גם בחגים (בדיוק כמו שאמרת — שלא תצטרך להתרוצץ)</div>
+<div class="feat"><b>התייעצויות עם רופאים מומחים תוך 72 שעות</b> — במקום חודשי המתנה בקופה</div>
+<div class="feat"><b>אבחון מהיר ב-MRI ו-CT</b> — בלי ללחוץ את הבן שלך שיסדר לך</div>
+<div class="feat"><b>רפואה משלימה</b> — פיזיותרפיה, דיקור, הומיאופתיה</div>
+<div class="feat"><b>השיפוי של הסיעוד</b> — הכיסוי הכי קריטי עבורך. אם חס וחלילה המצב החמיר ונכנסת למצב סיעודי — יהיה לך את השיפוי.</div>
+</div>
+<br>
+<em>"מה הכי חשוב לך מתוך מה שאמרתי?"</em>
+</div>
+<div class="tip"><b>שאלת סיום (חוק הברזל):</b> הלקוח בוחר את מה שהכי נוגע בו — הוא מוכר לעצמו.</div>
+<div class="warn">אסור להזכיר ניתוחים! <b>אנחנו לא מכסים ניתוחים, אשפוזים, או תרופות יקרות.</b></div>
+
+<!-- שלב 6 חדש -->
+<h2 class="stage new">שלב 6 — זהות <span class="time">⏱ משפט אחד</span></h2>
+<div class="script-box">
+<em>"<span class="blank">_______</span>, ממה שאמרת לי, אתה נשמע סוג של אדם שמעדיף <b>לסדר עניין מראש</b> — לא לחכות ליום שבו קורה משהו ולהתחיל לחפש פתרונות. נכון?"</em>
+</div>
+<div class="tip"><b>פסיכולוגית עקביות:</b> כמעט כל לקוח יגיד "כן" — וברגע שאמר "כן" לזהות הזו, הוא חייב להיות עקבי איתה. זו המפתח שסוגר.</div>
+
+<!-- שלב 7 -->
+<h2 class="stage">שלב 7 — עוגן מחיר + מחויבות</h2>
+<div class="script-box">
+"מעולה. <b>במקום עלות מקור של 340 שקלים בחודש — העלות עם ההטבה לגיל השלישי בעקבות הרפורמה תהיה 248 שקלים בלבד.</b><br><br>
+זה מותנה במצב רפואי תקין, אז אני רק עובר איתך שתי שאלות רפואיות קצרות ומתקדמים —"
+</div>
+
+<!-- שלב 8 -->
+<h2 class="stage">שלב 8 — שאלות רפואיות</h2>
+<div class="script-box">
+① <em>"אתה מעשן או עישנת סיגריות בשנה האחרונה?"</em><br>
+&nbsp;&nbsp;&nbsp;(אם כן) "אני רואה שאתה מעשן <span class="blank">___</span> סיגריות ביום — האם זה עלה, ירד, או השתנה?"<br><br>
+② <em>"האם חלילה חלית במחלה קשה כמו סרטן, מחלת לב או שבץ מוחי?"</em>
+</div>
+
+<!-- שלב 9 -->
+<h2 class="stage">שלב 9 — סגירה בהנחה (Assumed Close)</h2>
+<div class="script-box">
+"מצוין.<br><br>
+<b>מה שנעשה עכשיו זה לצרף אותך לעלות המוזלת של 248 שקלים בחודש בלבד, ולקבע את המחיר שלא יעלה שקל מעבר לזה.</b><br><br>
+ואשלח אליך את המסמכים יחד עם חוברת הכיסויים לכתובת שלך במערכת — שזה <span class="blank">_______</span> נכון?<br><br>
+מה שאני עושה עכשיו — מעלה את הפרטים במערכת לקבל את האישור המיידי. וכשיופיע אור ירוק ממש מייד אחר כך — חוזר אליך לשיחת הסיכום על פי הנהלים."
+</div>
+<div class="tip"><b>ניסוח קריטי:</b> "מה שנעשה" (לא "מה שאני אעשה" או "מוכן?") — זו הנחה. עובר ישר לטכני.</div>
+
+<!-- שלב 10 -->
+<h2 class="stage">שלב 10 — סגירה טכנית (אשראי) · ללא טריק!</h2>
+<div class="script-box">
+"רק רגע לפני — כדי שיהיה לך נוח, בדרך כלל משתמשים באשראי שמשויך לויזה או לישראכרט?<br><br>
+<b>(אחרי שהוא ענה):</b> תוכל להקריא לי את המספר משמאל לימין, ובבקשה גם התוקף — חודש ושנה. לגבייה תקינה מטעמי ביטחון של החברה."
+</div>
+<div class="warn">הוסר: "אז אני מתייחס לכרטיס שמתחיל ב-5326 נכון?" — הטעיה (BIN גנרי). מי שנתן את הת"ז יתן גם אשראי — בקש ישר.</div>
+
+<!-- שלב 11 -->
+<h2 class="stage">שלב 11 — מעבר לשיחת סיכום</h2>
+<div class="script-box">
+"מעולה, מה שאני עושה עכשיו זה לעלות את הפרטים במערכת לקבל את האישור על הת"ז שלך בפלטינום — וחוזר אליך עוד חצי דקה לשיחת הסיכום, שם מצרפים ומוזילים ומקבעים את המחיר ל-248 ש"ח. <b>רק תשאיר את האשראי בידך — צריך להקריא אותו שוב לגבייה תקינה, מטעמי ביטחון של החברה.</b>"
+</div>
+
+<!-- השוואה -->
+<h2 class="stage">📊 השוואה — מקורי מול מתוקן</h2>
+<table class="compare-table">
+<thead><tr><th>שלב</th><th>מקורי</th><th>מתוקן</th></tr></thead>
+<tbody>
+<tr><td>פתיחה</td><td>15 שניות</td><td>20 שניות</td></tr>
+<tr><td>אימות</td><td>✅</td><td>✅</td></tr>
+<tr><td><b>כאב</b></td><td>❌</td><td>✅ חדש (20 שניות)</td></tr>
+<tr><td><b>פער</b></td><td>❌</td><td>✅ חדש (15 שניות)</td></tr>
+<tr><td>פיצ'ר</td><td>רשימה יבשה</td><td>מחובר לכאב שחשף</td></tr>
+<tr><td><b>זהות</b></td><td>❌</td><td>✅ חדש (משפט אחד)</td></tr>
+<tr><td>מחיר</td><td>✅</td><td>✅</td></tr>
+<tr><td>שאלות רפואיות</td><td>✅</td><td>✅</td></tr>
+<tr><td>סגירה</td><td>אגרסיבית</td><td>בהנחה</td></tr>
+<tr><td>אשראי</td><td>⚠️ BIN trick</td><td>✅ בקשה ישירה</td></tr>
+</tbody>
+</table>
+<div class="tip"><b>תוספת זמן:</b> פחות מדקה · <b>רווח צפוי:</b> ~15-20% העלאה באחוז סגירה בלידים שחוששים — כי עכשיו הם מרגישים מובנים לפני שמבקשים מהם כסף.</div>
+
+<!-- 3 טיפים -->
+<h2 class="stage">💡 3 טיפים קריטיים לשימוש</h2>
+<div class="tips-grid">
+<div class="tip-card"><b>1. התאמן 20 פעם</b>ב-sales-training.html עם תרחישים שונים לפני שיחה אמיתית.</div>
+<div class="tip-card"><b>2. בשלב 3 — שתוק!</b>כשהלקוח עונה על הכאב, אל תמהר. שמור משפטים במערכת. אלה התחמושת שלך ל"יקר לי".</div>
+<div class="tip-card"><b>3. זהות (שלב 6)</b>אם מהסס, אל תלחץ. תגיד: "5 דקות ללא התחייבות, רק נעבור על הפרטים?" וחזור לשלב 5.</div>
+</div>
+
+<div class="footer-strip">
+⚡ חוק הברזל: כל משפט מסתיים בשאלה &nbsp;·&nbsp; 🛡️ התנגדות? בודד ("זה הדבר היחיד?") &nbsp;·&nbsp; 💎 תחמושת: חזור על מילים שלו
+</div>
+
+</div>
+</body>
+</html>
