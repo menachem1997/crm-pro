@@ -335,6 +335,25 @@ body{
 }
 .btn-mic:hover{border-color:var(--red);color:var(--red)}
 .btn-mic.listening{background:var(--red);border-color:var(--red);color:#fff;animation:mic-pulse 1.5s ease-in-out infinite}
+
+.speaker-bar{
+  display:none;gap:8px;padding:10px 16px 0;
+  border-top:1px solid var(--border);
+  background:var(--surface);
+}
+.speaker-bar.show{display:flex}
+.speaker-btn{
+  flex:1;padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--surface2);color:var(--muted);
+  font-size:13px;font-weight:700;
+  cursor:pointer;transition:all 0.15s;
+}
+.speaker-btn:hover{border-color:var(--gold)}
+.speaker-btn.customer.active{background:var(--gold);color:#0a0a0a;border-color:var(--gold);box-shadow:0 0 12px rgba(212,175,55,0.5)}
+.speaker-btn.rep.active{background:#3b82f6;color:#fff;border-color:#3b82f6;box-shadow:0 0 12px rgba(59,130,246,0.5)}
+.speaker-hint{font-size:10px;color:var(--muted);text-align:center;padding:4px 0 0}
 @keyframes mic-pulse{
   0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)}
   50%{box-shadow:0 0 0 10px rgba(239,68,68,0)}
@@ -567,6 +586,12 @@ body{
   </div>
 </div>
 
+<!-- SPEAKER TOGGLE (visible only when mic on) -->
+<div class="speaker-bar" id="speakerBar">
+  <button class="speaker-btn customer active" id="spkCustomer" onclick="setSpeaker('customer')" title="Alt+L">👤 הלקוח מדבר</button>
+  <button class="speaker-btn rep" id="spkRep" onclick="setSpeaker('rep')" title="Alt+N">🎤 אני מדבר (נציג)</button>
+</div>
+
 <!-- INPUT BAR -->
 <div class="input-bar">
   <button class="btn-mic" id="micBtn" onclick="toggleVoice()" title="האזן לשיחה">🎤</button>
@@ -580,6 +605,14 @@ body{
 
 <script>
 const SYSTEM_PROMPT = `אתה סוכן מכירות AI מומחה של פלטינום כתב שירות — חברת ביטוח בריאות משלים לגיל השלישי.
+
+## 🎯 זיהוי דוברים בשיחה חיה
+ייתכן שתקבל הודעות עם תגיות:
+- **[לקוח]: ...** — זה מה שהלקוח אמר. **ענה ונתח את זה** — זו ההודעה שעליה אתה מגיב.
+- **[נציג אמר: ...]** — זה ה-context ממה שהנציג אמר קודם לכן (זה לא דברי הלקוח!). השתמש בזה כדי להבין מה הוזכר בשיחה, אבל **ההתייחסות שלך תהיה לדברי הלקוח בלבד**.
+- אם הודעה באה בלי תגית — הנח שזה הלקוח (ברירת מחדל).
+
+**חשוב:** כשאתה רואה **[נציג אמר: X] [לקוח]: Y**, הבן ש-X זה מה שהנציג כבר אמר ללקוח ו-Y זו תגובת הלקוח. התגובה שלך צריכה להיות הצעד הבא של הנציג, לא לחזור על מה שכבר נאמר.
 
 ## המוצר
 - **פלטינום כתב שירות** — ביטוח בריאות משלים
@@ -712,6 +745,20 @@ let voiceTimeout = null;
 let currentScore = 0;
 let leadContext = '';
 let currentCustomerPhone = '';
+let currentSpeaker = 'customer';
+let repBuffer = '';
+
+function setSpeaker(who){
+  currentSpeaker = who;
+  document.getElementById('spkCustomer').classList.toggle('active', who==='customer');
+  document.getElementById('spkRep').classList.toggle('active', who==='rep');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (!isListening) return;
+  if (e.altKey && (e.key === 'l' || e.key === 'L' || e.code === 'KeyL')) { e.preventDefault(); setSpeaker('customer'); }
+  if (e.altKey && (e.key === 'n' || e.key === 'N' || e.code === 'KeyN')) { e.preventDefault(); setSpeaker('rep'); }
+});
 
 // ════════════════════════════════════
 // LESSONS MEMORY — shared with sales-training.html
@@ -1268,13 +1315,31 @@ function initSpeech() {
       if (e.results[i].isFinal) final += e.results[i][0].transcript;
       else interim += e.results[i][0].transcript;
     }
-    document.getElementById('voiceInterim').textContent = interim;
+    const speakerIcon = currentSpeaker === 'customer' ? '👤' : '🎤';
+    document.getElementById('voiceInterim').textContent = interim ? `${speakerIcon} ${interim}` : '';
     if (final.trim()) {
       clearTimeout(voiceTimeout);
-      document.getElementById('userInput').value = final.trim();
-      voiceTimeout = setTimeout(() => {
-        if (document.getElementById('userInput').value.trim()) sendMessage();
-      }, 1200);
+      if (currentSpeaker === 'rep') {
+        // הנציג מדבר — אוגר כ-context ולא שולח ל-AI
+        repBuffer += (repBuffer ? ' ' : '') + final.trim();
+        const inputEl = document.getElementById('userInput');
+        inputEl.value = `[נציג אמר: ${repBuffer}]`;
+        autoResize(inputEl);
+      } else {
+        // הלקוח מדבר — שולח ל-AI עם ה-context של הנציג (אם יש)
+        const inputEl = document.getElementById('userInput');
+        const customerText = final.trim();
+        inputEl.value = repBuffer
+          ? `[נציג אמר: ${repBuffer}]\n[לקוח]: ${customerText}`
+          : `[לקוח]: ${customerText}`;
+        autoResize(inputEl);
+        voiceTimeout = setTimeout(() => {
+          if (document.getElementById('userInput').value.trim()) {
+            repBuffer = '';
+            sendMessage();
+          }
+        }, 1200);
+      }
     }
   };
 
@@ -1293,6 +1358,8 @@ function startVoice() {
   document.getElementById('micBtn').classList.add('listening');
   document.getElementById('micBtn').textContent = '⏹';
   document.getElementById('voiceStatus').classList.add('active');
+  document.getElementById('speakerBar').classList.add('show');
+  setSpeaker('customer');
   startTimer();
 }
 
@@ -1302,7 +1369,9 @@ function stopVoice() {
   document.getElementById('micBtn').classList.remove('listening');
   document.getElementById('micBtn').textContent = '🎤';
   document.getElementById('voiceStatus').classList.remove('active');
+  document.getElementById('speakerBar').classList.remove('show');
   document.getElementById('voiceInterim').textContent = '';
+  repBuffer = '';
 }
 </script>
 </body>
