@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>ערכת שיגור פייסבוק — פלטינום</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Heebo',sans-serif}
+body{background:#f0f0f0;padding:20px;color:#1a2744}
+.page{max-width:900px;margin:0 auto 20px;background:#fff;padding:30px 32px;box-shadow:0 2px 20px rgba(0,0,0,.1);border-radius:10px}
+h1{font-size:1.8rem;color:#1a2744;text-align:center;margin-bottom:5px;font-weight:900}
+.sub{text-align:center;color:#666;margin-bottom:25px;font-size:.95rem}
+
+h2{font-size:1.25rem;color:#1a2744;margin-top:30px;margin-bottom:10px;padding:8px 14px;background:linear-gradient(90deg,#1a2744,#2a3e6b);color:#d4af37;border-radius:6px;font-weight:800}
+h3{font-size:1.05rem;color:#1a2744;margin:14px 0 6px;font-weight:800}
+
+.ad-card{border:2px solid #d4af37;border-radius:10px;padding:16px 18px;margin-bottom:16px;background:#fffbeb}
+.ad-badge{display:inline-block;background:#1a2744;color:#d4af37;padding:3px 10px;border-radius:12px;font-size:.75rem;font-weight:800;margin-bottom:8px}
+.ad-card h4{font-size:1.05rem;color:#1a2744;margin-bottom:10px;font-weight:900}
+
+.field{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin:6px 0;position:relative;font-size:.92rem;line-height:1.6}
+.field .label{position:absolute;top:-8px;right:10px;background:#d4af37;color:#1a2744;padding:1px 8px;border-radius:4px;font-size:.7rem;font-weight:800}
+.field pre{white-space:pre-wrap;font-family:'Heebo',sans-serif;font-size:.9rem}
+.copy-btn{background:#1a2744;color:#d4af37;border:none;border-radius:5px;padding:4px 10px;font-size:.78rem;cursor:pointer;font-weight:700;margin-right:6px;font-family:inherit}
+.copy-btn:hover{background:#d4af37;color:#1a2744}
+.copy-btn.copied{background:#22c55e;color:#fff}
+
+.settings-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.9rem}
+.settings-table td{padding:9px 12px;border-bottom:1px solid #e2e8f0}
+.settings-table td:first-child{font-weight:800;color:#1a2744;width:200px;background:#fafbfc}
+.settings-table tr:last-child td{border-bottom:none}
+
+.checklist{list-style:none;padding:0}
+.checklist li{padding:8px 0 8px 30px;position:relative;font-size:.93rem;line-height:1.5;border-bottom:1px dashed #e2e8f0}
+.checklist li::before{content:"☐";position:absolute;right:0;color:#d4af37;font-size:1.2rem;font-weight:700;top:5px}
+.checklist li:last-child{border-bottom:none}
+
+.warn{background:#fee2e2;border-right:3px solid #dc2626;padding:10px 14px;border-radius:4px;margin:10px 0;font-size:.88rem;color:#991b1b}
+.warn::before{content:"⚠️ ";font-weight:700}
+
+.tip{background:#dbeafe;border-right:3px solid #3b82f6;padding:10px 14px;border-radius:4px;margin:10px 0;font-size:.88rem;color:#1e3a8a}
+.tip::before{content:"💡 ";font-weight:700}
+
+.success{background:#dcfce7;border-right:3px solid #22c55e;padding:10px 14px;border-radius:4px;margin:10px 0;font-size:.88rem;color:#166534}
+.success::before{content:"✅ ";font-weight:700}
+
+.targets-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.target-box{background:#fafbfc;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px}
+.target-box strong{display:block;color:#1a2744;font-size:.85rem;margin-bottom:4px}
+.target-box span{font-size:.88rem;color:#475569}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.kpi{background:#1a2744;color:#fff;padding:14px;border-radius:8px;text-align:center}
+.kpi .v{font-size:1.4rem;color:#d4af37;font-weight:900;display:block}
+.kpi .l{font-size:.78rem;opacity:.85}
+
+.actions{text-align:center;margin-bottom:10px}
+.btn{padding:8px 16px;margin:0 4px;background:#1a2744;color:#d4af37;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.9rem;text-decoration:none;display:inline-block}
+.btn:hover{background:#d4af37;color:#1a2744}
+
+@media print{
+  body{background:#fff;padding:0}
+  .page{box-shadow:none;max-width:none;margin:0;border-radius:0}
+  .actions{display:none}
+  .copy-btn{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="actions">
+  <a href="landing.html" class="btn">← חזרה לדף הנחיתה</a>
+  <button class="btn" onclick="window.print()">🖨️ הדפס</button>
+  <a href="https://business.facebook.com/adsmanager" target="_blank" class="btn">🚀 Meta Ads Manager</a>
+</div>
+
+<div class="page">
+
+<h1>🎯 ערכת שיגור פייסבוק — פלטינום</h1>
+<div class="sub">כל מה שצריך להעלות לאוויר את הקמפיין הראשון שלך · תקציב ₪700/חודש</div>
+
+<!-- שלב 1 -->
+<h2>✅ שלב 1 — צ'קליסט לפני שיגור</h2>
+<ul class="checklist">
+  <li><strong>חשבון Business Manager פעיל</strong> — business.facebook.com</li>
+  <li><strong>כרטיס אשראי עסקי מחובר</strong> ל-Billing ב-Meta</li>
+  <li><strong>Meta Pixel מותקן</strong> — 1579186619813396 ✅ כבר באתר</li>
+  <li><strong>התקן Chrome Extension:</strong> "Meta Pixel Helper" — לאימות</li>
+  <li><strong>אימות דומיין</strong> platinum-service.co.il ב-Business Settings → Brand Safety → Domains</li>
+  <li><strong>הגדר אירועים מועדפים</strong> — Events Manager → קבע Lead כאירוע עיקרי</li>
+  <li><strong>בדוק את דף הנחיתה במובייל</strong> — 80% מהתנועה תגיע מסמארטפון</li>
+</ul>
+
+<div class="warn">שלב האימות של Pixel קריטי! אם אין אירועי Lead יוצאים מהדף — לא תוכל לבצע אופטימיזציה לקונברסיות.</div>
+
+<!-- שלב 2 -->
+<h2>🎨 שלב 2 — 3 מודעות מוכנות להעתקה</h2>
+
+<!-- מודעה 1 -->
+<div class="ad-card">
+  <span class="ad-badge">מודעה 1 · כאב · המומלצת להתחלה 🔥</span>
+  <h4>כותרת, טקסט ראשי וכפתור</h4>
+
+  <div class="field">
+    <span class="label">Primary Text (טקסט ראשי)</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>ביקור רופא פרטי עולה ₪500–₪1,000? 😕
+
+פלטינום כתב שירות ב-₪248 בלבד לחודש:
+✅ רופא עד הבית 24/7 — גם בלילות וסופ"ש
+✅ רופאים מומחים תוך 72 שעות
+✅ MRI + CT אבחון מהיר
+✅ מימוש זכויות רפואיות — ביטוח לאומי ומס הכנסה
+✅ רפואה משלימה + פיזיותרפיה
+
+ללא הצהרת בריאות · ללא תקופת אכשרה · ביטול בכל עת
+
+👈 בדקו זכאות תוך 30 שניות</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">Headline (כותרת)</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>ביקור רופא בבית מ-₪248 לחודש</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">Description (תיאור)</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>ללא הצהרת בריאות · ביטול בכל עת</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">CTA · כפתור</span>
+    <pre>Learn More</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">URL</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>https://platinum-service.co.il/landing.html</pre>
+  </div>
+</div>
+
+<!-- מודעה 2 -->
+<div class="ad-card">
+  <span class="ad-badge">מודעה 2 · זהות · לבדיקה במקביל</span>
+  <h4>מכוונת לאנשים שרוצים להיות "חכמים/אחראיים"</h4>
+
+  <div class="field">
+    <span class="label">Primary Text</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>אנשים חכמים בגיל 60+ כבר הבינו את זה 💡
+
+עדיף ₪10 ביום מאשר ₪8,000 פעם אחת.
+
+פלטינום — כתב שירות אמיתי:
+🏥 רופא עד הבית 24/7
+⏱ מומחים תוך 72 שעות (במקום חודשי המתנה)
+⚖️ צוות למימוש זכויות רפואיות מול ביטוח לאומי, מס הכנסה וחברות ביטוח
+🌿 רפואה משלימה · פיזיותרפיה · הידרותרפיה
+
+₪248/חודש · ללא הצהרת בריאות · בלי קנסות יציאה
+
+👉 בדקו כמה מגיע לכם</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">Headline</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>ההחלטה החכמה בגיל 60+</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">Description</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>₪248/חודש · ללא הצהרת בריאות · זמין 24/7</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">URL</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>https://platinum-service.co.il/landing.html</pre>
+  </div>
+</div>
+
+<!-- מודעה 3 -->
+<div class="ad-card">
+  <span class="ad-badge">מודעה 3 · ודאות · לקהל מהסס</span>
+  <h4>מדגישה את הסולידיות וההבטחה</h4>
+
+  <div class="field">
+    <span class="label">Primary Text</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>רופא מגיע אליכם הביתה. תביעות משולמות תוך 72 שעות. מתקבלים כולם. 🏥
+
+פלטינום כתב שירות — משרתת עשרות אלפי מנויים מאז 2016:
+
+✅ רופא עד הבית בכל שעה — כולל חגים וסופ"ש
+✅ מומחים תוך 72 שעות · MRI ו-CT מהיר
+✅ 2 התייעצויות בשנה חינם למיצוי זכויות
+✅ 50% הנחה על טיפול מול ביטוח לאומי ומס הכנסה
+✅ פיזיותרפיה, רפואה משלימה, שיפוי סיעוד
+
+ללא הצהרת בריאות · ללא תקופת אכשרה · ביטול בכל עת
+
+תבדקו זכאות חינם 👇</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">Headline</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>השקט הנפשי שמגיע לכם</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">Description</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>עשרות אלפי מנויים · פעיל מ-2016</pre>
+  </div>
+
+  <div class="field">
+    <span class="label">URL</span>
+    <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>https://platinum-service.co.il/landing.html</pre>
+  </div>
+</div>
+
+<!-- שלב 3 -->
+<h2>📸 שלב 3 — יצירת תמונות למודעות (AI)</h2>
+<div class="tip">פתח את ChatGPT/Midjourney/DALL-E והעתק את ה-Prompts למטה. כל מודעה צריכה תמונה ייחודית — לא לחזור על אותה תמונה.</div>
+
+<h3>תמונה למודעה 1 (כאב)</h3>
+<div class="field">
+  <span class="label">AI Prompt (ChatGPT/DALL-E/Midjourney)</span>
+  <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>A warm photograph of a smiling Israeli senior man, age 65-70, sitting
+comfortably at home on a sofa, being examined gently by a friendly
+doctor with a stethoscope. Natural daylight through window, modern
+but cozy Israeli living room. Soft blue and gold tones. Realistic
+photography, shallow depth of field, 1:1 square format. No text.</pre>
+</div>
+
+<h3>תמונה למודעה 2 (זהות)</h3>
+<div class="field">
+  <span class="label">AI Prompt</span>
+  <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>A confident Israeli woman, age 60-65, with a warm smile, sitting at
+a clean kitchen table with a cup of tea, looking thoughtfully at a
+document. Bright natural lighting, modern Israeli home interior.
+Navy blue and gold color accents. Photorealistic, professional
+lifestyle photography, 1:1 square format. No text.</pre>
+</div>
+
+<h3>תמונה למודעה 3 (ודאות)</h3>
+<div class="field">
+  <span class="label">AI Prompt</span>
+  <button class="copy-btn" onclick="copyField(this)">העתק</button>
+<pre>A compassionate doctor making a house call to an elderly Israeli
+couple (husband and wife, mid-70s) in their home. Doctor holding
+a medical bag, patients looking relieved and smiling. Warm evening
+lighting, traditional Israeli home. Reassuring and professional
+atmosphere. Photorealistic documentary style, 1:1 square format.
+No text.</pre>
+</div>
+
+<div class="warn">חשוב: אם אתה משתמש ב-DALL-E/Midjourney — הכנס את הקובץ לעורך תמונות חינמי (Canva) ותוסיף את הלוגו של פלטינום בפינה.</div>
+
+<!-- שלב 4 -->
+<h2>⚙️ שלב 4 — הגדרות קמפיין ב-Meta Ads Manager</h2>
+
+<h3>🎯 רמת קמפיין (Campaign)</h3>
+<table class="settings-table">
+  <tr><td>שם</td><td>פלטינום · לידים · בריאות וסיעוד</td></tr>
+  <tr><td>מטרה</td><td><strong>Leads</strong> (המלצה חזקה — לא Traffic)</td></tr>
+  <tr><td>Special Category</td><td>אין (None)</td></tr>
+  <tr><td>A/B Test</td><td>כבוי להתחלה — נאסוף דאטה קודם</td></tr>
+</table>
+
+<h3>👥 רמת Ad Set — קהל יעד</h3>
+<table class="settings-table">
+  <tr><td>מיקום</td><td>ישראל</td></tr>
+  <tr><td>גיל</td><td><strong>50-75</strong></td></tr>
+  <tr><td>מין</td><td>הכל</td></tr>
+  <tr><td>שפות</td><td>עברית</td></tr>
+  <tr><td>תחומי עניין</td><td>בריאות · ביטוח · קופת חולים · גיל השלישי · פנסיה · תזונה</td></tr>
+  <tr><td>יציאות (Exclusions)</td><td>מי שכבר נכנס לדף (Custom Audience — רשימת Pixel 30 יום)</td></tr>
+  <tr><td>מיקומי הצגה</td><td>Automatic Placements (פייסבוק Feed + Instagram Feed + Stories)</td></tr>
+  <tr><td>אירוע המרה</td><td><strong>Lead</strong></td></tr>
+  <tr><td>אופטימיזציה</td><td>Leads (לא Link Clicks!)</td></tr>
+</table>
+
+<h3>💰 רמת Ad — תקציב</h3>
+<table class="settings-table">
+  <tr><td>סוג תקציב</td><td><strong>Daily Budget</strong> (יומי)</td></tr>
+  <tr><td>סכום יומי</td><td><strong>₪23</strong> (≈ $6.5)</td></tr>
+  <tr><td>סה"כ שבועי</td><td>₪160</td></tr>
+  <tr><td>סה"כ חודשי</td><td>₪700</td></tr>
+  <tr><td>לו"ז</td><td>התחל מיד — רוץ 14 יום ולאחר מכן נתח</td></tr>
+</table>
+
+<!-- שלב 5 -->
+<h2>📊 שלב 5 — KPIs לעקוב</h2>
+<div class="kpi-grid">
+  <div class="kpi">
+    <span class="v">&lt; ₪50</span>
+    <span class="l">CPL (Cost Per Lead) · יעד</span>
+  </div>
+  <div class="kpi">
+    <span class="v">&gt; 1.5%</span>
+    <span class="l">CTR (Click Through Rate) · יעד</span>
+  </div>
+  <div class="kpi">
+    <span class="v">&lt; 3</span>
+    <span class="l">Frequency שבועי · אזהרה</span>
+  </div>
+</div>
+
+<h3>🕐 לו"ז בדיקה</h3>
+<ul class="checklist">
+  <li><strong>אחרי 24 שעות:</strong> לוודא ש-Impressions רצות + Pixel רושם אירועים</li>
+  <li><strong>אחרי 48 שעות:</strong> מדוד CPL + CTR ראשוניים</li>
+  <li><strong>אחרי 72 שעות:</strong> אם CPL > ₪80 — החלף קריאטיב או צמצם קהל</li>
+  <li><strong>אחרי 7 ימים:</strong> השהה את המודעה הכי פחות טובה מ-3 המודעות</li>
+  <li><strong>אחרי 14 יום:</strong> סיכום מלא — שמור את המודעה המנצחת והעלה את התקציב ב-20%</li>
+</ul>
+
+<!-- שלב 6 -->
+<h2>🛡️ שלב 6 — עמידה בתקנות פייסבוק</h2>
+
+<div class="success">מה שכבר תקין בדף הנחיתה:</div>
+<ul class="checklist">
+  <li>פרטי חברה בפוטר (ח.פ., טלפון)</li>
+  <li>מדיניות פרטיות ברורה</li>
+  <li>טופס עם consent מפורש</li>
+  <li>ללא טענות רפואיות מטעות</li>
+  <li>SSL (HTTPS) פעיל</li>
+</ul>
+
+<div class="warn">אסור במודעות:<br>
+❌ טענות של "מרפא" / "תרופה פלא"<br>
+❌ לפני/אחרי עם תמונות של חולים אמיתיים<br>
+❌ מחירים "עד ₪X" או "חיסכון מוגדר" ללא בסיס<br>
+❌ הפחדה של "אתה תחלה ב-X%" או שימוש בתנאי רפואי של המשתמש</div>
+
+<!-- שלב 7 -->
+<h2>🎁 בונוס — רימרקטינג (אחרי שבועיים)</h2>
+<p style="margin:10px 0;font-size:.93rem;line-height:1.6">אחרי שהצטבר דאטה של Pixel (50+ leads), תוכל ליצור:</p>
+<div class="targets-grid">
+  <div class="target-box">
+    <strong>Custom Audience — נכנסו ולא המירו</strong>
+    <span>מי שנכנס ל-landing.html אך לא מילא טופס — 14 יום</span>
+  </div>
+  <div class="target-box">
+    <strong>Lookalike — דומים לממירים</strong>
+    <span>Lookalike 1% של Custom Audience "ממירים" (ב-Events Manager)</span>
+  </div>
+</div>
+
+<div class="tip">רימרקטינג עולה 60-70% פחות מטארגטינג קר. זהו "הניצחון השני" של הקמפיין.</div>
+
+<div style="margin-top:30px;padding:20px;background:#1a2744;color:#d4af37;text-align:center;border-radius:10px">
+  <strong style="font-size:1.1rem">✨ בהצלחה! אתה מוכן לשיגור</strong>
+  <div style="font-size:.88rem;margin-top:6px;opacity:.9">נוצר אוטומטית לפלטינום כתב שירות · אפריל 2026</div>
+</div>
+
+</div>
+
+<script>
+function copyField(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ הועתק!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+</script>
+
+</body>
+</html>
