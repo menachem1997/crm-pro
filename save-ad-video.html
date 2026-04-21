@@ -234,14 +234,14 @@ function scene2_Pain(t) {
 }
 
 function scene3_Solution(t) {
-  // 7500-11250ms — פתרון: ₪248 + יתרונות
+  // 7500-11250ms — פתרון: שם החברה + יתרונות (בלי מחיר)
   const p = t / 3750;
   drawGradientBg('#1a2744', '#0f1a2e');
 
-  // Price headline
-  const priceAlpha = ease(clamp(p*2, 0, 1));
-  drawText('₪248', W/2, H*0.2, 180, '#d4af37', priceAlpha);
-  drawText('לחודש בלבד', W/2, H*0.32, 52, '#fff', priceAlpha, 'center', '500');
+  // Brand headline
+  const titleAlpha = ease(clamp(p*2, 0, 1));
+  drawText('פלטינום כתב שירות', W/2, H*0.18, 82, '#d4af37', titleAlpha);
+  drawText('הכיסוי הרפואי שחיכית לו', W/2, H*0.28, 48, '#fff', titleAlpha, 'center', '500');
 
   // Checklist
   const items = [
@@ -254,7 +254,7 @@ function scene3_Solution(t) {
 
   items.forEach((item, i) => {
     const itemP = clamp((p - 0.25 - i*0.1) * 3, 0, 1);
-    const y = H*0.48 + i*110;
+    const y = H*0.45 + i*115;
     const x = W*0.75;
     drawCheckItem(item, x, y, 48, ease(itemP));
   });
