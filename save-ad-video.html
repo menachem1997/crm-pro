@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>פלטינום — יצירת סרטון מודעה 9:16</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Heebo','Segoe UI',Arial,sans-serif;
+    background:#0a0e1a;color:#fff;
+    padding:30px 20px;min-height:100vh;
+  }
+  .wrap{max-width:600px;margin:0 auto}
+  h1{text-align:center;color:#d4af37;font-size:24px;margin-bottom:20px}
+  .info{
+    background:#1a2744;border:1px solid #2a3a5a;
+    border-radius:14px;padding:16px 20px;margin-bottom:20px;
+    font-size:14px;line-height:1.7
+  }
+  .info b{color:#d4af37}
+  .preview-box{
+    background:#000;border-radius:14px;overflow:hidden;
+    margin:0 auto 20px;max-width:300px;
+    aspect-ratio:9/16;
+    display:flex;align-items:center;justify-content:center;
+  }
+  canvas{width:100%;height:auto;display:block}
+  .controls{display:flex;flex-direction:column;gap:10px}
+  button{
+    padding:14px 20px;border:none;border-radius:12px;
+    font-size:16px;font-weight:700;cursor:pointer;
+    transition:all 0.2s;font-family:inherit
+  }
+  .btn-primary{background:#d4af37;color:#0a0e1a}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,0.4)}
+  .btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+  .btn-secondary{background:#2a3a5a;color:#fff;border:1px solid #3a4a6a}
+  .btn-secondary:hover{background:#3a4a6a}
+  .status{
+    background:#0f1a2e;border:1px solid #2a3a5a;
+    border-radius:10px;padding:12px;text-align:center;
+    font-size:14px;color:#9ca3af;margin-top:10px
+  }
+  .status.recording{background:#991b1b;border-color:#dc2626;color:#fff}
+  .status.ready{background:#065f46;border-color:#10b981;color:#fff}
+  .steps{
+    background:#1a2744;border:1px solid #2a3a5a;
+    border-radius:14px;padding:16px 20px;margin-top:20px;font-size:13px;line-height:1.8
+  }
+  .steps h3{color:#d4af37;margin-bottom:10px;font-size:16px}
+  .steps ol{padding-right:20px}
+  .steps li{margin-bottom:6px}
+  .steps code{background:#0a0e1a;padding:2px 6px;border-radius:4px;color:#d4af37;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎬 סרטון מודעה 9:16 — פלטינום</h1>
+
+  <div class="info">
+    <b>מה זה עושה:</b> יוצר סרטון אנכי 1080×1920 (Reels/Stories), 15 שניות, עם 4 סצנות מונפשות.<br>
+    <b>הקלק "👁️ תצוגה מקדימה"</b> לראות את הסרטון. <b>"🎬 הקלט והורד"</b> כדי לשמור קובץ MP4/WebM.
+  </div>
+
+  <div class="preview-box">
+    <canvas id="c" width="1080" height="1920"></canvas>
+  </div>
+
+  <div class="controls">
+    <button class="btn-secondary" id="previewBtn" onclick="preview()">👁️ תצוגה מקדימה (15 שניות)</button>
+    <button class="btn-primary" id="recordBtn" onclick="record()">🎬 הקלט והורד סרטון</button>
+  </div>
+
+  <div class="status" id="status">מוכן — לחץ תצוגה מקדימה כדי לראות את הסרטון</div>
+
+  <div class="steps">
+    <h3>📤 איך להעלות ל-Meta Ads Manager</h3>
+    <ol>
+      <li>לחץ <b>🎬 הקלט והורד</b> — הסרטון ירד (קובץ <code>.webm</code> או <code>.mp4</code>)</li>
+      <li>אם ירד WebM — לך ל-<a href="https://cloudconvert.com/webm-to-mp4" target="_blank" style="color:#d4af37">CloudConvert</a> ותהפוך ל-MP4 (2 דקות, חינם)</li>
+      <li>ב-Ads Manager → <b>ערוך מודעה</b> → <b>מדיה</b> → <b>הוסף סרטון</b> → העלה</li>
+      <li><b>הוסף מוזיקה:</b> בעורך הקריאייטיב → כפתור "🎵 הוסף מוזיקה" → בחר ממאגר Meta (חינמי)</li>
+      <li>שמור ופרסם — Meta תתקין את הסרטון לרייליים ו-Stories אוטומטית</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = 1080, H = 1920;
+const DURATION = 15000; // 15 seconds
+let startTime = null;
+let animFrameId = null;
+let isRecording = false;
+
+// ═══════════════════════════════════════════
+// אפקטים ועזרי ציור
+// ═══════════════════════════════════════════
+function ease(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+function clamp(v,a,b) { return Math.max(a, Math.min(b, v)); }
+
+function drawGradientBg(c1, c2) {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, c1);
+  g.addColorStop(1, c2);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function drawGoldOrb(cx, cy, r, alpha) {
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  g.addColorStop(0, `rgba(212,175,55,${0.4*alpha})`);
+  g.addColorStop(1, 'rgba(212,175,55,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function drawLogo(cx, cy, size, alpha, rot=0) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(cx, cy);
+  ctx.rotate(rot);
+  // Outer circle
+  ctx.fillStyle = '#d4af37';
+  ctx.beginPath();
+  ctx.arc(0, 0, size, 0, Math.PI*2);
+  ctx.fill();
+  // Inner dark
+  ctx.fillStyle = '#0a0e1a';
+  ctx.beginPath();
+  ctx.arc(0, 0, size*0.85, 0, Math.PI*2);
+  ctx.fill();
+  // פ letter
+  ctx.fillStyle = '#d4af37';
+  ctx.font = `bold ${size*1.1}px Heebo, Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('פ', 0, size*0.05);
+  ctx.restore();
+}
+
+function drawText(text, x, y, size, color, alpha, align='center', weight='bold') {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.font = `${weight} ${size}px Heebo, Arial`;
+  ctx.textAlign = align;
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+function drawCheckItem(text, x, y, size, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  // Green check circle
+  ctx.fillStyle = '#10b981';
+  ctx.beginPath();
+  ctx.arc(x + 30, y, 28, 0, Math.PI*2);
+  ctx.fill();
+  // Checkmark
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x + 18, y);
+  ctx.lineTo(x + 28, y + 10);
+  ctx.lineTo(x + 44, y - 8);
+  ctx.stroke();
+  // Text
+  ctx.fillStyle = '#fff';
+  ctx.font = `600 ${size}px Heebo, Arial`;
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x - 20, y);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+// 4 סצנות — כל אחת 3.75 שניות
+// ═══════════════════════════════════════════
+
+function scene1_Logo(t) {
+  // 0-3750ms — לוגו מופיע + שם החברה
+  const p = t / 3750;
+  drawGradientBg('#0a0e1a', '#1a2744');
+  drawGoldOrb(W/2, H*0.35, W*0.8, ease(clamp(p*2,0,1)));
+
+  const logoScale = ease(clamp(p*2, 0, 1));
+  const logoRot = (1-logoScale) * Math.PI * 0.5;
+  drawLogo(W/2, H*0.35, 180 * logoScale, logoScale, logoRot);
+
+  const textAlpha = ease(clamp((p-0.3)*2.5, 0, 1));
+  drawText('פלטינום', W/2, H*0.55, 120, '#d4af37', textAlpha);
+  drawText('כתב שירות', W/2, H*0.62, 90, '#fff', textAlpha);
+
+  const subAlpha = ease(clamp((p-0.5)*2.5, 0, 1));
+  drawText('כי הבריאות שלך חשובה', W/2, H*0.72, 52, '#9ca3af', subAlpha, 'center', '500');
+}
+
+function scene2_Pain(t) {
+  // 3750-7500ms — כאב: מחירי רופא פרטי
+  const p = t / 3750;
+  drawGradientBg('#1a0a0a', '#2a1a1a');
+
+  const questAlpha = ease(clamp(p*2, 0, 1));
+  drawText('ביקור רופא פרטי?', W/2, H*0.25, 70, '#fff', questAlpha, 'center', '600');
+
+  // Big price range
+  const priceScale = ease(clamp((p-0.2)*2, 0, 1));
+  const priceY = H*0.45;
+  ctx.save();
+  ctx.globalAlpha = priceScale;
+  ctx.fillStyle = '#ef4444';
+  ctx.font = `bold ${140*priceScale}px Heebo, Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('₪500-₪1,000', W/2, priceY);
+  ctx.restore();
+
+  drawText('לביקור אחד', W/2, H*0.56, 56, '#f87171', ease(clamp((p-0.4)*2.5, 0, 1)), 'center', '500');
+
+  // Bottom: waiting pain
+  const waitAlpha = ease(clamp((p-0.55)*2.5, 0, 1));
+  drawText('ותור של חודשיים למומחה בקופה?', W/2, H*0.78, 48, '#fbbf24', waitAlpha, 'center', '600');
+  drawText('מספיק.', W/2, H*0.88, 80, '#fff', waitAlpha, 'center', 'bold');
+}
+
+function scene3_Solution(t) {
+  // 7500-11250ms — פתרון: ₪248 + יתרונות
+  const p = t / 3750;
+  drawGradientBg('#1a2744', '#0f1a2e');
+
+  // Price headline
+  const priceAlpha = ease(clamp(p*2, 0, 1));
+  drawText('₪248', W/2, H*0.2, 180, '#d4af37', priceAlpha);
+  drawText('לחודש בלבד', W/2, H*0.32, 52, '#fff', priceAlpha, 'center', '500');
+
+  // Checklist
+  const items = [
+    'רופא עד הבית 24/7',
+    'מומחים תוך 72 שעות',
+    'MRI ו-CT ללא המתנה',
+    'ללא הצהרת בריאות',
+    'ביטול בכל עת'
+  ];
+
+  items.forEach((item, i) => {
+    const itemP = clamp((p - 0.25 - i*0.1) * 3, 0, 1);
+    const y = H*0.48 + i*110;
+    const x = W*0.75;
+    drawCheckItem(item, x, y, 48, ease(itemP));
+  });
+}
+
+function scene4_CTA(t) {
+  // 11250-15000ms — CTA + דומיין
+  const p = t / 3750;
+  drawGradientBg('#0a0e1a', '#1a2744');
+  drawGoldOrb(W/2, H*0.5, W*0.9, 0.6 + 0.3*Math.sin(p*Math.PI*2));
+
+  // Logo small top
+  drawLogo(W/2, H*0.2, 120, ease(clamp(p*2, 0, 1)));
+
+  // Main CTA
+  const ctaAlpha = ease(clamp((p-0.1)*2, 0, 1));
+  drawText('להרשמה תוך דקה', W/2, H*0.42, 80, '#fff', ctaAlpha, 'center', 'bold');
+
+  // Arrow animation
+  const arrowY = H*0.52 + 10*Math.sin(p*Math.PI*4);
+  drawText('↓', W/2, arrowY, 100, '#d4af37', ease(clamp((p-0.3)*2.5, 0, 1)));
+
+  // Button
+  const btnAlpha = ease(clamp((p-0.35)*2, 0, 1));
+  ctx.save();
+  ctx.globalAlpha = btnAlpha;
+  ctx.fillStyle = '#d4af37';
+  const btnX = W*0.2, btnY = H*0.6, btnW = W*0.6, btnH = 140;
+  const r = 30;
+  ctx.beginPath();
+  ctx.moveTo(btnX+r, btnY);
+  ctx.lineTo(btnX+btnW-r, btnY);
+  ctx.arcTo(btnX+btnW, btnY, btnX+btnW, btnY+r, r);
+  ctx.lineTo(btnX+btnW, btnY+btnH-r);
+  ctx.arcTo(btnX+btnW, btnY+btnH, btnX+btnW-r, btnY+btnH, r);
+  ctx.lineTo(btnX+r, btnY+btnH);
+  ctx.arcTo(btnX, btnY+btnH, btnX, btnY+btnH-r, r);
+  ctx.lineTo(btnX, btnY+r);
+  ctx.arcTo(btnX, btnY, btnX+r, btnY, r);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+  drawText('לחץ להרשמה', W/2, btnY + btnH/2, 60, '#0a0e1a', btnAlpha, 'center', 'bold');
+
+  // Domain
+  drawText('platinum-service.co.il', W/2, H*0.8, 48, '#d4af37', ease(clamp((p-0.5)*2.5, 0, 1)), 'center', '600');
+  drawText('ללא הצהרת בריאות • מגיל 50+', W/2, H*0.87, 38, '#9ca3af', ease(clamp((p-0.6)*2.5, 0, 1)), 'center', '500');
+}
+
+// ═══════════════════════════════════════════
+// Main render loop
+// ═══════════════════════════════════════════
+function render(elapsed) {
+  ctx.clearRect(0, 0, W, H);
+  if (elapsed < 3750) scene1_Logo(elapsed);
+  else if (elapsed < 7500) scene2_Pain(elapsed - 3750);
+  else if (elapsed < 11250) scene3_Solution(elapsed - 7500);
+  else if (elapsed < 15000) scene4_CTA(elapsed - 11250);
+  else return false;
+  return true;
+}
+
+function animate(ts) {
+  if (!startTime) startTime = ts;
+  const elapsed = ts - startTime;
+  const cont = render(elapsed);
+  if (cont) {
+    animFrameId = requestAnimationFrame(animate);
+  } else if (!isRecording) {
+    setStatus('סרטון הסתיים — לחץ שוב לתצוגה מקדימה נוספת', '');
+  }
+}
+
+function preview() {
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  startTime = null;
+  setStatus('מתנגן...', '');
+  animFrameId = requestAnimationFrame(animate);
+}
+
+// ═══════════════════════════════════════════
+// Recording via MediaRecorder
+// ═══════════════════════════════════════════
+function setStatus(text, cls) {
+  const el = document.getElementById('status');
+  el.textContent = text;
+  el.className = 'status ' + cls;
+}
+
+async function record() {
+  const btn = document.getElementById('recordBtn');
+  btn.disabled = true;
+  document.getElementById('previewBtn').disabled = true;
+  isRecording = true;
+  setStatus('🔴 מקליט... 15 שניות', 'recording');
+
+  try {
+    const stream = canvas.captureStream(30); // 30 fps
+
+    // Try MP4 first, fallback to WebM
+    let mimeType = 'video/mp4;codecs=avc1';
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = 'video/webm;codecs=vp9';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/webm;codecs=vp8';
+      }
+    }
+
+    const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5000000 });
+    const chunks = [];
+    rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    rec.onstop = () => {
+      const blob = new Blob(chunks, { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+      a.href = url;
+      a.download = `platinum-ad-video.${ext}`;
+      a.click();
+      URL.revokeObjectURL(url);
+      isRecording = false;
+      btn.disabled = false;
+      document.getElementById('previewBtn').disabled = false;
+      setStatus(`✅ הסרטון הורד (${ext.toUpperCase()}). אם WebM — המר ל-MP4 ב-CloudConvert`, 'ready');
+    };
+
+    // Start animation + recording in sync
+    rec.start();
+    startTime = null;
+    if (animFrameId) cancelAnimationFrame(animFrameId);
+    animFrameId = requestAnimationFrame(animate);
+
+    setTimeout(() => rec.stop(), DURATION + 100);
+  } catch(e) {
+    setStatus('❌ שגיאה: ' + e.message, '');
+    isRecording = false;
+    btn.disabled = false;
+    document.getElementById('previewBtn').disabled = false;
+  }
+}
+
+// Initial frame
+scene1_Logo(0);
+</script>
+</body>
+</html>
