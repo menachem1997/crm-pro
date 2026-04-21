@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>תמונות מודעה פרימיום — פלטינום</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Heebo',sans-serif;background:#0a1f3d;color:#fff;margin:0;padding:24px;text-align:center}
+h1{color:#e8b84b;margin-bottom:8px}
+.sub{opacity:.8;margin-bottom:24px}
+.wrap{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;margin-bottom:30px}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(232,184,75,.3);border-radius:16px;padding:16px}
+.card h3{color:#e8b84b;margin:0 0 12px}
+canvas{max-width:100%;height:auto;display:block;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+button{background:linear-gradient(135deg,#c9973a,#e8b84b);color:#0a1f3d;border:none;padding:14px 32px;font-size:1rem;font-weight:900;border-radius:10px;cursor:pointer;margin:6px}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(201,151,58,.4)}
+.info{background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.3);border-radius:12px;padding:16px;max-width:700px;margin:0 auto 24px;text-align:right;font-size:.9rem;line-height:1.7}
+</style>
+</head>
+<body>
+
+<h1>✦ תמונות מודעה פרימיום ✦</h1>
+<p class="sub">3 פורמטים — מרובע (פיד), אנכי (סטוריז/ריילס), אופקי (דסקטופ)</p>
+
+<div class="info">
+<b>עיצוב חדש:</b> גרדיאנט נייבי עמוק + זהב + אפקטים של חלקיקי אור • טיפוגרפיה דינמית (כותרת ענק + סלוגן) • אייקונים גדולים • גבולות זהב מעוצבים • פחות מ-20% טקסט ✅
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <h3>מרובע 1080×1080 (פיד פייסבוק/אינסטגרם)</h3>
+    <canvas id="c1" width="1080" height="1080" style="width:360px"></canvas>
+    <div><button onclick="download('c1','platinum-premium-square.png')">הורד</button></div>
+  </div>
+  <div class="card">
+    <h3>אנכי 1080×1920 (סטוריז/ריילס)</h3>
+    <canvas id="c2" width="1080" height="1920" style="width:250px"></canvas>
+    <div><button onclick="download('c2','platinum-premium-vertical.png')">הורד</button></div>
+  </div>
+  <div class="card">
+    <h3>אופקי 1200×628 (דסקטופ)</h3>
+    <canvas id="c3" width="1200" height="628" style="width:500px"></canvas>
+    <div><button onclick="download('c3','platinum-premium-horizontal.png')">הורד</button></div>
+  </div>
+</div>
+
+<button onclick="downloadAll()">⬇ הורד את כל 3 התמונות</button>
+
+<script>
+function drawPremium(ctx, w, h){
+  // Deep navy gradient
+  const g = ctx.createRadialGradient(w*0.7, h*0.3, 0, w/2, h/2, Math.max(w,h));
+  g.addColorStop(0, '#1a3a6b');
+  g.addColorStop(0.5, '#0f2d5a');
+  g.addColorStop(1, '#050f24');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+
+  // Subtle light rays from top-right
+  const rays = ctx.createRadialGradient(w*0.85, h*0.15, 0, w*0.85, h*0.15, w*0.8);
+  rays.addColorStop(0, 'rgba(232,184,75,0.22)');
+  rays.addColorStop(0.4, 'rgba(232,184,75,0.08)');
+  rays.addColorStop(1, 'rgba(232,184,75,0)');
+  ctx.fillStyle = rays;
+  ctx.fillRect(0, 0, w, h);
+
+  // Light particles (bokeh effect)
+  for(let i=0; i<60; i++){
+    const x = Math.random()*w;
+    const y = Math.random()*h;
+    const r = Math.random()*4 + 1;
+    const opacity = Math.random()*0.6 + 0.1;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(232,184,75,${opacity})`;
+    ctx.fill();
+  }
+
+  // Larger glowing orbs
+  for(let i=0; i<12; i++){
+    const x = Math.random()*w;
+    const y = Math.random()*h;
+    const r = Math.random()*15 + 8;
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+    grad.addColorStop(0, 'rgba(232,184,75,0.4)');
+    grad.addColorStop(1, 'rgba(232,184,75,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x-r, y-r, r*2, r*2);
+  }
+
+  // Elegant gold frame
+  const margin = Math.min(w,h) * 0.035;
+  const frameGrad = ctx.createLinearGradient(0, 0, w, h);
+  frameGrad.addColorStop(0, '#c9973a');
+  frameGrad.addColorStop(0.5, '#e8b84b');
+  frameGrad.addColorStop(1, '#c9973a');
+  ctx.strokeStyle = frameGrad;
+  ctx.lineWidth = Math.min(w,h) * 0.006;
+  ctx.strokeRect(margin, margin, w - margin*2, h - margin*2);
+}
+
+function drawLogo(ctx, cx, cy, size){
+  // Outer gold ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, size*1.15, 0, Math.PI*2);
+  const ring = ctx.createRadialGradient(cx, cy, size*0.8, cx, cy, size*1.15);
+  ring.addColorStop(0, 'rgba(232,184,75,0)');
+  ring.addColorStop(1, 'rgba(232,184,75,0.5)');
+  ctx.fillStyle = ring;
+  ctx.fill();
+
+  // Gold circle background with gradient
+  const grad = ctx.createLinearGradient(cx-size, cy-size, cx+size, cy+size);
+  grad.addColorStop(0, '#e8b84b');
+  grad.addColorStop(0.5, '#c9973a');
+  grad.addColorStop(1, '#a67f2a');
+  ctx.beginPath();
+  ctx.arc(cx, cy, size, 0, Math.PI*2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Inner shadow ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, size*0.92, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(10,31,61,0.3)';
+  ctx.lineWidth = size*0.04;
+  ctx.stroke();
+
+  // פ letter
+  ctx.fillStyle = '#0a1f3d';
+  ctx.font = `900 ${size*1.3}px Heebo`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('פ', cx, cy + size*0.08);
+}
+
+function drawMedicalIcon(ctx, cx, cy, size){
+  // Medical cross/shield icon
+  ctx.save();
+  ctx.fillStyle = 'rgba(232,184,75,0.15)';
+  ctx.beginPath();
+  ctx.arc(cx, cy, size*1.4, 0, Math.PI*2);
+  ctx.fill();
+
+  // Cross
+  const cw = size*0.35;
+  const ch = size*0.9;
+  ctx.fillStyle = '#e8b84b';
+  ctx.fillRect(cx - cw/2, cy - ch/2, cw, ch);
+  ctx.fillRect(cx - ch/2, cy - cw/2, ch, cw);
+  ctx.restore();
+}
+
+function drawStars(ctx, x, y, count, size){
+  for(let i=0; i<count; i++){
+    const sx = x + i*size*2.5;
+    ctx.fillStyle = '#e8b84b';
+    ctx.font = `${size}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('★', sx, y);
+  }
+}
+
+// ============ SQUARE 1080×1080 ============
+function draw1(){
+  const c = document.getElementById('c1');
+  const ctx = c.getContext('2d');
+  drawPremium(ctx, 1080, 1080);
+
+  // Logo top center
+  drawLogo(ctx, 540, 220, 90);
+
+  // Brand name
+  ctx.fillStyle = '#e8b84b';
+  ctx.font = '800 42px Heebo';
+  ctx.textAlign = 'center';
+  ctx.fillText('פלטינום', 540, 360);
+
+  // Line separator
+  ctx.strokeStyle = 'rgba(232,184,75,0.5)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(380, 400);
+  ctx.lineTo(700, 400);
+  ctx.stroke();
+
+  // Main headline
+  ctx.fillStyle = '#fff';
+  ctx.font = '900 82px Heebo';
+  ctx.fillText('רפואה פרטית', 540, 520);
+  ctx.fillText('ללא תורים', 540, 620);
+
+  // Accent
+  ctx.fillStyle = '#e8b84b';
+  ctx.font = '900 54px Heebo';
+  ctx.fillText('בלי להוציא אלפים', 540, 730);
+
+  // Stars
+  drawStars(ctx, 440, 810, 5, 36);
+
+  // CTA box
+  const btnY = 900;
+  const btnH = 80;
+  const btnW = 520;
+  const btnX = 540 - btnW/2;
+  const btnG = ctx.createLinearGradient(btnX, btnY, btnX+btnW, btnY+btnH);
+  btnG.addColorStop(0, '#e8b84b');
+  btnG.addColorStop(1, '#c9973a');
+  ctx.fillStyle = btnG;
+  ctx.beginPath();
+  ctx.roundRect(btnX, btnY, btnW, btnH, 40);
+  ctx.fill();
+  ctx.fillStyle = '#0a1f3d';
+  ctx.font = '900 38px Heebo';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('לפרטים נוספים ←', 540, btnY + btnH/2);
+}
+
+// ============ VERTICAL 1080×1920 ============
+function draw2(){
+  const c = document.getElementById('c2');
+  const ctx = c.getContext('2d');
+  drawPremium(ctx, 1080, 1920);
+
+  // Logo
+  drawLogo(ctx, 540, 360, 120);
+
+  // Brand
+  ctx.fillStyle = '#e8b84b';
+  ctx.font = '800 54px Heebo';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('פלטינום', 540, 560);
+
+  // Decorative line
+  ctx.strokeStyle = 'rgba(232,184,75,0.5)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(340, 620);
+  ctx.lineTo(740, 620);
+  ctx.stroke();
+
+  // Main headline — big and strong
+  ctx.fillStyle = '#fff';
+  ctx.font = '900 105px Heebo';
+  ctx.fillText('רפואה', 540, 820);
+  ctx.fillText('פרטית', 540, 940);
+
+  // Gold accent headline
+  ctx.fillStyle = '#e8b84b';
+  ctx.font = '900 78px Heebo';
+  ctx.fillText('בלי תורים.', 540, 1080);
+  ctx.fillText('בלי אלפי ₪.', 540, 1180);
+
+  // Stars
+  drawStars(ctx, 420, 1300, 5, 44);
+
+  // Subtitle
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = '500 38px Heebo';
+  ctx.fillText('• ללא הצהרת בריאות', 540, 1400);
+  ctx.fillText('• ביטול בכל עת', 540, 1460);
+  ctx.fillText('• מגיל 50 ומעלה', 540, 1520);
+
+  // CTA button - large and bold
+  const btnY = 1640;
+  const btnH = 120;
+  const btnW = 700;
+  const btnX = 540 - btnW/2;
+  const btnG = ctx.createLinearGradient(btnX, btnY, btnX+btnW, btnY+btnH);
+  btnG.addColorStop(0, '#e8b84b');
+  btnG.addColorStop(1, '#c9973a');
+  ctx.fillStyle = btnG;
+  ctx.beginPath();
+  ctx.roundRect(btnX, btnY, btnW, btnH, 60);
+  ctx.fill();
+
+  // Button shadow
+  ctx.shadowColor = 'rgba(232,184,75,0.4)';
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 10;
+  ctx.fillStyle = 'rgba(232,184,75,0.01)';
+  ctx.beginPath();
+  ctx.roundRect(btnX, btnY, btnW, btnH, 60);
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+
+  ctx.fillStyle = '#0a1f3d';
+  ctx.font = '900 48px Heebo';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('לפרטים נוספים ←', 540, btnY + btnH/2);
+}
+
+// ============ HORIZONTAL 1200×628 ============
+function draw3(){
+  const c = document.getElementById('c3');
+  const ctx = c.getContext('2d');
+  drawPremium(ctx, 1200, 628);
+
+  // Logo on the right side
+  drawLogo(ctx, 230, 314, 95);
+
+  // Brand below logo
+  ctx.fillStyle = '#e8b84b';
+  ctx.font = '700 32px Heebo';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('פלטינום', 230, 470);
+
+  // Vertical line separator
+  ctx.strokeStyle = 'rgba(232,184,75,0.4)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(400, 160);
+  ctx.lineTo(400, 468);
+  ctx.stroke();
+
+  // Main headline — on the left of divider
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#fff';
+  ctx.font = '900 66px Heebo';
+  ctx.fillText('רפואה פרטית', 1140, 230);
+
+  ctx.fillStyle = '#e8b84b';
+  ctx.font = '900 66px Heebo';
+  ctx.fillText('בלי תורים ובלי אלפים', 1140, 310);
+
+  // Small text
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.font = '500 28px Heebo';
+  ctx.fillText('ללא הצהרת בריאות • ביטול בכל עת', 1140, 370);
+
+  // CTA
+  const btnY = 440;
+  const btnH = 70;
+  const btnW = 320;
+  const btnX = 1140 - btnW;
+  const btnG = ctx.createLinearGradient(btnX, btnY, btnX+btnW, btnY+btnH);
+  btnG.addColorStop(0, '#e8b84b');
+  btnG.addColorStop(1, '#c9973a');
+  ctx.fillStyle = btnG;
+  ctx.beginPath();
+  ctx.roundRect(btnX, btnY, btnW, btnH, 35);
+  ctx.fill();
+  ctx.fillStyle = '#0a1f3d';
+  ctx.font = '900 32px Heebo';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('לפרטים נוספים ←', btnX + btnW/2, btnY + btnH/2);
+}
+
+function download(id, name){
+  const c = document.getElementById(id);
+  const link = document.createElement('a');
+  link.download = name;
+  link.href = c.toDataURL('image/png');
+  link.click();
+}
+
+function downloadAll(){
+  download('c1', 'platinum-premium-square.png');
+  setTimeout(()=>download('c2', 'platinum-premium-vertical.png'), 500);
+  setTimeout(()=>download('c3', 'platinum-premium-horizontal.png'), 1000);
+}
+
+// Wait for fonts then draw
+document.fonts.ready.then(()=>{
+  draw1();
+  draw2();
+  draw3();
+});
+</script>
+</body>
+</html>
