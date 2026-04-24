@@ -14,8 +14,38 @@
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '1481962533368892');
+  fbq('init', '1481962533368892', {}, { autoConfig: true });
   fbq('track', 'PageView');
+
+  // ViewContent אחרי 10 שניות — מסמן ל-Meta שהמבקר באמת עוסק בדף
+  setTimeout(function() {
+    try { fbq('track', 'ViewContent', {
+      content_name: 'landing_platinum',
+      content_category: 'health_service',
+      currency: 'ILS'
+    }); } catch(e) {}
+  }, 10000);
+
+  // הפונקציה הזאת תופעל כשיהיו לנו פרטי לקוח — מעדכנת את ה-Pixel עם מידע מותאם (Meta מצפין אוטומטי)
+  window.pixelIdentify = function(name, phone, email) {
+    try {
+      var parts = (name || '').trim().split(/\s+/);
+      var fn = parts[0] || '';
+      var ln = parts.slice(1).join(' ') || '';
+      var ph = (phone || '').replace(/\D/g,'');
+      if (ph && !ph.startsWith('972')) ph = '972' + ph.replace(/^0/,'');
+      var userData = { country: 'il' };
+      if (fn)    userData.fn = fn.toLowerCase();
+      if (ln)    userData.ln = ln.toLowerCase();
+      if (ph)    userData.ph = ph;
+      if (email) userData.em = email.toLowerCase();
+      fbq('init', '1481962533368892', userData);
+    } catch(e) {}
+  };
+
+  window.pixelEventId = function(prefix) {
+    return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+  };
   </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=1481962533368892&ev=PageView&noscript=1"
@@ -883,6 +913,13 @@
       if (!ok) { nameEl.focus(); return; }
       answers.name  = nameEl.value.trim();
       answers.phone = phoneEl.value.trim();
+      try {
+        if (window.pixelIdentify) window.pixelIdentify(answers.name, answers.phone, '');
+        fbq('track', 'InitiateCheckout', {
+          content_name: 'landing_platinum_step1',
+          currency: 'ILS'
+        }, { eventID: window.pixelEventId('ic') });
+      } catch(e) {}
     } else {
       const field = STEP_FIELDS[from];
       const errId = STEP_ERRORS[from];
@@ -945,7 +982,15 @@
         consentDate: new Date().toISOString(),
         createdAt: serverTimestamp()
       });
-      fbq('track', 'Lead', { value: score, currency: 'ILS' });
+      try {
+        if (window.pixelIdentify) window.pixelIdentify(answers.name, answers.phone, '');
+        fbq('track', 'Lead', {
+          value: score,
+          currency: 'ILS',
+          content_name: 'landing_platinum',
+          content_category: 'health_service'
+        }, { eventID: window.pixelEventId('lead') });
+      } catch(e) { console.warn('Pixel Lead failed', e); }
       gtag('event', 'generate_lead', { value: score });
       document.getElementById('form-wrap').style.display = 'none';
       document.getElementById('ty-score').textContent = `ניקוד ההתאמה שלך: ${score}/10`;
@@ -1088,7 +1133,15 @@
         consentDate: new Date().toISOString(),
         createdAt: serverTimestamp()
       });
-      fbq('track', 'Lead', { value: 5, currency: 'ILS', content_name: 'exit_guide' });
+      try {
+        if (window.pixelIdentify) window.pixelIdentify(name, phone, email);
+        fbq('track', 'Lead', {
+          value: 5,
+          currency: 'ILS',
+          content_name: 'exit_guide',
+          content_category: 'health_service'
+        }, { eventID: window.pixelEventId('exitlead') });
+      } catch(err) { console.warn('Pixel exit Lead failed', err); }
       btn.textContent = '✓ נשלח! תבדקו את המייל';
       setTimeout(closeExit, 2000);
     } catch(err) {
